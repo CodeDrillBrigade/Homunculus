@@ -2,5 +2,6 @@ package org.cdb.main
 
 fun main()
 {
-    println("Hello world!")
-}
+    System.out.println("Hello world!");
+
+} // fine main()
