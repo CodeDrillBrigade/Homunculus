@@ -34,6 +34,7 @@ dependencies {
 	implementation("io.ktor:ktor-client-cio-jvm")
 	implementation("io.ktor:ktor-client-core-jvm")
 	implementation("io.ktor:ktor-client-content-negotiation-jvm")
+	implementation("org.mongodb:mongodb-driver-kotlin-coroutine:4.11.0")
 
 	implementation("io.insert-koin:koin-ktor:$koin_ktor_version")
 	implementation("io.insert-koin:koin-logger-slf4j:$koin_ktor_version")
