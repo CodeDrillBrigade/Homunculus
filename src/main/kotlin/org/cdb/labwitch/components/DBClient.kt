@@ -3,20 +3,17 @@ package org.cdb.labwitch.components
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import org.cdb.labwitch.models.StoredEntity
+import org.cdb.labwitch.models.config.MongoDBCredentials
 
 /**
  * Instantiates a client for the database that will be used by all the other classes
  */
 class DBClient(
-     username: String,
-     password: String,
-     ip: String,
-     port: String,
-     databaseName: String
+    dbCredentials: MongoDBCredentials
 ) {
 
-    private val client = MongoClient.create("mongodb://${username}:${password}@${ip}:${port}/${databaseName}")
-    val db = client.getDatabase(databaseName)
+    private val client = MongoClient.create(dbCredentials.toConnectionString())
+    val db = client.getDatabase(dbCredentials.databaseName)
 
     /**
      * Get a collection of a type of [StoredEntity]. The collection name is the simple name of the concrete entity.

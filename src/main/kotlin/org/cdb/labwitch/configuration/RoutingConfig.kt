@@ -4,6 +4,7 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.routing.*
+import org.cdb.labwitch.controller.authController
 import org.cdb.labwitch.controller.userController
 
 fun Application.configureRouting() {
@@ -11,6 +12,7 @@ fun Application.configureRouting() {
         json()
     }
     routing {
+        authController()
         userController()
     }
 

@@ -9,4 +9,5 @@ class UserDaoImpl(
     client: DBClient
 ) : UserDao(client) {
     override suspend fun get(id: String): User? = get(eq("_id", id))
+    override suspend fun getByUsername(username: String): User? = get(eq(User::username.name, username))
 }

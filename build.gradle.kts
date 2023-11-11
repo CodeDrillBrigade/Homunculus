@@ -34,6 +34,9 @@ dependencies {
 	implementation("io.ktor:ktor-client-cio-jvm")
 	implementation("io.ktor:ktor-client-core-jvm")
 	implementation("io.ktor:ktor-client-content-negotiation-jvm")
+	implementation("io.ktor:ktor-server-auth")
+	implementation("io.ktor:ktor-server-auth-jwt")
+
 	implementation("org.mongodb:mongodb-driver-kotlin-coroutine:4.11.0")
 	implementation("org.mindrot:jbcrypt:0.4")
 

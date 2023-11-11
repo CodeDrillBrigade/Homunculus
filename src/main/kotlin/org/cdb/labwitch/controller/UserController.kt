@@ -1,6 +1,8 @@
 package org.cdb.labwitch.controller
 
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -11,9 +13,12 @@ import org.koin.ktor.ext.inject
 fun Routing.userController() = route("/user") {
     val userLogic by inject<UserLogic>()
 
-    get("") {
-        val userId = call.request.queryParameters["id"]!!
-        call.respond(userLogic.get(userId))
+    authenticate("auth-jwt") {
+        get("") {
+                val principal = call.principal<JWTPrincipal>()
+                val userId = principal!!.payload.getClaim("uId").asString()
+                call.respond(userLogic.get(userId).copy(passwordHash = "*"))
+            }
     }
 
     post("") {
