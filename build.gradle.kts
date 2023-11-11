@@ -11,7 +11,7 @@ plugins {
 	id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10"
 }
 
-group = "com.vandeas"
+group = "org.cdb"
 version = "0.0.1"
 
 application {
