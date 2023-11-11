@@ -8,5 +8,5 @@ import org.cdb.labwitch.models.User
 class UserDaoImpl(
     client: DBClient
 ) : UserDao(client) {
-    override suspend fun get(id: String): User? = get(eq(User::id.name, id))
+    override suspend fun get(id: String): User? = get(eq("_id", id))
 }

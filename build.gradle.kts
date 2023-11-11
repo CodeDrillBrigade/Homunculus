@@ -29,12 +29,13 @@ dependencies {
 	implementation("io.ktor:ktor-serialization-jackson-jvm")
 	implementation("io.ktor:ktor-server-call-logging-jvm")
 	implementation("io.ktor:ktor-server-cio-jvm")
-	implementation("io.ktor:ktor-server-mustache-jvm")
+	implementation("io.ktor:ktor-serialization-kotlinx-json")
 
 	implementation("io.ktor:ktor-client-cio-jvm")
 	implementation("io.ktor:ktor-client-core-jvm")
 	implementation("io.ktor:ktor-client-content-negotiation-jvm")
 	implementation("org.mongodb:mongodb-driver-kotlin-coroutine:4.11.0")
+	implementation("org.mindrot:jbcrypt:0.4")
 
 	implementation("io.insert-koin:koin-ktor:$koin_ktor_version")
 	implementation("io.insert-koin:koin-logger-slf4j:$koin_ktor_version")

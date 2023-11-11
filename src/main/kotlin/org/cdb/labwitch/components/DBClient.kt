@@ -7,13 +7,14 @@ import org.cdb.labwitch.models.StoredEntity
 /**
  * Instantiates a client for the database that will be used by all the other classes
  */
-class DBClient {
+class DBClient(
+     username: String,
+     password: String,
+     ip: String,
+     port: String,
+     databaseName: String
+) {
 
-    private val username = System.getenv("DB_USERNAME")
-    private val password = System.getenv("DB_PASSWORD")
-    private val ip = System.getenv("DB_IP")
-    private val port = System.getenv("DB_PORT")
-    private val databaseName = System.getenv("DB_NAME")
     private val client = MongoClient.create("mongodb://${username}:${password}@${ip}:${port}/${databaseName}")
     val db = client.getDatabase(databaseName)
 

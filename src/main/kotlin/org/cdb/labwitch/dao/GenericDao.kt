@@ -1,5 +1,6 @@
 package org.cdb.labwitch.dao
 
+import com.mongodb.client.model.InsertOneOptions
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import kotlinx.coroutines.flow.firstOrNull
 import org.bson.conversions.Bson
@@ -26,5 +27,13 @@ abstract class GenericDao<T: StoredEntity>(
      * @return the entity, if one exists with the specified id, and null otherwise.
      */
     suspend fun get(idFilter: Bson): T? = collection.find(idFilter).firstOrNull()
+
+    /**
+     * Creates a new entity [T] in the database.
+     *
+     * @param entity a [T] to create.
+     * @return the entity id, if successfully created
+     */
+    suspend fun save(entity: T): String? = collection.insertOne(entity).insertedId?.asString()?.value
 
 }
