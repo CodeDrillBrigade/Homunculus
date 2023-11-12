@@ -1,17 +1,19 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+val ktor_version: String by project
+val kotlin_version: String by project
+val logback_version: String by project
+val koin_ktor_version: String by project
 
 plugins {
-	id("org.springframework.boot") version "3.1.5"
-	id("io.spring.dependency-management") version "1.1.3"
-	kotlin("jvm") version "1.8.22"
-	kotlin("plugin.spring") version "1.8.22"
+	kotlin("jvm") version "1.9.10"
+	id("io.ktor.plugin") version "2.3.4"
+	id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10"
 }
 
-group = "com.example"
-version = "0.0.1-SNAPSHOT"
+group = "org.cdb"
+version = "0.0.1"
 
-java {
-	sourceCompatibility = JavaVersion.VERSION_17
+application {
+	mainClass.set("org.cdb.labwitch.LabWitchAppKt")
 }
 
 repositories {
@@ -19,16 +21,30 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter")
-	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-}
+	implementation("io.ktor:ktor-server-core-jvm")
+	implementation("io.ktor:ktor-server-cors-jvm")
+	implementation("io.ktor:ktor-server-content-negotiation-jvm")
+	implementation("io.ktor:ktor-serialization-jackson-jvm")
+	implementation("io.ktor:ktor-server-call-logging-jvm")
+	implementation("io.ktor:ktor-server-cio-jvm")
+	implementation("io.ktor:ktor-serialization-kotlinx-json")
 
-tasks.withType<KotlinCompile> {
-	kotlinOptions {
-		freeCompilerArgs += "-Xjsr305=strict"
-		jvmTarget = "17"
-	}
+	implementation("io.ktor:ktor-client-cio-jvm")
+	implementation("io.ktor:ktor-client-core-jvm")
+	implementation("io.ktor:ktor-client-content-negotiation-jvm")
+	implementation("io.ktor:ktor-server-auth")
+	implementation("io.ktor:ktor-server-auth-jwt")
+
+	implementation("org.mongodb:mongodb-driver-kotlin-coroutine:4.11.0")
+	implementation("org.mindrot:jbcrypt:0.4")
+
+	implementation("io.insert-koin:koin-ktor:$koin_ktor_version")
+	implementation("io.insert-koin:koin-logger-slf4j:$koin_ktor_version")
+
+	implementation("ch.qos.logback:logback-classic:$logback_version")
+
+	testImplementation("io.ktor:ktor-server-tests-jvm")
+	testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
 
 tasks.withType<Test> {
