@@ -6,6 +6,7 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.cdb.labwitch.dao.UserDao
 import org.cdb.labwitch.logic.UserLogic
 import org.cdb.labwitch.models.UserCreationData
 import org.koin.ktor.ext.inject

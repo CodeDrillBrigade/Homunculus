@@ -1,6 +1,5 @@
 package org.cdb.labwitch.dao
 
-import com.mongodb.client.model.InsertOneOptions
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import kotlinx.coroutines.flow.firstOrNull
 import org.bson.conversions.Bson

@@ -3,6 +3,7 @@ package org.cdb.labwitch.components
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import org.cdb.labwitch.models.StoredEntity
+import org.cdb.labwitch.models.User
 import org.cdb.labwitch.models.config.MongoDBCredentials
 
 /**
@@ -24,5 +25,4 @@ class DBClient(
     inline fun <reified E: StoredEntity> getCollection(): MongoCollection<E> = db.getCollection<E>(
         E::class.simpleName ?: throw IllegalArgumentException("Cannot find collection for ${E::class}")
     )
-
 }

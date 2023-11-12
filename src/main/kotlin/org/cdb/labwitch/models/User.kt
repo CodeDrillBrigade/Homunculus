@@ -10,7 +10,7 @@ import org.cdb.labwitch.models.embed.Role
  */
 @Serializable
 data class User(
-    @BsonId override val id: String,
+    override val id: String,
     val username: String,
     val passwordHash: String,
     val name: String,

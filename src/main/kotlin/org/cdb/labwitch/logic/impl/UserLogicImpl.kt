@@ -27,6 +27,8 @@ class UserLogicImpl(
         return checkNotNull(userDao.get(createdId)) { "User retrieval failed" }
     }
 
-    override suspend fun get(userId: String): User = userDao.get(userId)!!
+    override suspend fun get(userId: String): User = requireNotNull(userDao.get(userId)) {
+        "User is not found"
+    }
 
 }

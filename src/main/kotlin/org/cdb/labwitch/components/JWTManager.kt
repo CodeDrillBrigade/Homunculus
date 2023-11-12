@@ -42,7 +42,7 @@ class JWTManager(
      * @return a [JWTPrincipal].
      */
     fun credentialToPrincipal(credential: JWTCredential): JWTPrincipal =
-        if (credential.payload.getClaim("USER_ID").asString() != "") {
+        if (credential.payload.getClaim(USER_ID).asString() != "") {
             JWTPrincipal(credential.payload)
         } else throw IllegalStateException("Wrong format")
 

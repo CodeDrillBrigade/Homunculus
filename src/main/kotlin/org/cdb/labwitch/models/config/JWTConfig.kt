@@ -17,5 +17,4 @@ class JWTConfig(
             realm = config.property("ktor.jwt.realm").getString()
         )
     }
-
 }
