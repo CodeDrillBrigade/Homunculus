@@ -1,7 +1,6 @@
 package org.cdb.labwitch.models
 
 import kotlinx.serialization.Serializable
-import org.bson.codecs.pojo.annotations.BsonId
 import org.cdb.labwitch.models.embed.Contact
 import org.cdb.labwitch.models.embed.Role
 
