@@ -3,8 +3,8 @@ package org.cdb.labwitch.models
 
 import java.util.Date
 
-class Box(
-	val id: Int,
+data class Box(
+	override val id: String,
 	val materialName: String,
 	val quantity: Int,
 	val metric: Metric,
@@ -13,14 +13,14 @@ class Box(
 	val status: Status,
 	val position: Int,
 	val expirationDate: Date?
-)
+) : StoredEntity
 
-class SubUnit(
+data class SubUnit(
 	val quantity: Int,
 	val subUnit: SubSubUnit?
 )
 
-class SubSubUnit(
+data class SubSubUnit(
 	val value: Float,
 	val metric: Metric
 )

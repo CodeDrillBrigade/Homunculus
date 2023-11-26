@@ -2,30 +2,23 @@ package org.cdb.labwitch.models
 
 import java.util.*
 
-class Material
+data class Material
 (
+	override val id: String,
 	val name: String,
 	val boxDefinition: BoxDefinition,
 	val brand: String,
 	val tags: Set<Tag>,
 	val description: String,
-	val noteList: List<X>
-)
+	val noteList: List<Note>
+) : StoredEntity
 
-// ?
-class Tag
+data class Tag
 (
 	val tagName: String
 )
 
-class X
-(
-	val user: User,
-	val date: Date,
-	val message: String
-)
-
-class BoxDefinition(
+data class BoxDefinition(
 	val quantity: Int,
 	val metric: Metric,
 	val subUnit: SubUnit?,
@@ -35,7 +28,7 @@ class BoxDefinition(
 	val noteList: List<Note>
 )
 
-class Note(
+data class Note(
 	val user: User,
 	val date: Date,
 	val message: String

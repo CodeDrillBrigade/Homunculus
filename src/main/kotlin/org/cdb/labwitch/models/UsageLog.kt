@@ -3,7 +3,7 @@ package org.cdb.labwitch.models
 import java.util.Date
 import java.util.UUID
 
-class UsageLog
+data class UsageLog
 (
 	val date: Date,
 	val user: UUID,
@@ -17,7 +17,7 @@ enum class Operation
 	// TODO
 }
 
-class Quantity(
+data class Quantity(
 	val quantity: Int,
 	val metric: Metric,
 	val subUnit: SubUnit?

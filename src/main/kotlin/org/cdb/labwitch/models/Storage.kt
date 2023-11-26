@@ -1,6 +1,6 @@
 package org.cdb.labwitch.models
 
-class Storage
+data class Storage
 (
 	val id: Int,
 	val room: String?,
