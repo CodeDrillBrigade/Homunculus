@@ -1,6 +1,9 @@
 
 package org.cdb.labwitch.models
 
+import org.cdb.labwitch.models.embed.Metric
+import org.cdb.labwitch.models.embed.Status
+import org.cdb.labwitch.models.embed.SubUnit
 import java.util.Date
 
 data class Box(
@@ -14,23 +17,3 @@ data class Box(
 	val position: Int,
 	val expirationDate: Date?
 ) : StoredEntity
-
-data class SubUnit(
-	val quantity: Int,
-	val subUnit: SubSubUnit?
-)
-
-data class SubSubUnit(
-	val value: Float,
-	val metric: Metric
-)
-
-enum class Metric
-{
-	// TODO
-}
-
-enum class Status
-{
-	// TODO
-}
