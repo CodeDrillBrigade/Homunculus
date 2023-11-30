@@ -5,7 +5,7 @@ import org.cdb.labwitch.components.DBClient
 import org.cdb.labwitch.dao.BoxDao
 import org.cdb.labwitch.models.Box
 
-abstract class BoxDaoImpl(client: DBClient) : BoxDao(client)
+class BoxDaoImpl(client: DBClient) : BoxDao(client)
 {
 	override suspend fun get(id: String): Box?
 	{

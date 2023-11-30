@@ -5,7 +5,7 @@ import org.cdb.labwitch.components.DBClient
 import org.cdb.labwitch.dao.MaterialDao
 import org.cdb.labwitch.models.Material
 
-abstract class MaterialDaoImpl(client: DBClient) : MaterialDao(client)
+class MaterialDaoImpl(client: DBClient) : MaterialDao(client)
 {
 	override suspend fun get(id: String) : Material?
 	{
