@@ -19,7 +19,18 @@ const val REFRESH_CTX = "refresh-ctx"
  */
 fun Application.configureHTTP() {
     install(CORS) {
+        allowMethod(HttpMethod.Options)
+        allowMethod(HttpMethod.Get)
+        allowMethod(HttpMethod.Post)
+        allowMethod(HttpMethod.Put)
+        allowMethod(HttpMethod.Delete)
+        allowMethod(HttpMethod.Patch)
+
+        allowHeader(HttpHeaders.AccessControlAllowHeaders)
         allowHeader(HttpHeaders.ContentType)
+        allowHeader(HttpHeaders.AccessControlAllowOrigin)
+        allowHeader(HttpHeaders.Authorization)
+
         anyHost()
     }
 

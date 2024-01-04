@@ -1,6 +1,8 @@
 package org.cdb.labwitch.models
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.bson.codecs.pojo.annotations.BsonId
 import org.cdb.labwitch.models.embed.Contact
 import org.cdb.labwitch.models.embed.Role
 
@@ -9,7 +11,7 @@ import org.cdb.labwitch.models.embed.Role
  */
 @Serializable
 data class User(
-    override val id: String,
+    @BsonId override val id: String,
     val username: String,
     val passwordHash: String,
     val name: String,
