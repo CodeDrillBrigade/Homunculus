@@ -17,4 +17,12 @@ interface AuthenticationLogic {
      */
     suspend fun login(username: String, password: String): AuthResponse
 
+    /**
+     * Refreshes the JWT of a user.
+     *
+     * @param username the username.
+     * @return an [AuthResponse] with a null [AuthResponse.refreshJwt].
+     */
+    suspend fun refresh(username: String): AuthResponse
+
 }
