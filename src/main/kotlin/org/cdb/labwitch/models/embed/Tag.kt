@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Tag(
-	val tagName: String
+    val tagName: String,
 )

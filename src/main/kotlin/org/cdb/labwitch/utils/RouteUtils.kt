@@ -16,14 +16,16 @@ import org.cdb.labwitch.models.security.JWTClaims
 fun Route.authenticatedGet(
     path: String,
     ctx: String = AUTH_CTX,
-    block: suspend PipelineContext<Unit, ApplicationCall>.(JWTClaims) -> Unit
-): Route = authenticate(ctx) {
-    get(path) {
-        val claims = call.principal<JWTPrincipal>()?.payload?.toJWTClaims()
-            ?: throw JWTException("No JWT passed in the request")
-        block(claims)
+    block: suspend PipelineContext<Unit, ApplicationCall>.(JWTClaims) -> Unit,
+): Route =
+    authenticate(ctx) {
+        get(path) {
+            val claims =
+                call.principal<JWTPrincipal>()?.payload?.toJWTClaims()
+                    ?: throw JWTException("No JWT passed in the request")
+            block(claims)
+        }
     }
-}
 
 /**
  * Extends the default behaviour of [post] by automatically parsing the payload of the JWT from the principal.
@@ -31,11 +33,13 @@ fun Route.authenticatedGet(
 fun Route.authenticatedPost(
     path: String,
     ctx: String = AUTH_CTX,
-    block: suspend PipelineContext<Unit, ApplicationCall>.(JWTClaims) -> Unit
-): Route = authenticate(ctx) {
-    post(path) {
-        val claims = call.principal<JWTPrincipal>()?.payload?.toJWTClaims()
-            ?: throw JWTException("No JWT passed in the request")
-        block(claims)
+    block: suspend PipelineContext<Unit, ApplicationCall>.(JWTClaims) -> Unit,
+): Route =
+    authenticate(ctx) {
+        post(path) {
+            val claims =
+                call.principal<JWTPrincipal>()?.payload?.toJWTClaims()
+                    ?: throw JWTException("No JWT passed in the request")
+            block(claims)
+        }
     }
-}

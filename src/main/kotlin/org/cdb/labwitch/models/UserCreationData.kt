@@ -9,5 +9,5 @@ data class UserCreationData(
     val password: String,
     val name: String,
     val surname: String,
-    val contacts: List<Contact> = emptyList()
+    val contacts: List<Contact> = emptyList(),
 )

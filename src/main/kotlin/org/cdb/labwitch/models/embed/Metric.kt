@@ -1,6 +1,5 @@
 package org.cdb.labwitch.models.embed
 
-enum class Metric
-{
-	L
+enum class Metric {
+    L,
 }

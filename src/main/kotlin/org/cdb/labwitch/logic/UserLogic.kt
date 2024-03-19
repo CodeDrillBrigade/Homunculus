@@ -4,7 +4,6 @@ import org.cdb.labwitch.models.User
 import org.cdb.labwitch.models.UserCreationData
 
 interface UserLogic {
-
     /**
      * Creates a new user in the system.
      *
@@ -20,5 +19,4 @@ interface UserLogic {
      * @return the [User].
      */
     suspend fun get(userId: String): User
-
 }

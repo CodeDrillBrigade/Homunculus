@@ -9,10 +9,9 @@ import org.cdb.labwitch.models.StoredEntity
 /**
  * Defines all the generic operations that a DAO should implement.
  */
-abstract class GenericDao<T: StoredEntity>(
+abstract class GenericDao<T : StoredEntity>(
     protected val client: DBClient,
 ) {
-
     /**
      * The [MongoCollection] for this entity type.
      * Must be instantiated by the concrete class because the type is reified.
@@ -34,5 +33,4 @@ abstract class GenericDao<T: StoredEntity>(
      * @return the entity id, if successfully created
      */
     suspend fun save(entity: T): String? = collection.insertOne(entity).insertedId?.asString()?.value
-
 }

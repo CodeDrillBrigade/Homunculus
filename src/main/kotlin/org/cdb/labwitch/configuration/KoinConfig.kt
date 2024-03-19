@@ -19,7 +19,7 @@ import org.koin.logger.slf4jLogger
 
 fun applicationModules(
     dbCredentials: MongoDBCredentials,
-    jwtConfig: JWTConfig
+    jwtConfig: JWTConfig,
 ) = module {
     single<JWTManager> { JWTManager(jwtConfig) }
     single<DBClient> { DBClient(dbCredentials) }
@@ -35,7 +35,6 @@ fun applicationModules(
  * @receiver a ktor [Application]
  */
 fun Application.configureKoin() {
-
     val dbCredentials = MongoDBCredentials.fromConfig(environment.config)
     val jwtConfig = JWTConfig.fromConfig(environment.config)
 

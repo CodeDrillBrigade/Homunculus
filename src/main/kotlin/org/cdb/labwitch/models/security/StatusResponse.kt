@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class StatusResponse(
     val status: Boolean,
     val message: String? = null,
-    val code: Int? = null
+    val code: Int? = null,
 )

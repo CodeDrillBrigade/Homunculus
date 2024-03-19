@@ -19,5 +19,8 @@ interface PasswordEncoder {
      * @param hash the hash to verify against.
      * @return true if the hash corresponds to the password, false otherwise
      */
-    fun checkHash(password: String, hash: String): Boolean
+    fun checkHash(
+        password: String,
+        hash: String,
+    ): Boolean
 }

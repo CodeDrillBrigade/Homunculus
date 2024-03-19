@@ -6,7 +6,6 @@ import org.cdb.labwitch.models.security.AuthResponse
  * Defines the operation to authenticate and de-authenticate a user.
  */
 interface AuthenticationLogic {
-
     /**
      * Logins a user based on username and password.
      *
@@ -15,7 +14,10 @@ interface AuthenticationLogic {
      * @return an [AuthResponse] if the authentication succeeded.
      * @throws //TODO
      */
-    suspend fun login(username: String, password: String): AuthResponse
+    suspend fun login(
+        username: String,
+        password: String,
+    ): AuthResponse
 
     /**
      * Refreshes the JWT of a user.
@@ -24,5 +26,4 @@ interface AuthenticationLogic {
      * @return an [AuthResponse] with a null [AuthResponse.refreshJwt].
      */
     suspend fun refresh(username: String): AuthResponse
-
 }

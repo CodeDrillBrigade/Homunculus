@@ -5,7 +5,6 @@ import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.interfaces.Payload
 import io.ktor.server.auth.jwt.*
-import kotlinx.serialization.json.Json
 import org.cdb.labwitch.exceptions.JWTException
 import org.cdb.labwitch.exceptions.UnauthorizedException
 import org.cdb.labwitch.models.config.JWTConfig
@@ -19,9 +18,8 @@ import kotlin.time.Duration.Companion.hours
  * This component manages the authentication and refresh JWT creation and verification
  */
 class JWTManager(
-    val config: JWTConfig
+    val config: JWTConfig,
 ) {
-
     companion object {
         const val USER_ID = "uId"
         private val authJWTDuration = 1L.hours.inWholeMilliseconds
@@ -35,12 +33,13 @@ class JWTManager(
      * @param jwtClaims the [JWTClaims] to put in the token.
      * @return a base64-encoded JWT.
      */
-    fun generateAuthJWT(jwtClaims: JWTClaims): String = JWT.create()
-        .withAudience(config.audience)
-        .withIssuer(config.issuer)
-        .withClaim(USER_ID, jwtClaims.userId)
-        .withExpiresAt(Date(System.currentTimeMillis() + authJWTDuration))
-        .sign(Algorithm.HMAC256(config.authSecret))
+    fun generateAuthJWT(jwtClaims: JWTClaims): String =
+        JWT.create()
+            .withAudience(config.audience)
+            .withIssuer(config.issuer)
+            .withClaim(USER_ID, jwtClaims.userId)
+            .withExpiresAt(Date(System.currentTimeMillis() + authJWTDuration))
+            .sign(Algorithm.HMAC256(config.authSecret))
 
     /**
      * Generates a refresh JWT from the claims passed as parameter.
@@ -49,12 +48,13 @@ class JWTManager(
      * @param jwtClaims the [JWTRefreshClaims] to put in the token.
      * @return a base64-encoded JWT.
      */
-    fun generateRefreshJWT(jwtClaims: JWTRefreshClaims): String = JWT.create()
-        .withAudience(config.audience)
-        .withIssuer(config.issuer)
-        .withClaim(USER_ID, jwtClaims.userId)
-        .withExpiresAt(Date(System.currentTimeMillis() + refreshJWTDuration))
-        .sign(Algorithm.HMAC256(config.refreshSecret))
+    fun generateRefreshJWT(jwtClaims: JWTRefreshClaims): String =
+        JWT.create()
+            .withAudience(config.audience)
+            .withIssuer(config.issuer)
+            .withClaim(USER_ID, jwtClaims.userId)
+            .withExpiresAt(Date(System.currentTimeMillis() + refreshJWTDuration))
+            .sign(Algorithm.HMAC256(config.refreshSecret))
 
     /**
      * Converts a [JWTCredential] to a [JWTPrincipal], ensuring that the payload is in the correct format.
@@ -65,28 +65,31 @@ class JWTManager(
     fun credentialToPrincipal(credential: JWTCredential): JWTPrincipal =
         if (credential.payload.getClaim(USER_ID).asString() != "") {
             JWTPrincipal(credential.payload)
-        } else throw UnauthorizedException("Wrong JWT format")
+        } else {
+            throw UnauthorizedException("Wrong JWT format")
+        }
 
     /**
      * @return a [JWTVerifier] for the authentication jwt.
      */
-    fun authJWTVerifier(): JWTVerifier = JWT
-        .require(Algorithm.HMAC256(config.authSecret))
-        .withAudience(config.audience)
-        .withIssuer(config.issuer)
-        .build()
+    fun authJWTVerifier(): JWTVerifier =
+        JWT
+            .require(Algorithm.HMAC256(config.authSecret))
+            .withAudience(config.audience)
+            .withIssuer(config.issuer)
+            .build()
 
     /**
      * @return a [JWTVerifier] for the refresh jwt.
      */
-    fun refreshJWTVerifier(): JWTVerifier = JWT
-        .require(Algorithm.HMAC256(config.refreshSecret))
-        .withAudience(config.audience)
-        .withIssuer(config.issuer)
-        .build()
+    fun refreshJWTVerifier(): JWTVerifier =
+        JWT
+            .require(Algorithm.HMAC256(config.refreshSecret))
+            .withAudience(config.audience)
+            .withIssuer(config.issuer)
+            .build()
 
-    private fun Payload.isRefreshJwtValid() =
-        getClaim(USER_ID).asString().isNotBlank()
+    private fun Payload.isRefreshJwtValid() = getClaim(USER_ID).asString().isNotBlank()
 
     /**
      * Converts a [JWTCredential] to a [JWTPrincipal], ensuring that the payload is in the correct format.
@@ -97,7 +100,9 @@ class JWTManager(
     fun refreshCredentialToPrincipal(credential: JWTCredential): JWTPrincipal =
         if (credential.payload.isRefreshJwtValid()) {
             JWTPrincipal(credential.payload)
-        } else throw UnauthorizedException("Wrong refresh JWT format")
+        } else {
+            throw UnauthorizedException("Wrong refresh JWT format")
+        }
 }
 
 /**
@@ -107,13 +112,14 @@ class JWTManager(
  * @return a [JWTClaims]
  * @throws JWTException if it the JWT is in the wrong format.
  */
-fun Payload.toJWTClaims(): JWTClaims = try {
-    JWTClaims(
-        userId = getClaim(JWTManager.USER_ID).asString(),
-    )
-} catch(e: Exception) {
-    throw JWTException(e.message ?: "Wrong JWT format")
-}
+fun Payload.toJWTClaims(): JWTClaims =
+    try {
+        JWTClaims(
+            userId = getClaim(JWTManager.USER_ID).asString(),
+        )
+    } catch (e: Exception) {
+        throw JWTException(e.message ?: "Wrong JWT format")
+    }
 
 /**
  * Converts a [Payload] to [JWTRefreshClaims].
@@ -122,10 +128,11 @@ fun Payload.toJWTClaims(): JWTClaims = try {
  * @return a [JWTRefreshClaims]
  * @throws JWTException if the JWT is in the wrong format.
  */
-fun Payload.toJWTRefreshClaims(): JWTRefreshClaims = try {
-    JWTRefreshClaims(
-        userId = getClaim(JWTManager.USER_ID).asString()
-    )
-} catch(e: Exception) {
-    throw JWTException(e.message ?: "Wrong JWT format")
-}
+fun Payload.toJWTRefreshClaims(): JWTRefreshClaims =
+    try {
+        JWTRefreshClaims(
+            userId = getClaim(JWTManager.USER_ID).asString(),
+        )
+    } catch (e: Exception) {
+        throw JWTException(e.message ?: "Wrong JWT format")
+    }

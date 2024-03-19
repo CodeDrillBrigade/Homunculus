@@ -5,7 +5,6 @@ import org.cdb.labwitch.components.DBClient
 import org.cdb.labwitch.models.User
 
 abstract class UserDao(client: DBClient) : GenericDao<User>(client) {
-
     override val collection: MongoCollection<User> = client.getCollection()
 
     /**

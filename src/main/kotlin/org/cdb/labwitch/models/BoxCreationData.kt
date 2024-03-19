@@ -9,14 +9,14 @@ import java.util.Date
 
 @Serializable
 data class BoxCreationData(
-	val id: String,
-	val materialName: String,
-	val quantity: Int,
-	val metric: Metric,
-	val note: String?,
-	val subUnit: SubUnit?,
-	val status: Status,
-	val position: Int,
-	@Contextual
-	val expirationDate: Date?
+    val id: String,
+    val materialName: String,
+    val quantity: Int,
+    val metric: Metric,
+    val note: String?,
+    val subUnit: SubUnit?,
+    val status: Status,
+    val position: Int,
+    @Contextual
+    val expirationDate: Date?,
 )

@@ -1,6 +1,5 @@
 package org.cdb.labwitch.models
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.bson.codecs.pojo.annotations.BsonId
 import org.cdb.labwitch.models.embed.Contact
@@ -17,5 +16,5 @@ data class User(
     val name: String,
     val surname: String,
     val roles: Set<Role> = emptySet(),
-    val contacts: List<Contact> = emptyList()
+    val contacts: List<Contact> = emptyList(),
 ) : StoredEntity

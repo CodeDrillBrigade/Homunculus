@@ -8,5 +8,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class AuthResponse(
     val jwt: String,
-    val refreshJwt: String?
+    val refreshJwt: String?,
 )
