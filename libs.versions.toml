@@ -1,0 +1,47 @@
+[versions]
+ktor="2.3.4"
+kotlin="1.9.10"
+logback="1.4.11"
+koin="3.5.0"
+
+[libraries]
+ktorCore = { group = "io.ktor", name ="ktor-server-core-jvm", version.ref="ktor" }
+ktorCors = { group = "io.ktor", name ="ktor-server-cors-jvm", version.ref="ktor" }
+ktorContentNegtiation = { group = "io.ktor", name ="ktor-server-content-negotiation-jvm", version.ref="ktor" }
+ktorLogging = { group = "io.ktor", name ="ktor-server-call-logging-jvm", version.ref="ktor" }
+ktorCio = { group = "io.ktor", name ="ktor-server-cio-jvm", version.ref="ktor" }
+ktorSerialization = { group = "io.ktor", name ="ktor-serialization-kotlinx-json", version.ref="ktor" }
+ktorClientCio = { group = "io.ktor", name ="ktor-client-cio-jvm", version.ref="ktor" }
+ktorClientCore = { group = "io.ktor", name ="ktor-client-core-jvm", version.ref="ktor" }
+ktorClientContentNegotiation = { group = "io.ktor", name ="ktor-client-content-negotiation-jvm", version.ref="ktor" }
+ktorAuth = { group = "io.ktor", name ="ktor-server-auth", version.ref="ktor" }
+ktorAuthJwt = { group = "io.ktor", name ="ktor-server-auth-jwt", version.ref="ktor" }
+ktorStatusPages = { group = "io.ktor", name ="ktor-server-status-pages", version.ref="ktor" }
+
+mongoClient = { group = "org.mongodb", name = "mongodb-driver-kotlin-coroutine", version = "4.11.0" }
+jbCrypt = { group = "org.mindrot", name = "jbcrypt", version = "0.4" }
+koinKtor = { group = "io.insert-koin", name = "koin-ktor", version.ref="koin" }
+koinLogger = { group = "io.insert-koin", name = "koin-logger-slf4j", version.ref="koin" }
+logback = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logback" }
+
+[bundles]
+koin = ["koinKtor", "koinLogger"]
+ktor = [
+    "ktorCore",
+    "ktorCors",
+    "ktorContentNegtiation",
+    "ktorLogging",
+    "ktorCio",
+    "ktorSerialization",
+    "ktorClientCio",
+    "ktorClientCore",
+    "ktorClientContentNegotiation",
+    "ktorAuth",
+    "ktorAuthJwt",
+    "ktorStatusPages",
+]
+
+[plugins]
+ktorPlugin = { id = "io.ktor.plugin", version = "2.3.4" }
+kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version = "1.9.10" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "12.1.0" }

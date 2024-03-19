@@ -1,54 +1,31 @@
-val ktor_version: String by project
-val kotlin_version: String by project
-val logback_version: String by project
-val koin_ktor_version: String by project
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	kotlin("jvm") version "1.9.10"
-	id("io.ktor.plugin") version "2.3.4"
-	id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10"
-	id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
+    kotlin("jvm") version "1.9.10"
+    alias(libs.plugins.ktorPlugin)
+    alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.ktlint)
 }
 
 group = "org.cdb"
 version = "0.0.1"
 
-application {
-	mainClass.set("org.cdb.labwitch.LabWitchAppKt")
+tasks.withType<KotlinCompile> {
+    dependsOn("ktlintFormat")
 }
 
-repositories {
-	mavenCentral()
+application {
+    mainClass.set("org.cdb.labwitch.LabWitchAppKt")
 }
 
 dependencies {
-	implementation("io.ktor:ktor-server-core-jvm")
-	implementation("io.ktor:ktor-server-cors-jvm")
-	implementation("io.ktor:ktor-server-content-negotiation-jvm")
-	implementation("io.ktor:ktor-serialization-jackson-jvm")
-	implementation("io.ktor:ktor-server-call-logging-jvm")
-	implementation("io.ktor:ktor-server-cio-jvm")
-	implementation("io.ktor:ktor-serialization-kotlinx-json")
-
-	implementation("io.ktor:ktor-client-cio-jvm")
-	implementation("io.ktor:ktor-client-core-jvm")
-	implementation("io.ktor:ktor-client-content-negotiation-jvm")
-	implementation("io.ktor:ktor-server-auth")
-	implementation("io.ktor:ktor-server-auth-jwt")
-	implementation("io.ktor:ktor-server-status-pages")
-
-	implementation("org.mongodb:mongodb-driver-kotlin-coroutine:4.11.0")
-	implementation("org.mindrot:jbcrypt:0.4")
-
-	implementation("io.insert-koin:koin-ktor:$koin_ktor_version")
-	implementation("io.insert-koin:koin-logger-slf4j:$koin_ktor_version")
-
-	implementation("ch.qos.logback:logback-classic:$logback_version")
-
-	testImplementation("io.ktor:ktor-server-tests-jvm")
-	testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    implementation(libs.bundles.ktor)
+    implementation(libs.bundles.koin)
+    implementation(libs.mongoClient)
+    implementation(libs.logback)
+    implementation(libs.jbCrypt)
 }
 
 tasks.withType<Test> {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
