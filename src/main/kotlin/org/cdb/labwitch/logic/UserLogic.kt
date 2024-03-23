@@ -2,6 +2,7 @@ package org.cdb.labwitch.logic
 
 import org.cdb.labwitch.models.User
 import org.cdb.labwitch.models.UserCreationData
+import org.cdb.labwitch.models.types.EntityId
 
 interface UserLogic {
     /**
@@ -18,5 +19,5 @@ interface UserLogic {
      * @param userId the id of the [User].
      * @return the [User].
      */
-    suspend fun get(userId: String): User
+    suspend fun get(userId: EntityId): User
 }

@@ -1,7 +1,7 @@
 [versions]
-ktor="2.3.4"
+ktor="2.3.7"
 kotlin="1.9.10"
-logback="1.4.11"
+logback="1.4.14"
 koin="3.5.0"
 
 [libraries]
@@ -19,6 +19,7 @@ ktorAuthJwt = { group = "io.ktor", name ="ktor-server-auth-jwt", version.ref="kt
 ktorStatusPages = { group = "io.ktor", name ="ktor-server-status-pages", version.ref="ktor" }
 
 mongoClient = { group = "org.mongodb", name = "mongodb-driver-kotlin-coroutine", version = "4.11.0" }
+mongoClientSerialization = { group = "org.mongodb", name = "bson-kotlinx", version = "4.10.1" }
 jbCrypt = { group = "org.mindrot", name = "jbcrypt", version = "0.4" }
 koinKtor = { group = "io.insert-koin", name = "koin-ktor", version.ref="koin" }
 koinLogger = { group = "io.insert-koin", name = "koin-logger-slf4j", version.ref="koin" }
@@ -26,6 +27,7 @@ logback = { group = "ch.qos.logback", name = "logback-classic", version.ref = "l
 
 [bundles]
 koin = ["koinKtor", "koinLogger"]
+mongo = ["mongoClient", "mongoClientSerialization"]
 ktor = [
     "ktorCore",
     "ktorCors",

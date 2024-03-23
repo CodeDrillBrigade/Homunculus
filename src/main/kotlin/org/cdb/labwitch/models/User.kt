@@ -1,20 +1,28 @@
 package org.cdb.labwitch.models
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.bson.codecs.pojo.annotations.BsonId
 import org.cdb.labwitch.models.embed.Contact
-import org.cdb.labwitch.models.embed.Role
+import org.cdb.labwitch.models.types.EntityId
 
 /**
  * Describes a user in the system.
+ *
+ * @param id an [EntityId].
+ * @param username the username for the user.
+ * @param passwordHash the hashed and salted password for the user.
+ * @param name the name of the user.
+ * @param surname the surname of the user.
+ * @param roles a [Set] of [EntityId] of roles assigned to this user.
+ * @param contacts a [List] of [Contact]s for the user.
  */
 @Serializable
 data class User(
-    @BsonId override val id: String,
+    @SerialName("_id") override val id: EntityId,
     val username: String,
     val passwordHash: String,
     val name: String,
     val surname: String,
-    val roles: Set<Role> = emptySet(),
+    val roles: Set<EntityId> = emptySet(),
     val contacts: List<Contact> = emptyList(),
 ) : StoredEntity

@@ -4,13 +4,13 @@ import org.cdb.labwitch.dao.MaterialDao
 import org.cdb.labwitch.logic.MaterialLogic
 import org.cdb.labwitch.models.Material
 import org.cdb.labwitch.models.MaterialCreationData
-import java.util.UUID
+import org.cdb.labwitch.models.types.EntityId
 
 class MaterialLogicImpl(private val materialDao: MaterialDao) : MaterialLogic {
     override suspend fun addMaterial(creationData: MaterialCreationData): Material {
         val newMaterial =
             Material(
-                id = UUID.randomUUID().toString(),
+                id = EntityId.generate(),
                 name = creationData.name,
                 boxDefinition = creationData.boxDefinition,
                 brand = creationData.brand,
@@ -25,11 +25,11 @@ class MaterialLogicImpl(private val materialDao: MaterialDao) : MaterialLogic {
         return checkNotNull(materialDao.get(createId)) {
             "Error during retrieval of material"
         }
-    } // fine metodo addMaterial()
+    }
 
-    override suspend fun get(materialId: String): Material {
+    override suspend fun get(materialId: EntityId): Material {
         return requireNotNull(materialDao.get(materialId)) {
             "Material not found"
         }
-    } // fine metodo get()
-} // fine MaterialLogicImpl
+    }
+}

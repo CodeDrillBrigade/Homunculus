@@ -21,7 +21,7 @@ application {
 dependencies {
     implementation(libs.bundles.ktor)
     implementation(libs.bundles.koin)
-    implementation(libs.mongoClient)
+    implementation(libs.bundles.mongo)
     implementation(libs.logback)
     implementation(libs.jbCrypt)
 }

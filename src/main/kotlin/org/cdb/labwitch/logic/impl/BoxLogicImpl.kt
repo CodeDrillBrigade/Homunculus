@@ -4,13 +4,13 @@ import org.cdb.labwitch.dao.BoxDao
 import org.cdb.labwitch.logic.BoxLogic
 import org.cdb.labwitch.models.Box
 import org.cdb.labwitch.models.BoxCreationData
-import java.util.UUID
+import org.cdb.labwitch.models.types.EntityId
 
 class BoxLogicImpl(private val boxDao: BoxDao) : BoxLogic {
     override suspend fun addBox(boxCreationData: BoxCreationData): Box {
         val newBox =
             Box(
-                id = UUID.randomUUID().toString(),
+                id = EntityId.generate(),
                 materialName = boxCreationData.materialName,
                 quantity = boxCreationData.quantity,
                 metric = boxCreationData.metric,
@@ -19,6 +19,7 @@ class BoxLogicImpl(private val boxDao: BoxDao) : BoxLogic {
                 status = boxCreationData.status,
                 position = boxCreationData.position,
                 expirationDate = boxCreationData.expirationDate,
+                usageLog = sortedSetOf(),
             )
         val createId =
             checkNotNull(boxDao.save(newBox)) {
@@ -27,11 +28,11 @@ class BoxLogicImpl(private val boxDao: BoxDao) : BoxLogic {
         return checkNotNull(boxDao.get(createId)) {
             "Error during retrieval of box"
         }
-    } // fine metodo addBox()
+    }
 
-    override suspend fun get(boxId: String): Box {
+    override suspend fun get(boxId: EntityId): Box {
         return requireNotNull(boxDao.get(boxId)) {
             "Box not found"
         }
-    } // fine metodo get()
+    }
 }

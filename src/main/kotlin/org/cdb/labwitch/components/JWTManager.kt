@@ -10,6 +10,8 @@ import org.cdb.labwitch.exceptions.UnauthorizedException
 import org.cdb.labwitch.models.config.JWTConfig
 import org.cdb.labwitch.models.security.JWTClaims
 import org.cdb.labwitch.models.security.JWTRefreshClaims
+import org.cdb.labwitch.models.types.EntityId
+import org.cdb.labwitch.utils.DynamicBitArray
 import java.util.*
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
@@ -22,6 +24,7 @@ class JWTManager(
 ) {
     companion object {
         const val USER_ID = "uId"
+        const val PERMISSIONS = "p"
         private val authJWTDuration = 1L.hours.inWholeMilliseconds
         private val refreshJWTDuration = 30L.days.inWholeMilliseconds
     }
@@ -37,7 +40,8 @@ class JWTManager(
         JWT.create()
             .withAudience(config.audience)
             .withIssuer(config.issuer)
-            .withClaim(USER_ID, jwtClaims.userId)
+            .withClaim(USER_ID, jwtClaims.userId.id)
+            .withClaim(PERMISSIONS, jwtClaims.permissions.toBase64String())
             .withExpiresAt(Date(System.currentTimeMillis() + authJWTDuration))
             .sign(Algorithm.HMAC256(config.authSecret))
 
@@ -52,7 +56,7 @@ class JWTManager(
         JWT.create()
             .withAudience(config.audience)
             .withIssuer(config.issuer)
-            .withClaim(USER_ID, jwtClaims.userId)
+            .withClaim(USER_ID, jwtClaims.userId.id)
             .withExpiresAt(Date(System.currentTimeMillis() + refreshJWTDuration))
             .sign(Algorithm.HMAC256(config.refreshSecret))
 
@@ -115,7 +119,8 @@ class JWTManager(
 fun Payload.toJWTClaims(): JWTClaims =
     try {
         JWTClaims(
-            userId = getClaim(JWTManager.USER_ID).asString(),
+            userId = EntityId(getClaim(JWTManager.USER_ID).asString()),
+            permissions = DynamicBitArray.fromBase64String(getClaim(JWTManager.PERMISSIONS).asString()),
         )
     } catch (e: Exception) {
         throw JWTException(e.message ?: "Wrong JWT format")
@@ -131,7 +136,7 @@ fun Payload.toJWTClaims(): JWTClaims =
 fun Payload.toJWTRefreshClaims(): JWTRefreshClaims =
     try {
         JWTRefreshClaims(
-            userId = getClaim(JWTManager.USER_ID).asString(),
+            userId = EntityId(getClaim(JWTManager.USER_ID).asString()),
         )
     } catch (e: Exception) {
         throw JWTException(e.message ?: "Wrong JWT format")

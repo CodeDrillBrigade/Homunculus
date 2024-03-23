@@ -1,6 +1,7 @@
 package org.cdb.labwitch.models
 
 import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.cdb.labwitch.models.embed.Metric
 import org.cdb.labwitch.models.embed.Status
@@ -9,7 +10,7 @@ import java.util.Date
 
 @Serializable
 data class BoxCreationData(
-    val id: String,
+    @SerialName("_id") val id: String,
     val materialName: String,
     val quantity: Int,
     val metric: Metric,

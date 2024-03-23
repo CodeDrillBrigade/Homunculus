@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import org.bson.conversions.Bson
 import org.cdb.labwitch.components.DBClient
 import org.cdb.labwitch.models.StoredEntity
+import org.cdb.labwitch.models.types.EntityId
 
 /**
  * Defines all the generic operations that a DAO should implement.
@@ -30,7 +31,7 @@ abstract class GenericDao<T : StoredEntity>(
      * Creates a new entity [T] in the database.
      *
      * @param entity a [T] to create.
-     * @return the entity id, if successfully created
+     * @return the [EntityId], if successfully created
      */
-    suspend fun save(entity: T): String? = collection.insertOne(entity).insertedId?.asString()?.value
+    suspend fun save(entity: T): EntityId? = collection.insertOne(entity).insertedId?.asString()?.value?.let { EntityId(it) }
 }

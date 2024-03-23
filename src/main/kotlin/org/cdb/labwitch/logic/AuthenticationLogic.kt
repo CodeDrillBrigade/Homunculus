@@ -1,6 +1,7 @@
 package org.cdb.labwitch.logic
 
 import org.cdb.labwitch.models.security.AuthResponse
+import org.cdb.labwitch.models.types.EntityId
 
 /**
  * Defines the operation to authenticate and de-authenticate a user.
@@ -25,5 +26,5 @@ interface AuthenticationLogic {
      * @param username the username.
      * @return an [AuthResponse] with a null [AuthResponse.refreshJwt].
      */
-    suspend fun refresh(username: String): AuthResponse
+    suspend fun refresh(username: EntityId): AuthResponse
 }

@@ -1,6 +1,6 @@
 package org.cdb.labwitch.models
 
-import org.cdb.labwitch.utils.UserId
+import org.cdb.labwitch.models.types.UserId
 import java.util.Date
 
 /**

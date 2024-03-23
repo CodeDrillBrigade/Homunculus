@@ -2,6 +2,7 @@ package org.cdb.labwitch.logic
 
 import org.cdb.labwitch.models.Box
 import org.cdb.labwitch.models.BoxCreationData
+import org.cdb.labwitch.models.types.EntityId
 
 interface BoxLogic {
     /**
@@ -15,8 +16,8 @@ interface BoxLogic {
     /**
      * Retrieves a [Box] via ID
      *
-     * @param [boxId] the id of the box to search
+     * @param [boxId] the [EntityId] of the box to search
      * @return the searched [Box]
      * */
-    suspend fun get(boxId: String): Box
+    suspend fun get(boxId: EntityId): Box
 }

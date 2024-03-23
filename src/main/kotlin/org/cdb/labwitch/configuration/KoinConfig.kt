@@ -5,7 +5,9 @@ import org.cdb.labwitch.components.DBClient
 import org.cdb.labwitch.components.JWTManager
 import org.cdb.labwitch.components.PasswordEncoder
 import org.cdb.labwitch.components.impl.BCryptPasswordEncoder
+import org.cdb.labwitch.dao.RoleDao
 import org.cdb.labwitch.dao.UserDao
+import org.cdb.labwitch.dao.impl.RoleDaoImpl
 import org.cdb.labwitch.dao.impl.UserDaoImpl
 import org.cdb.labwitch.logic.AuthenticationLogic
 import org.cdb.labwitch.logic.UserLogic
@@ -25,8 +27,9 @@ fun applicationModules(
     single<DBClient> { DBClient(dbCredentials) }
     single<PasswordEncoder> { BCryptPasswordEncoder() }
     single<UserDao> { UserDaoImpl(get()) }
+    single<RoleDao> { RoleDaoImpl(get()) }
     single<UserLogic> { UserLogicImpl(get(), get()) }
-    single<AuthenticationLogic> { AuthenticationLogicImpl(get(), get(), get()) }
+    single<AuthenticationLogic> { AuthenticationLogicImpl(get(), get(), get(), get()) }
 }
 
 /**

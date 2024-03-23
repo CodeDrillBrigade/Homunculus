@@ -5,7 +5,7 @@ import org.cdb.labwitch.dao.UserDao
 import org.cdb.labwitch.logic.UserLogic
 import org.cdb.labwitch.models.User
 import org.cdb.labwitch.models.UserCreationData
-import java.util.UUID
+import org.cdb.labwitch.models.types.EntityId
 
 class UserLogicImpl(
     private val userDao: UserDao,
@@ -14,7 +14,7 @@ class UserLogicImpl(
     override suspend fun registerUser(creationData: UserCreationData): User {
         val userToCreate =
             User(
-                id = UUID.randomUUID().toString(),
+                id = EntityId.generate(),
                 passwordHash = passwordEncoder.hashAndSaltPassword(creationData.password),
                 username = creationData.username,
                 name = creationData.name,
@@ -28,7 +28,7 @@ class UserLogicImpl(
         return checkNotNull(userDao.get(createdId)) { "User retrieval failed" }
     }
 
-    override suspend fun get(userId: String): User =
+    override suspend fun get(userId: EntityId): User =
         requireNotNull(userDao.get(userId)) {
             "User is not found"
         }
