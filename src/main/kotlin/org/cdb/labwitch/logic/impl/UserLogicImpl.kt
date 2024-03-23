@@ -5,7 +5,7 @@ import org.cdb.labwitch.dao.UserDao
 import org.cdb.labwitch.logic.UserLogic
 import org.cdb.labwitch.models.User
 import org.cdb.labwitch.models.UserCreationData
-import org.cdb.labwitch.models.types.EntityId
+import org.cdb.labwitch.models.identifiers.EntityId
 
 class UserLogicImpl(
     private val userDao: UserDao,

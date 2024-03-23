@@ -2,7 +2,7 @@ package org.cdb.labwitch.logic
 
 import org.cdb.labwitch.models.Box
 import org.cdb.labwitch.models.BoxCreationData
-import org.cdb.labwitch.models.types.EntityId
+import org.cdb.labwitch.models.identifiers.EntityId
 
 interface BoxLogic {
     /**

@@ -7,10 +7,10 @@ import org.cdb.labwitch.dao.UserDao
 import org.cdb.labwitch.exceptions.NotFoundException
 import org.cdb.labwitch.logic.AuthenticationLogic
 import org.cdb.labwitch.models.User
+import org.cdb.labwitch.models.identifiers.EntityId
 import org.cdb.labwitch.models.security.AuthResponse
 import org.cdb.labwitch.models.security.JWTClaims
 import org.cdb.labwitch.models.security.JWTRefreshClaims
-import org.cdb.labwitch.models.types.EntityId
 import org.cdb.labwitch.utils.DynamicBitArray
 
 class AuthenticationLogicImpl(

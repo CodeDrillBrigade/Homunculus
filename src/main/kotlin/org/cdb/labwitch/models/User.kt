@@ -3,7 +3,7 @@ package org.cdb.labwitch.models
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.cdb.labwitch.models.embed.Contact
-import org.cdb.labwitch.models.types.EntityId
+import org.cdb.labwitch.models.identifiers.EntityId
 
 /**
  * Describes a user in the system.

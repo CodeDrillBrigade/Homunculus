@@ -1,11 +1,11 @@
-package org.cdb.labwitch.models.types
+package org.cdb.labwitch.models.identifiers
 
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
 @JvmInline
 @Serializable
-value class EntityId(val id: String) {
+value class EntityId(override val id: String) : Identifier {
     companion object {
         private val uuidRegex = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\$".toRegex()
 

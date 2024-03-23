@@ -6,7 +6,7 @@ import org.cdb.labwitch.models.embed.Metric
 import org.cdb.labwitch.models.embed.Status
 import org.cdb.labwitch.models.embed.SubUnit
 import org.cdb.labwitch.models.embed.UsageLog
-import org.cdb.labwitch.models.types.EntityId
+import org.cdb.labwitch.models.identifiers.EntityId
 import java.util.Date
 import java.util.SortedSet
 

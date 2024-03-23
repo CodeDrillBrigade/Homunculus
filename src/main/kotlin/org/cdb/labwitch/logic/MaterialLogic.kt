@@ -2,7 +2,7 @@ package org.cdb.labwitch.logic
 
 import org.cdb.labwitch.models.Material
 import org.cdb.labwitch.models.MaterialCreationData
-import org.cdb.labwitch.models.types.EntityId
+import org.cdb.labwitch.models.identifiers.EntityId
 
 interface MaterialLogic {
     /**

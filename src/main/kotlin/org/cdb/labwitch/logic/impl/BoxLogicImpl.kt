@@ -4,7 +4,7 @@ import org.cdb.labwitch.dao.BoxDao
 import org.cdb.labwitch.logic.BoxLogic
 import org.cdb.labwitch.models.Box
 import org.cdb.labwitch.models.BoxCreationData
-import org.cdb.labwitch.models.types.EntityId
+import org.cdb.labwitch.models.identifiers.EntityId
 
 class BoxLogicImpl(private val boxDao: BoxDao) : BoxLogic {
     override suspend fun addBox(boxCreationData: BoxCreationData): Box {

@@ -1,6 +1,9 @@
 package org.cdb.labwitch.models.types
 
+import kotlinx.serialization.Serializable
+
 @JvmInline
+@Serializable
 value class ShortText(val text: String) {
     init {
         require(text.length <= 300) {

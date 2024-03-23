@@ -1,6 +1,6 @@
 package org.cdb.labwitch.models.security
 
-import org.cdb.labwitch.models.types.EntityId
+import org.cdb.labwitch.models.identifiers.EntityId
 import org.cdb.labwitch.utils.DynamicBitArray
 
 /**

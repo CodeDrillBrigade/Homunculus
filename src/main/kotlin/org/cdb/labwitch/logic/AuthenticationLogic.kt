@@ -1,7 +1,7 @@
 package org.cdb.labwitch.logic
 
+import org.cdb.labwitch.models.identifiers.EntityId
 import org.cdb.labwitch.models.security.AuthResponse
-import org.cdb.labwitch.models.types.EntityId
 
 /**
  * Defines the operation to authenticate and de-authenticate a user.

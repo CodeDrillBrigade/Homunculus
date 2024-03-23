@@ -4,7 +4,7 @@ import org.cdb.labwitch.dao.MaterialDao
 import org.cdb.labwitch.logic.MaterialLogic
 import org.cdb.labwitch.models.Material
 import org.cdb.labwitch.models.MaterialCreationData
-import org.cdb.labwitch.models.types.EntityId
+import org.cdb.labwitch.models.identifiers.EntityId
 
 class MaterialLogicImpl(private val materialDao: MaterialDao) : MaterialLogic {
     override suspend fun addMaterial(creationData: MaterialCreationData): Material {

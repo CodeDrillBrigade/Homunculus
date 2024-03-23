@@ -1,14 +1,14 @@
 package org.cdb.labwitch.controller
 
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.cdb.labwitch.logic.UserLogic
 import org.cdb.labwitch.models.UserCreationData
-import org.cdb.labwitch.utils.authenticatedGet
+import org.cdb.labwitch.models.security.Permissions
+import org.cdb.labwitch.requests.authenticatedGet
+import org.cdb.labwitch.requests.authenticatedPost
 import org.koin.ktor.ext.inject
 
 fun Routing.userController() =
@@ -19,7 +19,7 @@ fun Routing.userController() =
             call.respond(userLogic.get(it.userId).copy(passwordHash = "*"))
         }
 
-        post("") {
+        authenticatedPost("", permissions = setOf(Permissions.ADMIN)) {
             val creationData = call.receive<UserCreationData>()
             val createdUser = userLogic.registerUser(creationData).copy(passwordHash = "*")
             call.respond(createdUser)

@@ -3,8 +3,8 @@ package org.cdb.labwitch.models.embed
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.cdb.labwitch.models.StoredEntity
+import org.cdb.labwitch.models.identifiers.EntityId
 import org.cdb.labwitch.models.security.Permissions
-import org.cdb.labwitch.models.types.EntityId
 
 /**
  * Defines a role in the system,

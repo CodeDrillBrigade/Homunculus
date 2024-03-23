@@ -8,9 +8,9 @@ import io.ktor.server.auth.jwt.*
 import org.cdb.labwitch.exceptions.JWTException
 import org.cdb.labwitch.exceptions.UnauthorizedException
 import org.cdb.labwitch.models.config.JWTConfig
+import org.cdb.labwitch.models.identifiers.EntityId
 import org.cdb.labwitch.models.security.JWTClaims
 import org.cdb.labwitch.models.security.JWTRefreshClaims
-import org.cdb.labwitch.models.types.EntityId
 import org.cdb.labwitch.utils.DynamicBitArray
 import java.util.*
 import kotlin.time.Duration.Companion.days
