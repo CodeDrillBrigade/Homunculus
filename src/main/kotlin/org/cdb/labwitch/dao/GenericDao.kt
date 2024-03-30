@@ -1,5 +1,6 @@
 package org.cdb.labwitch.dao
 
+import com.mongodb.client.model.Filters
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -52,4 +53,12 @@ abstract class GenericDao<T : StoredEntity>(
     suspend fun save(entity: T): Identifier =
         collection.insertOne(entity).insertedId?.asString()?.value?.let { wrapIdentifier(it) }
             ?: throw IllegalStateException("There was an error while creating the entity.")
+
+    /**
+     * Replace an existing entity [T] in the database with the version passed as parameter.
+     *
+     * @param entity the new version of the entity [T].
+     * @return the updated entity, if the operation was successful, and false otherwise.
+     */
+    suspend fun update(entity: T): T? = collection.findOneAndReplace(Filters.eq("_id", entity.id), entity)
 }
