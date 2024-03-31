@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed interface Identifier {
-    val id: String
+	val id: String
 }

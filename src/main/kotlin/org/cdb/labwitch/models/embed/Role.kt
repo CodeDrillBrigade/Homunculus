@@ -11,8 +11,8 @@ import org.cdb.labwitch.models.security.Permissions
  */
 @Serializable
 data class Role(
-    @SerialName("_id") override val id: EntityId,
-    val name: String,
-    val description: String,
-    val permissions: Set<Permissions>,
+	@SerialName("_id") override val id: EntityId,
+	val name: String,
+	val description: String,
+	val permissions: Set<Permissions>,
 ) : StoredEntity

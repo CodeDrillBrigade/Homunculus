@@ -7,11 +7,15 @@ import org.cdb.labwitch.models.identifiers.EntityId
 import org.cdb.labwitch.models.identifiers.Identifier
 
 abstract class MaterialDao(client: DBClient) : GenericDao<Material>(client) {
-    override val collection: MongoCollection<Material> = client.getCollection()
+	override val collection: MongoCollection<Material> = client.getCollection()
 
-    override fun wrapIdentifier(id: String): EntityId = EntityId(id)
+	override fun wrapIdentifier(id: String): EntityId = EntityId(id)
 
-    abstract suspend fun get(id: Identifier): Material?
-
-    abstract suspend fun getByName(name: String): Material?
+	/**
+	 * Retrieves a [Material] by id.
+	 *
+	 * @param id the [EntityId] of the [Material] to retrieve.
+	 * @return the [Material], if one exists with the specified id, and null otherwise.
+	 */
+	abstract suspend fun get(id: Identifier): Material?
 }

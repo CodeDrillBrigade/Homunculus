@@ -11,14 +11,14 @@ import java.util.Date
 import java.util.SortedSet
 
 data class Box(
-    @SerialName("_id") override val id: EntityId,
-    val materialName: String,
-    val quantity: Int,
-    val metric: Metric,
-    val note: String?,
-    val subUnit: SubUnit?,
-    val status: Status,
-    val position: Int,
-    val expirationDate: Date?,
-    val usageLog: SortedSet<UsageLog>,
+	@SerialName("_id") override val id: EntityId,
+	val materialName: String,
+	val quantity: Int,
+	val metric: Metric,
+	val note: String?,
+	val subUnit: SubUnit?,
+	val status: Status,
+	val position: Int,
+	val expirationDate: Date?,
+	val usageLog: SortedSet<UsageLog>,
 ) : StoredEntity

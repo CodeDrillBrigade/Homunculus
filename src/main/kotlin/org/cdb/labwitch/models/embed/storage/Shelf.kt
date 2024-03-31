@@ -11,6 +11,6 @@ import org.cdb.labwitch.models.identifiers.ShortId
  */
 @Serializable
 data class Shelf(
-    val id: ShortId = ShortId.generate(),
-    val name: String,
+	val id: ShortId = ShortId.generate(),
+	val name: String,
 )

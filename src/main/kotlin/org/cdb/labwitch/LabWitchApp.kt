@@ -10,8 +10,8 @@ fun main(args: Array<String>) = io.ktor.server.cio.EngineMain.main(args)
 
 @Suppress("unused")
 fun Application.module() {
-    configureHTTP()
-    configureKoin()
-    configureRouting()
-    configureExceptions()
+	configureHTTP()
+	configureKoin()
+	configureRouting()
+	configureExceptions()
 }

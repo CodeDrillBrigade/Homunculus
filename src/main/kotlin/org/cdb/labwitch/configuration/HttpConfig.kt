@@ -18,49 +18,49 @@ const val REFRESH_CTX = "refresh-ctx"
  * @receiver a ktor [Application]
  */
 fun Application.configureHTTP() {
-    install(CORS) {
-        allowMethod(HttpMethod.Options)
-        allowMethod(HttpMethod.Get)
-        allowMethod(HttpMethod.Post)
-        allowMethod(HttpMethod.Put)
-        allowMethod(HttpMethod.Delete)
-        allowMethod(HttpMethod.Patch)
+	install(CORS) {
+		allowMethod(HttpMethod.Options)
+		allowMethod(HttpMethod.Get)
+		allowMethod(HttpMethod.Post)
+		allowMethod(HttpMethod.Put)
+		allowMethod(HttpMethod.Delete)
+		allowMethod(HttpMethod.Patch)
 
-        allowHeader(HttpHeaders.AccessControlAllowHeaders)
-        allowHeader(HttpHeaders.ContentType)
-        allowHeader(HttpHeaders.AccessControlAllowOrigin)
-        allowHeader(HttpHeaders.Authorization)
+		allowHeader(HttpHeaders.AccessControlAllowHeaders)
+		allowHeader(HttpHeaders.ContentType)
+		allowHeader(HttpHeaders.AccessControlAllowOrigin)
+		allowHeader(HttpHeaders.Authorization)
 
-        anyHost()
-    }
+		anyHost()
+	}
 
-    val jwtConfig = JWTConfig.fromConfig(environment.config)
-    val jwtManager = JWTManager(jwtConfig)
-    install(Authentication) {
-        jwt(AUTH_CTX) {
-            realm = jwtManager.config.realm
-            verifier(jwtManager.authJWTVerifier())
+	val jwtConfig = JWTConfig.fromConfig(environment.config)
+	val jwtManager = JWTManager(jwtConfig)
+	install(Authentication) {
+		jwt(AUTH_CTX) {
+			realm = jwtManager.config.realm
+			verifier(jwtManager.authJWTVerifier())
 
-            validate { credential ->
-                jwtManager.credentialToPrincipal(credential)
-            }
+			validate { credential ->
+				jwtManager.credentialToPrincipal(credential)
+			}
 
-            challenge { defaultScheme, realm ->
-                call.respond(HttpStatusCode.Unauthorized, "Token is not valid or has expired")
-            }
-        }
+			challenge { defaultScheme, realm ->
+				call.respond(HttpStatusCode.Unauthorized, "Token is not valid or has expired")
+			}
+		}
 
-        jwt(REFRESH_CTX) {
-            realm = jwtManager.config.realm
-            verifier(jwtManager.refreshJWTVerifier())
+		jwt(REFRESH_CTX) {
+			realm = jwtManager.config.realm
+			verifier(jwtManager.refreshJWTVerifier())
 
-            validate { credential ->
-                jwtManager.refreshCredentialToPrincipal(credential)
-            }
+			validate { credential ->
+				jwtManager.refreshCredentialToPrincipal(credential)
+			}
 
-            challenge { defaultScheme, realm ->
-                call.respond(HttpStatusCode.Unauthorized, "Token is not valid or has expired")
-            }
-        }
-    }
+			challenge { defaultScheme, realm ->
+				call.respond(HttpStatusCode.Unauthorized, "Token is not valid or has expired")
+			}
+		}
+	}
 }

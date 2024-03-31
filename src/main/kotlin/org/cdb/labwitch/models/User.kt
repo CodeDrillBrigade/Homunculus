@@ -18,11 +18,11 @@ import org.cdb.labwitch.models.identifiers.EntityId
  */
 @Serializable
 data class User(
-    @SerialName("_id") override val id: EntityId,
-    val username: String,
-    val passwordHash: String,
-    val name: String,
-    val surname: String,
-    val roles: Set<EntityId> = emptySet(),
-    val contacts: List<Contact> = emptyList(),
+	@SerialName("_id") override val id: EntityId,
+	val username: String,
+	val passwordHash: String,
+	val name: String,
+	val surname: String,
+	val roles: Set<EntityId> = emptySet(),
+	val contacts: List<Contact> = emptyList(),
 ) : StoredEntity

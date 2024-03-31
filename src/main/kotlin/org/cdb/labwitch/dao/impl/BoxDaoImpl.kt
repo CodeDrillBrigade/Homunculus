@@ -7,11 +7,11 @@ import org.cdb.labwitch.models.Box
 import org.cdb.labwitch.models.identifiers.Identifier
 
 class BoxDaoImpl(client: DBClient) : BoxDao(client) {
-    override suspend fun get(id: Identifier): Box? {
-        return get(eq("_id", id.id))
-    }
+	override suspend fun get(id: Identifier): Box? {
+		return get(eq("_id", id.id))
+	}
 
-    override suspend fun getByMaterial(materialName: String): Box? {
-        return get(eq(Box::materialName.name, materialName))
-    }
+	override suspend fun getByMaterial(materialName: String): Box? {
+		return get(eq(Box::materialName.name, materialName))
+	}
 }

@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 enum class Permissions(val index: Int) {
-    ADMIN(0),
-    MANAGE_STORAGE(1),
+	ADMIN(0),
+	MANAGE_STORAGE(1),
+	MANAGE_MATERIALS(2),
 }

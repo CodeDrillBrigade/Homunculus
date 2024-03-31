@@ -16,8 +16,8 @@ import org.cdb.labwitch.models.types.ShortText
  */
 @Serializable
 data class Cabinet(
-    val id: ShortId = ShortId.generate(),
-    val name: String,
-    val description: ShortText? = null,
-    val shelves: List<Shelf> = emptyList(),
+	val id: ShortId = ShortId.generate(),
+	val name: String,
+	val description: ShortText? = null,
+	val shelves: List<Shelf> = emptyList(),
 )

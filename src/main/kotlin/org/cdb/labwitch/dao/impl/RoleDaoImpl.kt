@@ -7,5 +7,5 @@ import org.cdb.labwitch.models.embed.Role
 import org.cdb.labwitch.models.identifiers.Identifier
 
 class RoleDaoImpl(client: DBClient) : RoleDao(client) {
-    override suspend fun get(id: Identifier): Role? = get(Filters.eq("_id", id.id))
+	override suspend fun get(id: Identifier): Role? = get(Filters.eq("_id", id.id))
 }

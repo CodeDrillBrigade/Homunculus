@@ -16,28 +16,28 @@ import org.cdb.labwitch.requests.authenticatedPost
 import org.koin.ktor.ext.inject
 
 fun Routing.storageController() =
-    route("/storage") {
-        val storageLogic by inject<StorageLogic>()
+	route("/storage") {
+		val storageLogic by inject<StorageLogic>()
 
-        authenticatedGet("") {
-            call.respond(storageLogic.getAll().toList())
-        }
+		authenticatedGet("") {
+			call.respond(storageLogic.getAll().toList())
+		}
 
-        authenticatedPost("", permissions = setOf(Permissions.MANAGE_STORAGE)) {
-            val storageToCreate = call.receive<StorageRoom>()
-            call.respond(storageLogic.create(storageToCreate))
-        }
+		authenticatedPost("", permissions = setOf(Permissions.MANAGE_STORAGE)) {
+			val storageToCreate = call.receive<StorageRoom>()
+			call.respond(storageLogic.create(storageToCreate))
+		}
 
-        authenticatedPost("/{storageRoomId}/cabinet", permissions = setOf(Permissions.MANAGE_STORAGE)) {
-            val storageRoomId = checkNotNull(call.parameters["storageRoomId"]) { "Storage Room Id must not be null" }
-            val cabinetToCreate = call.receive<Cabinet>()
-            call.respond(storageLogic.addCabinet(ShortId(storageRoomId), cabinetToCreate))
-        }
+		authenticatedPost("/{storageRoomId}/cabinet", permissions = setOf(Permissions.MANAGE_STORAGE)) {
+			val storageRoomId = checkNotNull(call.parameters["storageRoomId"]) { "Storage Room Id must not be null" }
+			val cabinetToCreate = call.receive<Cabinet>()
+			call.respond(storageLogic.addCabinet(ShortId(storageRoomId), cabinetToCreate))
+		}
 
-        authenticatedPost("/{storageRoomId}/cabinet/{cabinetId}/shelf", permissions = setOf(Permissions.MANAGE_STORAGE)) {
-            val storageRoomId = checkNotNull(call.parameters["storageRoomId"]) { "Storage Room Id must not be null" }
-            val cabinetId = checkNotNull(call.parameters["cabinetId"]) { "Cabinet Id must not be null" }
-            val shelfToCreate = call.receive<Shelf>()
-            call.respond(storageLogic.addShelf(ShortId(storageRoomId), ShortId(cabinetId), shelfToCreate))
-        }
-    }
+		authenticatedPost("/{storageRoomId}/cabinet/{cabinetId}/shelf", permissions = setOf(Permissions.MANAGE_STORAGE)) {
+			val storageRoomId = checkNotNull(call.parameters["storageRoomId"]) { "Storage Room Id must not be null" }
+			val cabinetId = checkNotNull(call.parameters["cabinetId"]) { "Cabinet Id must not be null" }
+			val shelfToCreate = call.receive<Shelf>()
+			call.respond(storageLogic.addShelf(ShortId(storageRoomId), ShortId(cabinetId), shelfToCreate))
+		}
+	}

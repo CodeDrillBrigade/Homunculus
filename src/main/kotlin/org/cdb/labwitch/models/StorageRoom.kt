@@ -17,8 +17,8 @@ import org.cdb.labwitch.models.types.ShortText
  */
 @Serializable
 data class StorageRoom(
-    @SerialName("_id") override val id: ShortId = ShortId.generate(),
-    val name: String,
-    val description: ShortText? = null,
-    val cabinets: List<Cabinet> = emptyList(),
+	@SerialName("_id") override val id: ShortId = ShortId.generate(),
+	val name: String,
+	val description: ShortText? = null,
+	val cabinets: List<Cabinet> = emptyList(),
 ) : StoredEntity

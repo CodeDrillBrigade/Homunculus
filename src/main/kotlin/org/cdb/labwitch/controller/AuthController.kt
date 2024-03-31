@@ -14,20 +14,20 @@ import org.cdb.labwitch.models.security.AuthCredentials
 import org.koin.ktor.ext.inject
 
 fun Routing.authController() =
-    route("/auth") {
-        val authLogic by inject<AuthenticationLogic>()
+	route("/auth") {
+		val authLogic by inject<AuthenticationLogic>()
 
-        post("/login") {
-            val credentials = call.receive<AuthCredentials>()
-            call.respond(authLogic.login(credentials.username, credentials.password))
-        }
+		post("/login") {
+			val credentials = call.receive<AuthCredentials>()
+			call.respond(authLogic.login(credentials.username, credentials.password))
+		}
 
-        authenticate(REFRESH_CTX) {
-            post("/refresh") {
-                val claims =
-                    call.principal<JWTPrincipal>()?.payload?.toJWTRefreshClaims()
-                        ?: throw JWTException("No JWT passed in the request")
-                call.respond(authLogic.refresh(claims.userId))
-            }
-        }
-    }
+		authenticate(REFRESH_CTX) {
+			post("/refresh") {
+				val claims =
+					call.principal<JWTPrincipal>()?.payload?.toJWTRefreshClaims()
+						?: throw JWTException("No JWT passed in the request")
+				call.respond(authLogic.refresh(claims.userId))
+			}
+		}
+	}

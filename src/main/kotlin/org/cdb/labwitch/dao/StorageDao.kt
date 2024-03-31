@@ -7,15 +7,15 @@ import org.cdb.labwitch.models.identifiers.Identifier
 import org.cdb.labwitch.models.identifiers.ShortId
 
 abstract class StorageDao(client: DBClient) : GenericDao<StorageRoom>(client) {
-    override val collection: MongoCollection<StorageRoom> = client.getCollection()
+	override val collection: MongoCollection<StorageRoom> = client.getCollection()
 
-    override fun wrapIdentifier(id: String): ShortId = ShortId(id)
+	override fun wrapIdentifier(id: String): ShortId = ShortId(id)
 
-    /**
-     * Retrieves a [StorageRoom] by id.
-     *
-     * @param id the [ShortId] of the [StorageRoom] to retrieve.
-     * @return the [StorageRoom], if one exists with the specified id, and null otherwise.
-     */
-    abstract suspend fun get(id: Identifier): StorageRoom?
+	/**
+	 * Retrieves a [StorageRoom] by id.
+	 *
+	 * @param id the [ShortId] of the [StorageRoom] to retrieve.
+	 * @return the [StorageRoom], if one exists with the specified id, and null otherwise.
+	 */
+	abstract suspend fun get(id: Identifier): StorageRoom?
 }

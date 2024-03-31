@@ -7,5 +7,5 @@ import org.cdb.labwitch.models.StorageRoom
 import org.cdb.labwitch.models.identifiers.Identifier
 
 class StorageDaoImpl(client: DBClient) : StorageDao(client) {
-    override suspend fun get(id: Identifier): StorageRoom? = get(Filters.eq("_id", id.id))
+	override suspend fun get(id: Identifier): StorageRoom? = get(Filters.eq("_id", id.id))
 }

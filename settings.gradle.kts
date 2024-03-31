@@ -1,23 +1,23 @@
 pluginManagement {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
-        mavenCentral()
-    }
+	repositories {
+		mavenLocal()
+		gradlePluginPortal()
+		mavenCentral()
+	}
 }
 
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
-    repositories {
-        mavenLocal()
-        mavenCentral()
-    }
+	repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+	repositories {
+		mavenLocal()
+		mavenCentral()
+	}
 
-    versionCatalogs {
-        create("libs") {
-            from(files("./libs.versions.toml"))
-        }
-    }
+	versionCatalogs {
+		create("libs") {
+			from(files("./libs.versions.toml"))
+		}
+	}
 }
 
 rootProject.name = "demo"

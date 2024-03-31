@@ -10,5 +10,5 @@ import org.cdb.labwitch.models.identifiers.Identifier
  * @param id a unique [EntityId].
  */
 interface StoredEntity {
-    val id: Identifier
+	val id: Identifier
 }

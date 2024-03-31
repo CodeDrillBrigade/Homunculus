@@ -8,5 +8,5 @@ import java.util.Date
  * entity.
  */
 interface Traceable : StoredEntity {
-    val modificationLog: Map<Date, UserId>
+	val modificationLog: Map<Date, UserId>
 }
