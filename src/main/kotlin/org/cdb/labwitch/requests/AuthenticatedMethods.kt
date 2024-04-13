@@ -69,3 +69,18 @@ fun Route.authenticatedDelete(
 			checkPermissionsAndExecute(permissions, block)
 		}
 	}
+
+/**
+ * Extends the default behaviour of [put] by automatically parsing the payload of the JWT from the principal.
+ */
+fun Route.authenticatedPut(
+	path: String,
+	ctx: String = AUTH_CTX,
+	permissions: Set<Permissions> = emptySet(),
+	block: suspend PipelineContext<Unit, ApplicationCall>.(JWTClaims) -> Unit,
+): Route =
+	authenticate(ctx) {
+		put(path) {
+			checkPermissionsAndExecute(permissions, block)
+		}
+	}

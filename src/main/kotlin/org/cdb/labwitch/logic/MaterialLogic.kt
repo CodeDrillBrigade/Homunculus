@@ -1,5 +1,6 @@
 package org.cdb.labwitch.logic
 
+import kotlinx.coroutines.flow.Flow
 import org.cdb.labwitch.models.Material
 import org.cdb.labwitch.models.identifiers.EntityId
 import org.cdb.labwitch.models.identifiers.Identifier
@@ -23,4 +24,11 @@ interface MaterialLogic {
 	 * @throws NotFoundException if no [Material] exists with the specified id.
 	 */
 	suspend fun get(materialId: EntityId): Material
+
+	/**
+	 * Retrieves all the [Material]s in the database.
+	 *
+	 * @return a [Flow] of [Material].
+	 */
+	fun getAll(): Flow<Material>
 }

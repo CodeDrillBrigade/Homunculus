@@ -11,4 +11,5 @@ enum class Permissions(val index: Int) {
 	ADMIN(0),
 	MANAGE_STORAGE(1),
 	MANAGE_MATERIALS(2),
+	MANAGE_METADATA(3),
 }

@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 value class HexColor(val color: String) {
 	init {
-		require("^([a-fA-F0-9]{6}|[a-fA-F0-9]{3})\$".toRegex().matches(color)) {
+		require("^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})\$".toRegex().matches(color)) {
 			"$color is not a valid Hex color"
 		}
 	}

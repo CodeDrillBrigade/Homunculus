@@ -8,6 +8,7 @@ import org.cdb.labwitch.controller.authController
 import org.cdb.labwitch.controller.boxDefinitionController
 import org.cdb.labwitch.controller.materialController
 import org.cdb.labwitch.controller.storageController
+import org.cdb.labwitch.controller.tagController
 import org.cdb.labwitch.controller.userController
 
 fun Application.configureRouting() {
@@ -19,6 +20,7 @@ fun Application.configureRouting() {
 		boxDefinitionController()
 		materialController()
 		storageController()
+		tagController()
 		userController()
 	}
 }

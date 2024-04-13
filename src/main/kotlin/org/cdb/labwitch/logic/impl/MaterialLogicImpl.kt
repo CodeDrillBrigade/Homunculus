@@ -1,5 +1,6 @@
 package org.cdb.labwitch.logic.impl
 
+import kotlinx.coroutines.flow.Flow
 import org.cdb.labwitch.dao.MaterialDao
 import org.cdb.labwitch.exceptions.NotFoundException
 import org.cdb.labwitch.logic.MaterialLogic
@@ -16,4 +17,6 @@ class MaterialLogicImpl(
 
 	override suspend fun get(materialId: EntityId): Material =
 		materialDao.get(materialId) ?: throw NotFoundException("Material $materialId not found")
+
+	override fun getAll(): Flow<Material> = materialDao.get()
 }
