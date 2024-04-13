@@ -1,6 +1,7 @@
 package org.cdb.labwitch.utils
 
 import kotlinx.serialization.json.Json
+import org.cdb.labwitch.models.types.ShortText
 
 object StringNormalizer {
 	private val latinMap =
@@ -13,4 +14,6 @@ object StringNormalizer {
 			latinMap[char] ?: char.toString()
 		}.joinToString("").replace(Regex("[^a-z0-9]"), "")
 	}
+
+	fun normalize(input: ShortText) = normalize(input.text)
 }

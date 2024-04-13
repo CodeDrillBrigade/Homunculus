@@ -1,5 +1,6 @@
 package org.cdb.labwitch.logic
 
+import kotlinx.coroutines.flow.Flow
 import org.cdb.labwitch.models.embed.BoxDefinition
 import org.cdb.labwitch.models.identifiers.EntityId
 import org.cdb.labwitch.models.identifiers.Identifier
@@ -7,6 +8,8 @@ import org.cdb.labwitch.models.identifiers.Identifier
 interface BoxDefinitionLogic {
 	/**
 	 * Creates a new [BoxDefinition].
+	 * If a [BoxDefinition] with the same parameters already exists in the system, it will not create a new one. Instead, it will return
+	 * the existing identifier.
 	 *
 	 * @param box the [BoxDefinition] to create.
 	 * @return the [EntityId] of the newly created entity.
@@ -21,4 +24,11 @@ interface BoxDefinitionLogic {
 	 * @throws NotFoundException if no [BoxDefinition] exists with the specified id.
 	 */
 	suspend fun get(boxDefinitionId: EntityId): BoxDefinition
+
+	/**
+	 * Retrieves all the [BoxDefinition]s in the database.
+	 *
+	 * @return a [Flow] of [BoxDefinition]s.
+	 */
+	fun getAll(): Flow<BoxDefinition>
 }
