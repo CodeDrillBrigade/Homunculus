@@ -25,11 +25,11 @@ class UserLogicImpl(
 			checkNotNull(userDao.save(userToCreate)) {
 				"User creation failed"
 			}
-		return checkNotNull(userDao.get(createdId)) { "User retrieval failed" }
+		return checkNotNull(userDao.getById(createdId)) { "User retrieval failed" }
 	}
 
 	override suspend fun get(userId: EntityId): User =
-		requireNotNull(userDao.get(userId)) {
+		requireNotNull(userDao.getById(userId)) {
 			"User is not found"
 		}
 }

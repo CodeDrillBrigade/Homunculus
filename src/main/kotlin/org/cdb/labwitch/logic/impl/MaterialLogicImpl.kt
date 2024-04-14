@@ -16,7 +16,7 @@ class MaterialLogicImpl(
 		materialDao.save(material.copy(normalizedName = StringNormalizer.normalize(material.name)))
 
 	override suspend fun get(materialId: EntityId): Material =
-		materialDao.get(materialId) ?: throw NotFoundException("Material $materialId not found")
+		materialDao.getById(materialId) ?: throw NotFoundException("Material $materialId not found")
 
 	override fun getAll(): Flow<Material> = materialDao.get()
 }

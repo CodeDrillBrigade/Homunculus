@@ -13,7 +13,7 @@ class TagLogicImpl(
 ) : TagLogic {
 	override suspend fun create(tag: Tag): Identifier = tagDao.save(tag)
 
-	override suspend fun get(tagId: EntityId): Tag = tagDao.get(tagId) ?: throw NotFoundException("Tag $tagId not found")
+	override suspend fun get(tagId: EntityId): Tag = tagDao.getById(tagId) ?: throw NotFoundException("Tag $tagId not found")
 
 	override suspend fun getAll(): Flow<Tag> = tagDao.get()
 }

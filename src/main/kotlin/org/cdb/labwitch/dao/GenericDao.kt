@@ -22,12 +22,28 @@ abstract class GenericDao<T : StoredEntity>(
 	protected abstract val collection: MongoCollection<T>
 
 	/**
-	 * Retrieves a [T] by id.
+	 * Retrieves a single [T].
 	 *
-	 * @param idFilter a [Bson] that identifies the entity.
+	 * @param filter a [Bson] that identifies the entity.
 	 * @return the entity, if one exists with the specified id, and null otherwise.
 	 */
-	suspend fun get(idFilter: Bson): T? = collection.find(idFilter).firstOrNull()
+	suspend fun get(filter: Bson): T? = collection.find(filter).firstOrNull()
+
+	/**
+	 * Retrieves a [T] by id.
+	 *
+	 * @param id the id of the entity.
+	 * @return the entity, if one exists with the specified id, and null otherwise.
+	 */
+	suspend fun getById(id: Identifier): T? = collection.find(Filters.eq("_id", id.id)).firstOrNull()
+
+	/**
+	 * Retrieves all the entities matching the specified filter.
+	 *
+	 * @param filter a [Bson] filter.
+	 * @return a [Flow] of [T].
+	 */
+	fun find(filter: Bson) = collection.find(filter)
 
 	/**
 	 * Retrieves all the [T] in the db.

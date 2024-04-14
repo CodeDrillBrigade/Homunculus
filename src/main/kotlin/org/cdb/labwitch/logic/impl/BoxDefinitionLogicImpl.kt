@@ -18,7 +18,7 @@ class BoxDefinitionLogicImpl(
 		}?.id ?: boxDefinitionDao.save(box)
 
 	override suspend fun get(boxDefinitionId: EntityId): BoxDefinition =
-		boxDefinitionDao.get(boxDefinitionId) ?: throw NotFoundException("BoxDefinition $boxDefinitionId does not exist")
+		boxDefinitionDao.getById(boxDefinitionId) ?: throw NotFoundException("BoxDefinition $boxDefinitionId does not exist")
 
 	override fun getAll(): Flow<BoxDefinition> = boxDefinitionDao.get()
 }

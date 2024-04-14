@@ -21,7 +21,7 @@ class AuthenticationLogicImpl(
 ) : AuthenticationLogic {
 	private suspend fun User.permissionsAsBitArray(): DynamicBitArray =
 		roles.mapNotNull {
-			roleDao.get(it)
+			roleDao.getById(it)
 		}.flatMap {
 			it.permissions
 		}.toSet().let { DynamicBitArray.fromPermissions(it) }
