@@ -5,6 +5,7 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.routing.*
 import org.cdb.labwitch.controller.authController
+import org.cdb.labwitch.controller.boxController
 import org.cdb.labwitch.controller.boxDefinitionController
 import org.cdb.labwitch.controller.materialController
 import org.cdb.labwitch.controller.storageController
@@ -17,6 +18,7 @@ fun Application.configureRouting() {
 	}
 	routing {
 		authController()
+		boxController()
 		boxDefinitionController()
 		materialController()
 		storageController()

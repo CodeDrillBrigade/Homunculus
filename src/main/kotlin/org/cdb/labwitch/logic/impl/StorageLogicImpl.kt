@@ -16,7 +16,7 @@ class StorageLogicImpl(
 		storageRoomId: ShortId,
 		cabinet: Cabinet,
 	): StorageRoom {
-		val storageRoom = storageDao.get(storageRoomId) ?: throw NotFoundException("Storage room with id $storageRoomId not found")
+		val storageRoom = storageDao.getById(storageRoomId) ?: throw NotFoundException("Storage room with id $storageRoomId not found")
 		return storageDao.update(
 			storageRoom.copy(
 				cabinets = storageRoom.cabinets + cabinet,
@@ -29,7 +29,7 @@ class StorageLogicImpl(
 		cabinetId: ShortId,
 		shelf: Shelf,
 	): StorageRoom {
-		val storageRoom = storageDao.get(storageRoomId) ?: throw NotFoundException("Storage room with id $storageRoomId not found")
+		val storageRoom = storageDao.getById(storageRoomId) ?: throw NotFoundException("Storage room with id $storageRoomId not found")
 		val cabinetIndex =
 			storageRoom.cabinets.indexOfFirst { it.id == cabinetId }.takeIf { it >= 0 }
 				?: throw NotFoundException("Cabinet $cabinetId not found in $storageRoomId")

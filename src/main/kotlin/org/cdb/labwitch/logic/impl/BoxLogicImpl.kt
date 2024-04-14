@@ -1,38 +1,27 @@
 package org.cdb.labwitch.logic.impl
 
+import kotlinx.coroutines.flow.Flow
 import org.cdb.labwitch.dao.BoxDao
+import org.cdb.labwitch.exceptions.NotFoundException
 import org.cdb.labwitch.logic.BoxLogic
 import org.cdb.labwitch.models.Box
-import org.cdb.labwitch.models.BoxCreationData
 import org.cdb.labwitch.models.identifiers.EntityId
+import org.cdb.labwitch.models.identifiers.HierarchicalId
+import org.cdb.labwitch.models.identifiers.Identifier
 
-class BoxLogicImpl(private val boxDao: BoxDao) : BoxLogic {
-	override suspend fun addBox(boxCreationData: BoxCreationData): Box {
-		val newBox =
-			Box(
-				id = EntityId.generate(),
-				materialName = boxCreationData.materialName,
-				quantity = boxCreationData.quantity,
-				metric = boxCreationData.metric,
-				note = boxCreationData.note,
-				subUnit = boxCreationData.subUnit,
-				status = boxCreationData.status,
-				position = boxCreationData.position,
-				expirationDate = boxCreationData.expirationDate,
-				usageLog = sortedSetOf(),
-			)
-		val createId =
-			checkNotNull(boxDao.save(newBox)) {
-				"Error during box creation"
-			}
-		return checkNotNull(boxDao.get(createId)) {
-			"Error during retrieval of box"
-		}
+class BoxLogicImpl(
+	private val boxDao: BoxDao
+) : BoxLogic {
+
+	override suspend fun create(box: Box): Identifier = checkNotNull(boxDao.save(box)) {
+		"Error during box creation"
 	}
 
-	override suspend fun get(boxId: EntityId): Box {
-		return requireNotNull(boxDao.get(boxId)) {
-			"Box not found"
-		}
-	}
+	override suspend fun get(boxId: EntityId): Box = boxDao.getById(boxId) ?: throw NotFoundException("Box $boxId not found")
+
+	override fun getAll(): Flow<Box> = boxDao.getAll()
+
+	override fun getByMaterial(materialId: EntityId): Flow<Box> = boxDao.getByMaterial(materialId)
+
+	override fun getByPosition(shelfId: HierarchicalId): Flow<Box> = boxDao.getByPosition(shelfId)
 }

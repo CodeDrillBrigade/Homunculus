@@ -1,24 +1,22 @@
-
 package org.cdb.labwitch.models
 
 import kotlinx.serialization.SerialName
-import org.cdb.labwitch.models.embed.Metric
-import org.cdb.labwitch.models.embed.Status
-import org.cdb.labwitch.models.embed.SubUnit
+import kotlinx.serialization.Serializable
+import org.cdb.labwitch.models.embed.BoxUnit
 import org.cdb.labwitch.models.embed.UsageLog
 import org.cdb.labwitch.models.identifiers.EntityId
+import org.cdb.labwitch.models.identifiers.HierarchicalId
+import org.cdb.labwitch.serialization.DateSerializer
 import java.util.Date
 import java.util.SortedSet
 
+@Serializable
 data class Box(
-	@SerialName("_id") override val id: EntityId,
-	val materialName: String,
-	val quantity: Int,
-	val metric: Metric,
-	val note: String?,
-	val subUnit: SubUnit?,
-	val status: Status,
-	val position: Int,
-	val expirationDate: Date?,
-	val usageLog: SortedSet<UsageLog>,
+	@SerialName("_id") override val id: EntityId = EntityId.generate(),
+	val material: EntityId,
+	val quantity: BoxUnit,
+	val position: HierarchicalId,
+	@Serializable(with = DateSerializer::class) val expirationDate: Date? = null,
+	val description: String? = null,
+	val usageLog: SortedSet<UsageLog> = sortedSetOf(),
 ) : StoredEntity
