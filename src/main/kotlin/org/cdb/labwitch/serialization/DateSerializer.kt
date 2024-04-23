@@ -13,5 +13,8 @@ object DateSerializer : KSerializer<Date> {
 
 	override fun deserialize(decoder: Decoder): Date = Date(decoder.decodeLong())
 
-	override fun serialize(encoder: Encoder, value: Date) = encoder.encodeLong(value.time)
+	override fun serialize(
+		encoder: Encoder,
+		value: Date,
+	) = encoder.encodeLong(value.time)
 }

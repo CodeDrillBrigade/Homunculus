@@ -40,6 +40,6 @@ fun Routing.boxController() =
 
 		authenticatedPost("", permissions = setOf(Permissions.MANAGE_MATERIALS)) {
 			val boxToCreate = call.receive<Box>()
-			call.respond(boxLogic.create(boxToCreate))
+			call.respond(boxLogic.create(boxToCreate, it.userId))
 		}
 	}

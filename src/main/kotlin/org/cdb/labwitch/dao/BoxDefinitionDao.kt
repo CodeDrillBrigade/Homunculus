@@ -9,5 +9,4 @@ abstract class BoxDefinitionDao(client: DBClient) : GenericDao<BoxDefinition>(cl
 	override val collection: MongoCollection<BoxDefinition> = client.getCollection()
 
 	override fun wrapIdentifier(id: String): EntityId = EntityId(id)
-
 }

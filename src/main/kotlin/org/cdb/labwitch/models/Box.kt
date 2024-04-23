@@ -7,6 +7,7 @@ import org.cdb.labwitch.models.embed.UsageLog
 import org.cdb.labwitch.models.identifiers.EntityId
 import org.cdb.labwitch.models.identifiers.HierarchicalId
 import org.cdb.labwitch.serialization.DateSerializer
+import org.cdb.labwitch.serialization.SortedSetSerializer
 import java.util.Date
 import java.util.SortedSet
 
@@ -17,6 +18,7 @@ data class Box(
 	val quantity: BoxUnit,
 	val position: HierarchicalId,
 	@Serializable(with = DateSerializer::class) val expirationDate: Date? = null,
+	@Serializable(with = DateSerializer::class) val deleted: Date? = null,
 	val description: String? = null,
-	val usageLog: SortedSet<UsageLog> = sortedSetOf(),
+	@Serializable(with = SortedSetSerializer::class) val usageLogs: SortedSet<UsageLog> = sortedSetOf(),
 ) : StoredEntity

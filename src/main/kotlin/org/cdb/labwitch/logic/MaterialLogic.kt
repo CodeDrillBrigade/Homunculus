@@ -31,4 +31,16 @@ interface MaterialLogic {
 	 * @return a [Flow] of [Material].
 	 */
 	fun getAll(): Flow<Material>
+
+	/**
+	 * Retrieves all the [Material]s based on a match between the normalized [query] and [Material.normalizedName].
+	 *
+	 * @param query the query, to be normalized.
+	 * @param limit the maximum number of elements to return. If null, all the elements will be returned.
+	 * @return a [Flow] of [Material] where [Material.normalizedName] starts with the normalized [query].
+	 */
+	fun findByFuzzyName(
+		query: String,
+		limit: Int?,
+	): Flow<Material>
 }

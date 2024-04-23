@@ -19,4 +19,13 @@ class MaterialLogicImpl(
 		materialDao.getById(materialId) ?: throw NotFoundException("Material $materialId not found")
 
 	override fun getAll(): Flow<Material> = materialDao.get()
+
+	override fun findByFuzzyName(
+		query: String,
+		limit: Int?,
+	): Flow<Material> =
+		materialDao.byFuzzyName(
+			StringNormalizer.normalize(query),
+			limit,
+		)
 }

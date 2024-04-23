@@ -26,6 +26,12 @@ fun Routing.materialController() =
 			call.respond(materialLogic.get(EntityId(materialId)))
 		}
 
+		authenticatedGet("/byFuzzyName/{query}") {
+			val query = checkNotNull(call.parameters["query"]) { "query must not be null and longer than 3 characters." }
+			val limit = call.request.queryParameters["limit"]?.toIntOrNull()
+			call.respond(materialLogic.findByFuzzyName(query, limit))
+		}
+
 		authenticatedPost("", permissions = setOf(Permissions.MANAGE_MATERIALS)) {
 			val materialToCreate = call.receive<Material>()
 			call.respond(materialLogic.create(materialToCreate))

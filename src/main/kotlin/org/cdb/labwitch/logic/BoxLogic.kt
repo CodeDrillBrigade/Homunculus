@@ -11,10 +11,14 @@ interface BoxLogic {
 	 * Adds a new [Box] to the system
 	 *
 	 * @param box the [Box] to create.
+	 * @param userId the id of the user creating the box.
 	 * @return the [Box.id] of the newly created box.
 	 * @throws IllegalStateException if the box cannot be created.
 	 */
-	suspend fun create(box: Box): Identifier
+	suspend fun create(
+		box: Box,
+		userId: EntityId,
+	): Identifier
 
 	/**
 	 * Retrieves a [Box] via ID.
@@ -42,6 +46,7 @@ interface BoxLogic {
 
 	/**
 	 * Retrieves all the [Box]es where [Box.position] is equal to [shelfId].
+	 * Only non-deleted Boxes, (i.e. with null [Box.deleted]) are returned.
 	 *
 	 * @param shelfId the id of the shelf.
 	 * @return a [Flow] of [Box].
