@@ -9,5 +9,4 @@ abstract class TagDao(client: DBClient) : GenericDao<Tag>(client) {
 	override val collection: MongoCollection<Tag> = client.getCollection()
 
 	override fun wrapIdentifier(id: String): EntityId = EntityId(id)
-
 }

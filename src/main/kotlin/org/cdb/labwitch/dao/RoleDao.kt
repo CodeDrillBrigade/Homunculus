@@ -9,5 +9,4 @@ abstract class RoleDao(client: DBClient) : GenericDao<Role>(client) {
 	override val collection: MongoCollection<Role> = client.getCollection()
 
 	override fun wrapIdentifier(id: String): EntityId = EntityId(id)
-
 }

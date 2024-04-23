@@ -9,5 +9,4 @@ abstract class StorageDao(client: DBClient) : GenericDao<StorageRoom>(client) {
 	override val collection: MongoCollection<StorageRoom> = client.getCollection()
 
 	override fun wrapIdentifier(id: String): ShortId = ShortId(id)
-
 }

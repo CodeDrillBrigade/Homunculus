@@ -5,6 +5,7 @@ import org.cdb.labwitch.configuration.configureExceptions
 import org.cdb.labwitch.configuration.configureHTTP
 import org.cdb.labwitch.configuration.configureKoin
 import org.cdb.labwitch.configuration.configureRouting
+import org.cdb.labwitch.configuration.initialization
 
 fun main(args: Array<String>) = io.ktor.server.cio.EngineMain.main(args)
 
@@ -14,4 +15,5 @@ fun Application.module() {
 	configureKoin()
 	configureRouting()
 	configureExceptions()
+	initialization()
 }

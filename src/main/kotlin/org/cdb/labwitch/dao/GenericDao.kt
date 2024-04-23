@@ -1,6 +1,8 @@
 package org.cdb.labwitch.dao
 
 import com.mongodb.client.model.Filters
+import com.mongodb.client.model.IndexOptions
+import com.mongodb.client.model.Indexes
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -8,6 +10,7 @@ import org.bson.conversions.Bson
 import org.cdb.labwitch.components.DBClient
 import org.cdb.labwitch.models.StoredEntity
 import org.cdb.labwitch.models.identifiers.Identifier
+import kotlin.reflect.KProperty
 
 /**
  * Defines all the generic operations that a DAO should implement.
@@ -77,4 +80,24 @@ abstract class GenericDao<T : StoredEntity>(
 	 * @return the updated entity, if the operation was successful, and false otherwise.
 	 */
 	suspend fun update(entity: T): T? = collection.findOneAndReplace(Filters.eq("_id", entity.id), entity)
+
+	/**
+	 * Creates an ascending index in the current collection for the specified [property], if such an index does not exist already.
+	 *
+	 * @param property the name of the [KProperty] that will be used in the creation of the index.
+	 * @param name the index name
+	 * @return the name of the newly created index or null if the index already exists.
+	 */
+	suspend fun initIndex(
+		property: String,
+		name: String,
+	): String? =
+		if (collection.listIndexes().firstOrNull { it["name"] == name } == null) {
+			collection.createIndex(
+				Indexes.ascending(property),
+				IndexOptions().name(name),
+			)
+		} else {
+			null
+		}
 }
