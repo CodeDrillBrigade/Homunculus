@@ -18,7 +18,7 @@ import org.koin.ktor.ext.inject
 fun Routing.boxController() =
 	route("/box") {
 		val boxLogic by inject<BoxLogic>()
-
+		
 		authenticatedGet("/{boxId}") {
 			val boxDefinitionId = checkNotNull(call.parameters["boxId"]) { "Box Id must not be null" }
 			call.respond(boxLogic.get(EntityId(boxDefinitionId)))

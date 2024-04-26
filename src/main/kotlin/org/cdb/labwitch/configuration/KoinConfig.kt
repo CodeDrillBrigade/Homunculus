@@ -19,20 +19,8 @@ import org.cdb.labwitch.dao.impl.RoleDaoImpl
 import org.cdb.labwitch.dao.impl.StorageDaoImpl
 import org.cdb.labwitch.dao.impl.TagDaoImpl
 import org.cdb.labwitch.dao.impl.UserDaoImpl
-import org.cdb.labwitch.logic.AuthenticationLogic
-import org.cdb.labwitch.logic.BoxDefinitionLogic
-import org.cdb.labwitch.logic.BoxLogic
-import org.cdb.labwitch.logic.MaterialLogic
-import org.cdb.labwitch.logic.StorageLogic
-import org.cdb.labwitch.logic.TagLogic
-import org.cdb.labwitch.logic.UserLogic
-import org.cdb.labwitch.logic.impl.AuthenticationLogicImpl
-import org.cdb.labwitch.logic.impl.BoxDefinitionLogicImpl
-import org.cdb.labwitch.logic.impl.BoxLogicImpl
-import org.cdb.labwitch.logic.impl.MaterialLogicImpl
-import org.cdb.labwitch.logic.impl.StorageLogicImpl
-import org.cdb.labwitch.logic.impl.TagLogicImpl
-import org.cdb.labwitch.logic.impl.UserLogicImpl
+import org.cdb.labwitch.logic.*
+import org.cdb.labwitch.logic.impl.*
 import org.cdb.labwitch.models.config.JWTConfig
 import org.cdb.labwitch.models.config.MongoDBCredentials
 import org.koin.dsl.module
@@ -64,6 +52,7 @@ fun applicationModules(
 	single<StorageLogic> { StorageLogicImpl(get()) }
 	single<TagLogic> { TagLogicImpl(get()) }
 	single<UserLogic> { UserLogicImpl(get(), get()) }
+	single<RoleLogic> { RoleLogicImpl(get()) }
 }
 
 /**
