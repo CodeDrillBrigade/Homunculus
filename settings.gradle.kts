@@ -20,4 +20,4 @@ dependencyResolutionManagement {
 	}
 }
 
-rootProject.name = "demo"
+rootProject.name = "LabWitchery-backend"

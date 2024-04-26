@@ -12,16 +12,21 @@ import org.cdb.labwitch.requests.authenticatedPost
 import org.koin.ktor.ext.inject
 
 fun Routing.userController() =
-	route("/user") {
-		val userLogic by inject<UserLogic>()
+    route("/user") {
+        val userLogic by inject<UserLogic>()
 
-		authenticatedGet("") {
-			call.respond(userLogic.get(it.userId).copy(passwordHash = "*"))
-		}
+        authenticatedGet("") {
+            call.respond(userLogic.get(it.userId).copy(passwordHash = "*"))
+        }
 
-		authenticatedPost("", permissions = setOf(Permissions.ADMIN)) {
-			val creationData = call.receive<UserCreationData>()
-			val createdUser = userLogic.registerUser(creationData).copy(passwordHash = "*")
-			call.respond(createdUser)
-		}
-	}
+        authenticatedPost("", permissions = setOf(Permissions.ADMIN)) {
+            val creationData = call.receive<UserCreationData>()
+            val createdUser = userLogic.registerUser(creationData).copy(passwordHash = "*")
+            call.respond(createdUser)
+        }
+
+        authenticatedGet("/permissions") { jwt ->
+            val permissions = Permissions.entries.filter { jwt.permissions[it.index] }
+            call.respond(permissions)
+        }
+    }
