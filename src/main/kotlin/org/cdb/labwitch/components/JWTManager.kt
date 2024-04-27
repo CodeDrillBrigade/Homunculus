@@ -14,7 +14,6 @@ import org.cdb.labwitch.models.security.JWTRefreshClaims
 import org.cdb.labwitch.utils.DynamicBitArray
 import java.util.*
 import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.hours
 
 /**
  * This component manages the authentication and refresh JWT creation and verification

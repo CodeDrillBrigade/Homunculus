@@ -45,7 +45,7 @@ class AuthenticationLogicImpl(
 
 	override suspend fun refresh(username: EntityId): AuthResponse {
 		val user =
-			userDao.getByUsername(username.id)
+			userDao.getById(username)
 				?: throw NotFoundException("User $username does not exist")
 		return AuthResponse(
 			jwt = jwtManager.generateAuthJWT(JWTClaims(user.id, user.permissionsAsBitArray())),
