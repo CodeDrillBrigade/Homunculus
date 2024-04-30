@@ -44,4 +44,13 @@ class BoxLogicImpl(
 	override fun getByMaterial(materialId: EntityId): Flow<Box> = boxDao.getByMaterial(materialId)
 
 	override fun getByPosition(shelfId: HierarchicalId): Flow<Box> = boxDao.getByPosition(shelfId).filter { it.deleted == null }
+
+	override suspend fun delete(id: EntityId): EntityId {
+		val box = boxDao.getById(id) ?: throw NotFoundException("Box $id not found")
+		return boxDao.update(
+			box.copy(
+				deleted = Date(),
+			),
+		)?.id ?: throw IllegalStateException("Cannot delete the box with id $id")
+	}
 }

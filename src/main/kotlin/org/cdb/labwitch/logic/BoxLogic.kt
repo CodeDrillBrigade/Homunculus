@@ -21,11 +21,20 @@ interface BoxLogic {
 	): Identifier
 
 	/**
+	 * Soft-deletes a [Box] by setting [Box.deleted] to the current timestamp.
+	 *
+	 * @param id the [EntityId] of the box to delete.
+	 * @return the id of the updated box.
+	 * @throws NotFoundException if tno box with the specified id exists.
+	 */
+	suspend fun delete(id: EntityId): EntityId
+
+	/**
 	 * Retrieves a [Box] via ID.
 	 *
 	 * @param [boxId] the [EntityId] of the box to search.
 	 * @return the searched [Box].
-	 * @throws NotFoundException if no box with the specified exists
+	 * @throws NotFoundException if no box with the specified exists.
 	 */
 	suspend fun get(boxId: EntityId): Box
 

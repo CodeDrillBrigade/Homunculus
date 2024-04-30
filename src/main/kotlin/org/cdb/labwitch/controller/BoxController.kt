@@ -11,6 +11,7 @@ import org.cdb.labwitch.models.Box
 import org.cdb.labwitch.models.identifiers.EntityId
 import org.cdb.labwitch.models.identifiers.HierarchicalId
 import org.cdb.labwitch.models.security.Permissions
+import org.cdb.labwitch.requests.authenticatedDelete
 import org.cdb.labwitch.requests.authenticatedGet
 import org.cdb.labwitch.requests.authenticatedPost
 import org.koin.ktor.ext.inject
@@ -20,8 +21,8 @@ fun Routing.boxController() =
 		val boxLogic by inject<BoxLogic>()
 
 		authenticatedGet("/{boxId}") {
-			val boxDefinitionId = checkNotNull(call.parameters["boxId"]) { "Box Id must not be null" }
-			call.respond(boxLogic.get(EntityId(boxDefinitionId)))
+			val boxId = checkNotNull(call.parameters["boxId"]) { "Box Id must not be null" }
+			call.respond(boxLogic.get(EntityId(boxId)))
 		}
 
 		authenticatedGet("") {
@@ -41,5 +42,10 @@ fun Routing.boxController() =
 		authenticatedPost("", permissions = setOf(Permissions.MANAGE_MATERIALS)) {
 			val boxToCreate = call.receive<Box>()
 			call.respond(boxLogic.create(boxToCreate, it.userId))
+		}
+
+		authenticatedDelete("/{boxId}", permissions = setOf(Permissions.MANAGE_MATERIALS)) {
+			val boxId = checkNotNull(call.parameters["boxId"]) { "Box Id must not be null" }
+			call.respond(boxLogic.delete(EntityId(boxId)))
 		}
 	}
