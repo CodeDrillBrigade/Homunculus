@@ -15,7 +15,7 @@ tasks.withType<KotlinCompile> {
 }
 
 application {
-	mainClass.set("org.cdb.labwitch.LabWitchAppKt")
+	mainClass.set("org.cdb.homunculus.HomunculusAppKt")
 }
 
 dependencies {
