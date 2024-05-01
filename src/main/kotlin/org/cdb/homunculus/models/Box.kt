@@ -17,6 +17,7 @@ data class Box(
 	val material: EntityId,
 	val quantity: BoxUnit,
 	val position: HierarchicalId,
+	val batchNumber: String,
 	@Serializable(with = DateSerializer::class) val expirationDate: Date? = null,
 	@Serializable(with = DateSerializer::class) val deleted: Date? = null,
 	val description: String? = null,

@@ -12,6 +12,7 @@ data class Material(
 	val name: ShortText,
 	val boxDefinition: EntityId,
 	val brand: String,
+	val referenceCode: String,
 	val description: String? = null,
 	val tags: Set<EntityId> = emptySet(),
 	val noteList: List<Note> = emptyList(),
