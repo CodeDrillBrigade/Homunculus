@@ -4,6 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.cdb.homunculus.models.embed.Contact
 import org.cdb.homunculus.models.identifiers.EntityId
+import org.cdb.homunculus.models.security.AuthToken
 
 /**
  * Describes a user in the system.
@@ -20,9 +21,10 @@ import org.cdb.homunculus.models.identifiers.EntityId
 data class User(
 	@SerialName("_id") override val id: EntityId,
 	val username: String,
-	val passwordHash: String,
+	val passwordHash: String?,
 	val name: String,
 	val surname: String,
 	val roles: Set<EntityId> = emptySet(),
 	val contacts: List<Contact> = emptyList(),
+	val authenticationTokens: Map<String, AuthToken> = emptyMap()
 ) : StoredEntity

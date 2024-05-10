@@ -4,7 +4,7 @@ import org.cdb.homunculus.components.JWTManager
 import org.cdb.homunculus.components.PasswordEncoder
 import org.cdb.homunculus.dao.RoleDao
 import org.cdb.homunculus.dao.UserDao
-import org.cdb.homunculus.exceptions.NotFoundException
+import org.cdb.homunculus.exceptions.UnauthorizedException
 import org.cdb.homunculus.logic.AuthenticationLogic
 import org.cdb.homunculus.models.User
 import org.cdb.homunculus.models.identifiers.EntityId
@@ -26,30 +26,29 @@ class AuthenticationLogicImpl(
 			it.permissions
 		}.toSet().let { DynamicBitArray.fromPermissions(it) }
 
+	private fun User.matchPasswordOrToken(password: String): Boolean =
+		listOfNotNull(
+			passwordHash,
+			*authenticationTokens.values.filter { it.expirationDate > System.currentTimeMillis() }.map { it.token }.toTypedArray()
+		).any { passwordEncoder.checkHash(password, it) }
+
 	override suspend fun login(
 		username: String,
 		password: String,
-	): AuthResponse {
-		val user =
-			userDao.getByUsername(username)
-				?: throw NotFoundException("User $username does not exist")
-		return if (passwordEncoder.checkHash(password, user.passwordHash)) {
+	): AuthResponse = userDao.getByUsername(username)?.takeIf {
+		it.matchPasswordOrToken(password)
+	}?.let { user ->
+		AuthResponse(
+			jwt = jwtManager.generateAuthJWT(JWTClaims(user.id, user.permissionsAsBitArray())),
+			refreshJwt = jwtManager.generateRefreshJWT(JWTRefreshClaims(user.id)),
+		)
+	} ?: throw UnauthorizedException("Invalid username or password")
+
+	override suspend fun refresh(userId: EntityId): AuthResponse =
+		userDao.getById(userId)?.let { user ->
 			AuthResponse(
 				jwt = jwtManager.generateAuthJWT(JWTClaims(user.id, user.permissionsAsBitArray())),
-				refreshJwt = jwtManager.generateRefreshJWT(JWTRefreshClaims(user.id)),
+				refreshJwt = null,
 			)
-		} else {
-			throw IllegalStateException("Wrong password")
-		}
-	}
-
-	override suspend fun refresh(username: EntityId): AuthResponse {
-		val user =
-			userDao.getById(username)
-				?: throw NotFoundException("User $username does not exist")
-		return AuthResponse(
-			jwt = jwtManager.generateAuthJWT(JWTClaims(user.id, user.permissionsAsBitArray())),
-			refreshJwt = null,
-		)
-	}
+		} ?: throw UnauthorizedException("It is not possible to refresh the token for the user $userId")
 }

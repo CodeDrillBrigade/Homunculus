@@ -6,6 +6,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.cdb.homunculus.logic.UserLogic
 import org.cdb.homunculus.models.UserCreationData
+import org.cdb.homunculus.models.identifiers.EntityId
 import org.cdb.homunculus.models.security.Permissions
 import org.cdb.homunculus.requests.authenticatedGet
 import org.cdb.homunculus.requests.authenticatedPost
@@ -17,6 +18,11 @@ fun Routing.userController() =
 
 		authenticatedGet("") {
 			call.respond(userLogic.get(it.userId).copy(passwordHash = "*"))
+		}
+
+		authenticatedGet("/{userId}") {
+			val userId = checkNotNull(call.parameters["userId"]) { "User Id must not be null" }
+			call.respond(userLogic.get(EntityId(userId)).copy(passwordHash = "*"))
 		}
 
 		authenticatedPost("", permissions = setOf(Permissions.ADMIN)) {
