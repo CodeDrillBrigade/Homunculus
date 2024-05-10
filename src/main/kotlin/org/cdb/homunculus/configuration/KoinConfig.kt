@@ -3,6 +3,7 @@ package org.cdb.homunculus.configuration
 import io.ktor.server.application.*
 import org.cdb.homunculus.components.DBClient
 import org.cdb.homunculus.components.JWTManager
+import org.cdb.homunculus.components.Mailer
 import org.cdb.homunculus.components.PasswordEncoder
 import org.cdb.homunculus.components.impl.BCryptPasswordEncoder
 import org.cdb.homunculus.dao.BoxDao
@@ -34,6 +35,7 @@ import org.cdb.homunculus.logic.impl.StorageLogicImpl
 import org.cdb.homunculus.logic.impl.TagLogicImpl
 import org.cdb.homunculus.logic.impl.UserLogicImpl
 import org.cdb.homunculus.models.config.JWTConfig
+import org.cdb.homunculus.models.config.MailerConfig
 import org.cdb.homunculus.models.config.MongoDBCredentials
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
@@ -42,10 +44,12 @@ import org.koin.logger.slf4jLogger
 fun applicationModules(
 	dbCredentials: MongoDBCredentials,
 	jwtConfig: JWTConfig,
+	mailerConfig: MailerConfig
 ) = module {
 	single<JWTManager> { JWTManager(jwtConfig) }
 	single<DBClient> { DBClient(dbCredentials) }
 	single<PasswordEncoder> { BCryptPasswordEncoder() }
+	single<Mailer> { Mailer(mailerConfig) }
 
 	// DAOs
 	single<BoxDao> { BoxDaoImpl(get()) }
@@ -74,9 +78,10 @@ fun applicationModules(
 fun Application.configureKoin() {
 	val dbCredentials = MongoDBCredentials.fromConfig(environment.config)
 	val jwtConfig = JWTConfig.fromConfig(environment.config)
+	val mailerConfig = MailerConfig.fromConfig(environment.config)
 
 	install(Koin) {
 		slf4jLogger()
-		modules(applicationModules(dbCredentials, jwtConfig))
+		modules(applicationModules(dbCredentials, jwtConfig, mailerConfig))
 	}
 }
