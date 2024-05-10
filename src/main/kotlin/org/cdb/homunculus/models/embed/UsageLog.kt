@@ -16,5 +16,5 @@ data class UsageLog(
 	val operation: Operation,
 	val quantity: BoxUnit,
 ) : Comparable<UsageLog> {
-	override fun compareTo(other: UsageLog): Int = date.compareTo(other.date)
+	override fun compareTo(other: UsageLog): Int = other.date.compareTo(date)
 }

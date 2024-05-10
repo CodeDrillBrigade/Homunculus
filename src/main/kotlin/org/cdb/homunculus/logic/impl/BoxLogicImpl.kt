@@ -53,4 +53,30 @@ class BoxLogicImpl(
 			),
 		)?.id ?: throw IllegalStateException("Cannot delete the box with id $id")
 	}
+
+	override suspend fun updateQuantity(
+		boxId: EntityId,
+		update: UsageLog,
+	): EntityId {
+		val box = boxDao.getById(boxId) ?: throw NotFoundException("Box $boxId not found")
+		val newQuantity =
+			if (update.operation == Operation.ADD) {
+				box.quantity.quantity + update.quantity.quantity
+			} else {
+				box.quantity.quantity - update.quantity.quantity
+			}
+		require(newQuantity >= 0) { "Quantity cannot be less than 0" }
+		return boxDao.update(
+			box.copy(
+				quantity =
+					box.quantity.copy(
+						quantity = newQuantity,
+					),
+				usageLogs =
+					box.usageLogs.apply {
+						add(update)
+					},
+			),
+		)?.id ?: throw IllegalStateException("Cannot update the quantity for box $boxId")
+	}
 }

@@ -1,7 +1,9 @@
 package org.cdb.homunculus.logic
 
 import kotlinx.coroutines.flow.Flow
+import org.cdb.homunculus.exceptions.NotFoundException
 import org.cdb.homunculus.models.Box
+import org.cdb.homunculus.models.embed.UsageLog
 import org.cdb.homunculus.models.identifiers.EntityId
 import org.cdb.homunculus.models.identifiers.HierarchicalId
 import org.cdb.homunculus.models.identifiers.Identifier
@@ -25,7 +27,7 @@ interface BoxLogic {
 	 *
 	 * @param id the [EntityId] of the box to delete.
 	 * @return the id of the updated box.
-	 * @throws NotFoundException if tno box with the specified id exists.
+	 * @throws NotFoundException if no box with the specified id exists.
 	 */
 	suspend fun delete(id: EntityId): EntityId
 
@@ -61,4 +63,19 @@ interface BoxLogic {
 	 * @return a [Flow] of [Box].
 	 */
 	fun getByPosition(shelfId: HierarchicalId): Flow<Box>
+
+	/**
+	 * Updates the [Box] with the specified [boxId] appending the [update] passed as
+	 * parameter and updating the [Box.quantity] accordingly.
+	 *
+	 * @param boxId the [Box.id].
+	 * @param update the [UsageLog].
+	 * @return the id of the updated entity.
+	 * @throws NotFoundException if o box with the specified id exists.
+	 * @throws IllegalArgumentException if the quantity to remove is greater than the remaining quantity.
+	 */
+	suspend fun updateQuantity(
+		boxId: EntityId,
+		update: UsageLog,
+	): EntityId
 }
