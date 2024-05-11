@@ -1,9 +1,9 @@
 package org.cdb.homunculus.logic
 
+import org.cdb.homunculus.exceptions.UnauthorizedException
+import org.cdb.homunculus.models.User
 import org.cdb.homunculus.models.identifiers.EntityId
 import org.cdb.homunculus.models.security.AuthResponse
-import org.cdb.homunculus.models.User
-import org.cdb.homunculus.exceptions.UnauthorizedException
 
 /**
  * Defines the operation to authenticate and de-authenticate a user.

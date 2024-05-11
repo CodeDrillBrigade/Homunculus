@@ -23,4 +23,10 @@ interface PasswordEncoder {
 		password: String,
 		hash: String,
 	): Boolean
+
+	/**
+	 * @param maybeHashed a [String].
+	 * @return true if [maybeHashed] is a hash string created with this encoder, false otherwise.
+	 */
+	fun isHashed(maybeHashed: String): Boolean
 }

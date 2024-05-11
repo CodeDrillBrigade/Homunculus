@@ -29,20 +29,21 @@ class AuthenticationLogicImpl(
 	private fun User.matchPasswordOrToken(password: String): Boolean =
 		listOfNotNull(
 			passwordHash,
-			*authenticationTokens.values.filter { it.expirationDate > System.currentTimeMillis() }.map { it.token }.toTypedArray()
+			*authenticationTokens.values.filter { it.expirationDate > System.currentTimeMillis() }.map { it.token }.toTypedArray(),
 		).any { passwordEncoder.checkHash(password, it) }
 
 	override suspend fun login(
 		username: String,
 		password: String,
-	): AuthResponse = userDao.getByUsername(username)?.takeIf {
-		it.matchPasswordOrToken(password)
-	}?.let { user ->
-		AuthResponse(
-			jwt = jwtManager.generateAuthJWT(JWTClaims(user.id, user.permissionsAsBitArray())),
-			refreshJwt = jwtManager.generateRefreshJWT(JWTRefreshClaims(user.id)),
-		)
-	} ?: throw UnauthorizedException("Invalid username or password")
+	): AuthResponse =
+		userDao.getByUsername(username)?.takeIf {
+			it.matchPasswordOrToken(password)
+		}?.let { user ->
+			AuthResponse(
+				jwt = jwtManager.generateAuthJWT(JWTClaims(user.id, user.permissionsAsBitArray())),
+				refreshJwt = jwtManager.generateRefreshJWT(JWTRefreshClaims(user.id)),
+			)
+		} ?: throw UnauthorizedException("Invalid username or password")
 
 	override suspend fun refresh(userId: EntityId): AuthResponse =
 		userDao.getById(userId)?.let { user ->

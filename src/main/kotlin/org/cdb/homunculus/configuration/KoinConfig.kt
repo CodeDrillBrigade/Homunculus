@@ -44,7 +44,7 @@ import org.koin.logger.slf4jLogger
 fun applicationModules(
 	dbCredentials: MongoDBCredentials,
 	jwtConfig: JWTConfig,
-	mailerConfig: MailerConfig
+	mailerConfig: MailerConfig,
 ) = module {
 	single<JWTManager> { JWTManager(jwtConfig) }
 	single<DBClient> { DBClient(dbCredentials) }

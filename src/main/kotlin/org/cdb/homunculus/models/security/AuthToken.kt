@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class AuthToken(
 	val token: String,
-	val expirationDate: Long
+	val expirationDate: Long,
 )
