@@ -22,8 +22,8 @@ fun Routing.tagController() =
 		}
 
 		authenticatedGet("/{tagId}") {
-			val materialId = checkNotNull(call.parameters["tagId"]) { "Tag Id must not be null" }
-			call.respond(tagLogic.get(EntityId(materialId)))
+			val tagId = checkNotNull(call.parameters["tagId"]) { "Tag Id must not be null" }
+			call.respond(tagLogic.get(EntityId(tagId)))
 		}
 
 		authenticatedPost("", permissions = setOf(Permissions.MANAGE_METADATA)) {

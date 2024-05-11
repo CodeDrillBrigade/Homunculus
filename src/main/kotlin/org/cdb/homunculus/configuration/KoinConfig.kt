@@ -9,6 +9,7 @@ import org.cdb.homunculus.components.impl.BCryptPasswordEncoder
 import org.cdb.homunculus.dao.BoxDao
 import org.cdb.homunculus.dao.BoxDefinitionDao
 import org.cdb.homunculus.dao.MaterialDao
+import org.cdb.homunculus.dao.ProcessDao
 import org.cdb.homunculus.dao.RoleDao
 import org.cdb.homunculus.dao.StorageDao
 import org.cdb.homunculus.dao.TagDao
@@ -16,6 +17,7 @@ import org.cdb.homunculus.dao.UserDao
 import org.cdb.homunculus.dao.impl.BoxDaoImpl
 import org.cdb.homunculus.dao.impl.BoxDefinitionDaoImpl
 import org.cdb.homunculus.dao.impl.MaterialDaoImpl
+import org.cdb.homunculus.dao.impl.ProcessDaoImpl
 import org.cdb.homunculus.dao.impl.RoleDaoImpl
 import org.cdb.homunculus.dao.impl.StorageDaoImpl
 import org.cdb.homunculus.dao.impl.TagDaoImpl
@@ -24,6 +26,7 @@ import org.cdb.homunculus.logic.AuthenticationLogic
 import org.cdb.homunculus.logic.BoxDefinitionLogic
 import org.cdb.homunculus.logic.BoxLogic
 import org.cdb.homunculus.logic.MaterialLogic
+import org.cdb.homunculus.logic.ProcessLogic
 import org.cdb.homunculus.logic.StorageLogic
 import org.cdb.homunculus.logic.TagLogic
 import org.cdb.homunculus.logic.UserLogic
@@ -31,6 +34,7 @@ import org.cdb.homunculus.logic.impl.AuthenticationLogicImpl
 import org.cdb.homunculus.logic.impl.BoxDefinitionLogicImpl
 import org.cdb.homunculus.logic.impl.BoxLogicImpl
 import org.cdb.homunculus.logic.impl.MaterialLogicImpl
+import org.cdb.homunculus.logic.impl.ProcessLogicImpl
 import org.cdb.homunculus.logic.impl.StorageLogicImpl
 import org.cdb.homunculus.logic.impl.TagLogicImpl
 import org.cdb.homunculus.logic.impl.UserLogicImpl
@@ -49,12 +53,13 @@ fun applicationModules(
 	single<JWTManager> { JWTManager(jwtConfig) }
 	single<DBClient> { DBClient(dbCredentials) }
 	single<PasswordEncoder> { BCryptPasswordEncoder() }
-	single<Mailer> { Mailer(mailerConfig) }
+	single<Mailer> { Mailer(mailerConfig, logger) }
 
 	// DAOs
 	single<BoxDao> { BoxDaoImpl(get()) }
 	single<BoxDefinitionDao> { BoxDefinitionDaoImpl(get()) }
 	single<MaterialDao> { MaterialDaoImpl(get()) }
+	single<ProcessDao> { ProcessDaoImpl(get()) }
 	single<RoleDao> { RoleDaoImpl(get()) }
 	single<StorageDao> { StorageDaoImpl(get()) }
 	single<TagDao> { TagDaoImpl(get()) }
@@ -65,6 +70,7 @@ fun applicationModules(
 	single<BoxLogic> { BoxLogicImpl(get()) }
 	single<BoxDefinitionLogic> { BoxDefinitionLogicImpl(get()) }
 	single<MaterialLogic> { MaterialLogicImpl(get()) }
+	single<ProcessLogic> { ProcessLogicImpl(get(), get(), get()) }
 	single<StorageLogic> { StorageLogicImpl(get()) }
 	single<TagLogic> { TagLogicImpl(get()) }
 	single<UserLogic> { UserLogicImpl(get(), get()) }

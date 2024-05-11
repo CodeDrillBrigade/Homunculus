@@ -21,6 +21,7 @@ import org.cdb.homunculus.models.security.Permissions
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.Kind
 import org.koin.ktor.plugin.koin
+import java.util.Date
 import java.util.UUID
 import kotlin.reflect.full.functions
 import kotlin.reflect.full.isSubclassOf
@@ -46,7 +47,7 @@ val databaseInitializationPlugin =
 						}.flatMap { function ->
 							function.annotations.filterIsInstance<Index>()
 						}.forEach { index ->
-							dao.initIndex(index.property, index.name)?.let {
+							dao.initIndex(index.property, index.name, index.unique)?.let {
 								application.log.info("Created index $it on ${dao::class.simpleName}")
 							}
 						}
@@ -96,7 +97,7 @@ val systemInitializationPlugin =
 										"default" to
 											AuthToken(
 												token = passwordEncoder.hashAndSaltPassword(temporaryPassword),
-												expirationDate = System.currentTimeMillis() + 1L.days.inWholeMilliseconds,
+												expirationDate = Date(System.currentTimeMillis() + 1L.days.inWholeMilliseconds),
 											),
 									),
 							)

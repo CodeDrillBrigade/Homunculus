@@ -2,10 +2,10 @@ package org.cdb.homunculus.models
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.cdb.homunculus.models.embed.Contact
 import org.cdb.homunculus.models.embed.UserStatus
 import org.cdb.homunculus.models.identifiers.EntityId
 import org.cdb.homunculus.models.security.AuthToken
+import java.util.Date
 
 /**
  * Describes a user in the system.
@@ -17,7 +17,6 @@ import org.cdb.homunculus.models.security.AuthToken
  * @param name the name of the user.
  * @param surname the surname of the user.
  * @param roles a [Set] of [EntityId] of roles assigned to this user.
- * @param contacts a [List] of [Contact]s for the user.
  * @param authenticationTokens a [Map] of temporary [AuthToken] that can be used to login.
  */
 @Serializable
@@ -28,8 +27,8 @@ data class User(
 	val status: UserStatus? = UserStatus.ACTIVE,
 	val name: String?,
 	val surname: String?,
+	val email: String? = null,
 	val roles: Set<EntityId> = emptySet(),
-	val contacts: List<Contact> = emptyList(),
 	val authenticationTokens: Map<String, AuthToken> = emptyMap(),
 ) : StoredEntity {
 	fun redactSecrets() =
@@ -37,7 +36,7 @@ data class User(
 			passwordHash = passwordHash?.let { "*" },
 			authenticationTokens =
 				authenticationTokens.filterValues { v ->
-					v.expirationDate > System.currentTimeMillis()
+					v.expirationDate > Date()
 				}.mapValues { (_, v) -> v.copy(token = "*") },
 		)
 
@@ -45,7 +44,7 @@ data class User(
 		copy(
 			authenticationTokens =
 				authenticationTokens.filterValues { v ->
-					v.expirationDate > System.currentTimeMillis()
+					v.expirationDate > Date()
 				},
 		)
 }

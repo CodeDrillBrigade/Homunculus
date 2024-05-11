@@ -85,17 +85,19 @@ abstract class GenericDao<T : StoredEntity>(
 	 * Creates an ascending index in the current collection for the specified [property], if such an index does not exist already.
 	 *
 	 * @param property the name of the [KProperty] that will be used in the creation of the index.
-	 * @param name the index name
+	 * @param name the index name.
+	 * @param unique whether the index should enforce uniqueness.
 	 * @return the name of the newly created index or null if the index already exists.
 	 */
 	suspend fun initIndex(
 		property: String,
 		name: String,
+		unique: Boolean,
 	): String? =
 		if (collection.listIndexes().firstOrNull { it["name"] == name } == null) {
 			collection.createIndex(
 				Indexes.ascending(property),
-				IndexOptions().name(name),
+				IndexOptions().name(name).unique(unique),
 			)
 		} else {
 			null

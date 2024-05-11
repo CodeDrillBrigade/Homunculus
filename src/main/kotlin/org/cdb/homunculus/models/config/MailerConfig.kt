@@ -7,6 +7,7 @@ data class MailerConfig(
 	val smtpPort: String,
 	val username: String,
 	val password: String,
+	val homunculusUrl: String,
 ) {
 	companion object {
 		fun fromConfig(config: ApplicationConfig) =
@@ -15,6 +16,7 @@ data class MailerConfig(
 				password = config.property("mailer.password").getString(),
 				smtpHost = config.property("mailer.host").getString(),
 				smtpPort = config.property("mailer.port").getString(),
+				homunculusUrl = config.property("mailer.homunculusUrl").getString(),
 			)
 	}
 }

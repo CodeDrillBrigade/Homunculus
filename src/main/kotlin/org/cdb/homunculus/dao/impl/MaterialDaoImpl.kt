@@ -10,7 +10,7 @@ import org.cdb.homunculus.utils.limit
 import java.util.regex.Pattern
 
 class MaterialDaoImpl(client: DBClient) : MaterialDao(client) {
-	@Index(name = "by_fuzzy_name", property = "normalizedName")
+	@Index(name = "by_fuzzy_name", property = "normalizedName", unique = false)
 	override fun byFuzzyName(
 		query: String,
 		limit: Int?,

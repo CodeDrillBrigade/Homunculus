@@ -12,6 +12,7 @@ import org.cdb.homunculus.models.security.AuthResponse
 import org.cdb.homunculus.models.security.JWTClaims
 import org.cdb.homunculus.models.security.JWTRefreshClaims
 import org.cdb.homunculus.utils.DynamicBitArray
+import java.util.Date
 
 class AuthenticationLogicImpl(
 	private val userDao: UserDao,
@@ -29,7 +30,7 @@ class AuthenticationLogicImpl(
 	private fun User.matchPasswordOrToken(password: String): Boolean =
 		listOfNotNull(
 			passwordHash,
-			*authenticationTokens.values.filter { it.expirationDate > System.currentTimeMillis() }.map { it.token }.toTypedArray(),
+			*authenticationTokens.values.filter { it.expirationDate > Date() }.map { it.token }.toTypedArray(),
 		).any { passwordEncoder.checkHash(password, it) }
 
 	override suspend fun login(
