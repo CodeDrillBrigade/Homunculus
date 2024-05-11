@@ -20,7 +20,7 @@ fun Application.configureThrottling() {
 		}
 
 		register(RateLimitName(FORGOT_PASSWORD_RATE_LIMIT)) {
-			rateLimiter(limit = 10, refillPeriod = 60.seconds)
+			rateLimiter(limit = 2, refillPeriod = 60.seconds)
 			requestKey { applicationCall ->
 				applicationCall.request.origin.remoteHost
 			}
