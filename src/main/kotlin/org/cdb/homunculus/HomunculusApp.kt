@@ -5,6 +5,7 @@ import org.cdb.homunculus.configuration.configureExceptions
 import org.cdb.homunculus.configuration.configureHTTP
 import org.cdb.homunculus.configuration.configureKoin
 import org.cdb.homunculus.configuration.configureRouting
+import org.cdb.homunculus.configuration.configureThrottling
 import org.cdb.homunculus.configuration.initialization
 
 fun main(args: Array<String>) = io.ktor.server.cio.EngineMain.main(args)
@@ -13,6 +14,7 @@ fun main(args: Array<String>) = io.ktor.server.cio.EngineMain.main(args)
 fun Application.module() {
 	configureHTTP()
 	configureKoin()
+	configureThrottling()
 	configureRouting()
 	configureExceptions()
 	initialization()
