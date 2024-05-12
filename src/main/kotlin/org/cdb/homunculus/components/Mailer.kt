@@ -2,6 +2,7 @@ package org.cdb.homunculus.components
 
 import org.cdb.homunculus.models.config.MailerConfig
 import org.koin.core.logger.Logger
+import java.net.URLEncoder
 import java.util.Properties
 import javax.mail.Authenticator
 import javax.mail.Message
@@ -48,7 +49,10 @@ class Mailer(
 						"""
 						Hello,
 						apparently you forgot your password. That's a shame, follow this link to recover it:
-						${config.homunculusUrl}/passwordReset?secret=$processId
+						${config.homunculusUrl}/passwordReset?email=${URLEncoder.encode(
+							email,
+							Charsets.UTF_8,
+						)}&secret=${URLEncoder.encode(processId, Charsets.UTF_8)}
 						Best of luck,
 						your personal Homunculus.
 						""".trimIndent(),

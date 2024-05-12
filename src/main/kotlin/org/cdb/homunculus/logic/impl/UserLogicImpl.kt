@@ -40,10 +40,9 @@ class UserLogicImpl(
 		return checkNotNull(userDao.getById(createdId)) { "User retrieval failed" }
 	}
 
-	override suspend fun get(userId: EntityId): User =
-		requireNotNull(userDao.getById(userId)) {
-			"User is not found"
-		}
+	override suspend fun get(userId: EntityId): User = userDao.getById(userId) ?: throw NotFoundException("User $userId not found")
+
+	override suspend fun getByEmail(email: String): User = userDao.getByEmail(email) ?: throw NotFoundException("User $email not found")
 
 	override suspend fun changePassword(
 		userId: EntityId,

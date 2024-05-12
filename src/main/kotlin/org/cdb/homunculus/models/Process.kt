@@ -14,4 +14,5 @@ data class Process(
 	val type: ProcessType,
 	val status: ProcessStatus,
 	@Serializable(with = DateSerializer::class) val started: Date,
+	val userId: EntityId? = null,
 ) : StoredEntity

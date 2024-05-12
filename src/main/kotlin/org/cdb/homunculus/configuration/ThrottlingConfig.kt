@@ -9,6 +9,7 @@ import kotlin.time.Duration.Companion.seconds
 
 const val LOGIN_RATE_LIMIT = "login"
 const val FORGOT_PASSWORD_RATE_LIMIT = "forgot-password"
+const val FORGOT_PASSWORD_CONFIRM_RATE_LIMIT = "forgot-password-confirm"
 
 fun Application.configureThrottling() {
 	install(RateLimit) {
@@ -21,6 +22,13 @@ fun Application.configureThrottling() {
 
 		register(RateLimitName(FORGOT_PASSWORD_RATE_LIMIT)) {
 			rateLimiter(limit = 2, refillPeriod = 60.seconds)
+			requestKey { applicationCall ->
+				applicationCall.request.origin.remoteHost
+			}
+		}
+
+		register(RateLimitName(FORGOT_PASSWORD_CONFIRM_RATE_LIMIT)) {
+			rateLimiter(limit = 30, refillPeriod = 60.seconds)
 			requestKey { applicationCall ->
 				applicationCall.request.origin.remoteHost
 			}

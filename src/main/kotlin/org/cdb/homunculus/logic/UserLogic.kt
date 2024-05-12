@@ -14,12 +14,22 @@ interface UserLogic {
 	suspend fun registerUser(user: User): User
 
 	/**
-	 * Retrieves a [User] by id.
+	 * Retrieves a [User] by [User.id].
 	 *
 	 * @param userId the id of the [User].
 	 * @return the [User].
+	 * @throws NotFoundException if no user with such an id exist.
 	 */
 	suspend fun get(userId: EntityId): User
+
+	/**
+	 * Retrieves a [User] by [User.email].
+	 *
+	 * @param email the email of the user.
+	 * @return the [User].
+	 * @throws NotFoundException if no user with such an email exist.
+	 */
+	suspend fun getByEmail(email: String): User
 
 	/**
 	 * Changes the [User.passwordHash] for a [User]. It also removes any expired [User.authenticationTokens].

@@ -70,7 +70,7 @@ fun applicationModules(
 	single<BoxLogic> { BoxLogicImpl(get()) }
 	single<BoxDefinitionLogic> { BoxDefinitionLogicImpl(get()) }
 	single<MaterialLogic> { MaterialLogicImpl(get()) }
-	single<ProcessLogic> { ProcessLogicImpl(get(), get(), get()) }
+	single<ProcessLogic> { ProcessLogicImpl(get(), get(), get(), get()) }
 	single<StorageLogic> { StorageLogicImpl(get()) }
 	single<TagLogic> { TagLogicImpl(get()) }
 	single<UserLogic> { UserLogicImpl(get(), get()) }

@@ -33,13 +33,22 @@ class AuthenticationLogicImpl(
 			*authenticationTokens.values.filter { it.expirationDate > Date() }.map { it.token }.toTypedArray(),
 		).any { passwordEncoder.checkHash(password, it) }
 
+	private suspend fun getFirstMatchingOrNull(
+		identifier: String,
+		password: String,
+	): User? =
+		listOfNotNull(
+			userDao.getByUsername(identifier),
+			userDao.getByEmail(identifier),
+		).firstOrNull {
+			it.matchPasswordOrToken(password)
+		}
+
 	override suspend fun login(
-		username: String,
+		identifier: String,
 		password: String,
 	): AuthResponse =
-		userDao.getByUsername(username)?.takeIf {
-			it.matchPasswordOrToken(password)
-		}?.let { user ->
+		getFirstMatchingOrNull(identifier, password)?.let { user ->
 			AuthResponse(
 				jwt = jwtManager.generateAuthJWT(JWTClaims(user.id, user.permissionsAsBitArray())),
 				refreshJwt = jwtManager.generateRefreshJWT(JWTRefreshClaims(user.id)),

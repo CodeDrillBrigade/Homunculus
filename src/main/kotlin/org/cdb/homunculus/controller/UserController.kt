@@ -28,6 +28,11 @@ fun Routing.userController() =
 			call.respond(userLogic.get(EntityId(userId)).redactSecrets())
 		}
 
+		authenticatedGet("/byEmail/{email}") {
+			val email = checkNotNull(call.parameters["email"]) { "Email must not be null" }
+			call.respond(userLogic.getByEmail(email).redactSecrets())
+		}
+
 		authenticatedPost("", permissions = setOf(Permissions.ADMIN)) {
 			val creationData = call.receive<User>()
 			val createdUser = userLogic.registerUser(creationData).redactSecrets()

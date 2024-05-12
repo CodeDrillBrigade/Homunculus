@@ -10,15 +10,15 @@ import org.cdb.homunculus.models.security.AuthResponse
  */
 interface AuthenticationLogic {
 	/**
-	 * Logins a user based on username and password.
+	 * Logins a user based on an identifier and password. The identifier can be either the [User.username] or the [User.email]
 	 *
-	 * @param username the username.
+	 * @param identifier the user identifier.
 	 * @param password the [User.passwordHash] or a valid [User.authenticationTokens].
 	 * @return an [AuthResponse] if the authentication succeeded.
 	 * @throws UnauthorizedException if it is not possible to authenticate the user
 	 */
 	suspend fun login(
-		username: String,
+		identifier: String,
 		password: String,
 	): AuthResponse
 
