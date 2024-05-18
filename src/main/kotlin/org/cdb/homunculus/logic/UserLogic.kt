@@ -6,12 +6,27 @@ import org.cdb.homunculus.models.identifiers.EntityId
 
 interface UserLogic {
 	/**
-	 * Creates a new user in the system.
+	 * Invites a new user to the system.
+	 * It creates a bare [User] with just email and a temporary token that lasts one day and then
+	 * sends the invitation email to the user.
 	 *
 	 * @param user the [User] to create.
-	 * @return the created [User].
+	 * @param inviterId the id of the user doing the invitation.
+	 * @throws IllegalArgumentException if the provided user does not have an email.
 	 */
-	suspend fun registerUser(user: User): User
+	suspend fun inviteUser(
+		user: User,
+		inviterId: EntityId,
+	)
+
+	/**
+	 * Updates a [User] in the system. it will automatically ignore any update
+	 * to [User.authenticationTokens], and [User.roles].
+	 *
+	 * @param user the user to update.
+	 * @throws NotFoundException if there is no user with such an id in the system.
+	 */
+	suspend fun modify(user: User)
 
 	/**
 	 * Retrieves a [User] by [User.id].
@@ -30,6 +45,15 @@ interface UserLogic {
 	 * @throws NotFoundException if no user with such an email exist.
 	 */
 	suspend fun getByEmail(email: String): User
+
+	/**
+	 * Retrieves a [User] by [User.username].
+	 *
+	 * @param username the username of the user.
+	 * @return the [User].
+	 * @throws NotFoundException if no user with such an username exist.
+	 */
+	suspend fun getByUsername(username: String): User
 
 	/**
 	 * Changes the [User.passwordHash] for a [User]. It also removes any expired [User.authenticationTokens].

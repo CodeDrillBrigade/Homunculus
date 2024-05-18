@@ -23,10 +23,10 @@ import java.util.Date
 data class User(
 	@SerialName("_id") override val id: EntityId = EntityId.generate(),
 	val username: String,
-	val passwordHash: String?,
+	val passwordHash: String? = null,
 	val status: UserStatus? = UserStatus.ACTIVE,
-	val name: String?,
-	val surname: String?,
+	val name: String? = null,
+	val surname: String? = null,
 	val email: String? = null,
 	val roles: Set<EntityId> = emptySet(),
 	val authenticationTokens: Map<String, AuthToken> = emptyMap(),

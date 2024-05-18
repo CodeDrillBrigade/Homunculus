@@ -28,15 +28,37 @@ fun Routing.userController() =
 			call.respond(userLogic.get(EntityId(userId)).redactSecrets())
 		}
 
+		authenticatedGet("/permissions") {
+			val permissions =
+				Permissions.entries.filter { p ->
+					it.permissions[p.index]
+				}
+			call.respond(permissions)
+		}
+
 		authenticatedGet("/byEmail/{email}") {
 			val email = checkNotNull(call.parameters["email"]) { "Email must not be null" }
 			call.respond(userLogic.getByEmail(email).redactSecrets())
 		}
 
+		authenticatedGet("/byUsername/{username}") {
+			val username = checkNotNull(call.parameters["username"]) { "Username must not be null" }
+			call.respond(userLogic.getByUsername(username).redactSecrets())
+		}
+
 		authenticatedPost("", permissions = setOf(Permissions.ADMIN)) {
 			val creationData = call.receive<User>()
-			val createdUser = userLogic.registerUser(creationData).redactSecrets()
-			call.respond(createdUser)
+			userLogic.inviteUser(creationData, it.userId)
+			call.respond("ok")
+		}
+
+		authenticatedPut("") {
+			val userToUpdate = call.receive<User>()
+			guard(
+				it.userId == userToUpdate.id || it.permissions[Permissions.ADMIN.index],
+			) { "You are not allowed to update this user" }
+			userLogic.modify(userToUpdate)
+			call.respond("ok")
 		}
 
 		authenticatedPut("/{userId}/password") {
