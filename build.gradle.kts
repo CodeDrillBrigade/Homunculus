@@ -24,7 +24,6 @@ dependencies {
 	implementation(libs.bundles.mongo)
 	implementation(libs.logback)
 	implementation(libs.jbCrypt)
-	implementation(libs.javaxMail)
 }
 
 tasks.withType<Test> {

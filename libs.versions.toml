@@ -18,7 +18,6 @@ ktorRateLimiting = { group = "io.ktor", name = "ktor-server-rate-limit", version
 ktorAuth = { group = "io.ktor", name ="ktor-server-auth", version.ref="ktor" }
 ktorAuthJwt = { group = "io.ktor", name ="ktor-server-auth-jwt", version.ref="ktor" }
 ktorStatusPages = { group = "io.ktor", name ="ktor-server-status-pages", version.ref="ktor" }
-javaxMail = { group = "com.sun.mail", name = "javax.mail", version = "1.6.2"}
 mongoClient = { group = "org.mongodb", name = "mongodb-driver-kotlin-coroutine", version = "4.11.0" }
 mongoClientSerialization = { group = "org.mongodb", name = "bson-kotlinx", version = "4.10.1" }
 jbCrypt = { group = "org.mindrot", name = "jbcrypt", version = "0.4" }
