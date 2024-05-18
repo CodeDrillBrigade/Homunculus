@@ -53,7 +53,7 @@ fun applicationModules(
 	single<JWTManager> { JWTManager(jwtConfig) }
 	single<DBClient> { DBClient(dbCredentials) }
 	single<PasswordEncoder> { BCryptPasswordEncoder() }
-	single<Mailer> { Mailer(mailerConfig, logger) }
+	single<Mailer> { Mailer(mailerConfig) }
 
 	// DAOs
 	single<BoxDao> { BoxDaoImpl(get()) }
@@ -73,7 +73,7 @@ fun applicationModules(
 	single<ProcessLogic> { ProcessLogicImpl(get(), get(), get(), get()) }
 	single<StorageLogic> { StorageLogicImpl(get()) }
 	single<TagLogic> { TagLogicImpl(get()) }
-	single<UserLogic> { UserLogicImpl(get(), get()) }
+	single<UserLogic> { UserLogicImpl(get(), get(), get()) }
 }
 
 /**

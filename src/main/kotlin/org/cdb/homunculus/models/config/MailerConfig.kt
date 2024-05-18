@@ -3,20 +3,18 @@ package org.cdb.homunculus.models.config
 import io.ktor.server.config.ApplicationConfig
 
 data class MailerConfig(
-	val smtpHost: String,
-	val smtpPort: String,
-	val username: String,
-	val password: String,
 	val homunculusUrl: String,
+	val hermesUrl: String,
+	val resetPasswordTemplateId: String,
+	val inviteTemplateId: String,
 ) {
 	companion object {
 		fun fromConfig(config: ApplicationConfig) =
 			MailerConfig(
-				username = config.property("mailer.username").getString(),
-				password = config.property("mailer.password").getString(),
-				smtpHost = config.property("mailer.host").getString(),
-				smtpPort = config.property("mailer.port").getString(),
 				homunculusUrl = config.property("mailer.homunculusUrl").getString(),
+				hermesUrl = config.property("mailer.hermesUrl").getString(),
+				resetPasswordTemplateId = config.property("mailer.resetPasswordTemplateId").getString(),
+				inviteTemplateId = config.property("mailer.inviteTemplateId").getString(),
 			)
 	}
 }

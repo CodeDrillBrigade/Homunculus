@@ -1,67 +1,77 @@
 package org.cdb.homunculus.components
 
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.Serializable
 import org.cdb.homunculus.models.config.MailerConfig
-import org.koin.core.logger.Logger
 import java.net.URLEncoder
-import java.util.Properties
-import javax.mail.Authenticator
-import javax.mail.Message
-import javax.mail.PasswordAuthentication
-import javax.mail.Session
-import javax.mail.Transport
-import javax.mail.internet.InternetAddress
-import javax.mail.internet.MimeMessage
 
 class Mailer(
 	private val config: MailerConfig,
-	private val logger: Logger,
 ) {
-	private val properties =
-		Properties().apply {
-			put("mail.smtp.host", config.smtpHost)
-			put("mail.smtp.port", config.smtpPort)
-			put("mail.smtp.auth", "true")
-			put("mail.smtp.starttls.enable", "true")
+	companion object {
+		@Serializable
+		private data class MailInput(
+			val id: String,
+			val email: String,
+			val attributes: Map<String, String>,
+		)
+	}
+
+	private val httpClient =
+		HttpClient(CIO) {
+			install(ContentNegotiation) {
+				json()
+			}
 		}
 
-	private val session: Session
-		get() =
-			Session.getInstance(
-				properties,
-				object : Authenticator() {
-					override fun getPasswordAuthentication(): PasswordAuthentication {
-						return PasswordAuthentication(config.username, config.password)
-					}
-				},
-			)
-
-	fun sendPasswordResetEmail(
+	suspend fun sendPasswordResetEmail(
 		email: String,
 		processId: String,
 	) {
-		try {
-			val message =
-				MimeMessage(session).apply {
-					setFrom(InternetAddress("homunculus@kaironbot.net"))
-					addRecipient(Message.RecipientType.TO, InternetAddress(email))
-					subject = "Reset your Homunculus password"
-					setText(
-						"""
-						Hello,
-						apparently you forgot your password. That's a shame, follow this link to recover it:
-						${config.homunculusUrl}/passwordReset?email=${URLEncoder.encode(
-							email,
-							Charsets.UTF_8,
-						)}&secret=${URLEncoder.encode(processId, Charsets.UTF_8)}
-						Best of luck,
-						your personal Homunculus.
-						""".trimIndent(),
-					)
-				}
-			Transport.send(message)
-			logger.info("Password reset email to $email sent successfully!")
-		} catch (e: Exception) {
-			logger.error("There was an error while sending a password reset email to $email:\n ${e.stackTraceToString()}")
+		httpClient.post("${config.hermesUrl}/v1/mail") {
+			contentType(ContentType.Application.Json)
+			setBody(
+				MailInput(
+					id = config.resetPasswordTemplateId,
+					email = email,
+					attributes =
+						mapOf(
+							"url" to config.hermesUrl,
+							"email" to URLEncoder.encode(email, "UTF-8"),
+							"processId" to URLEncoder.encode(processId, "UTF-8"),
+						),
+				),
+			)
+		}
+	}
+
+	suspend fun sendInvitationEmail(
+		email: String,
+		tmpToken: String,
+		inviterName: String,
+	) {
+		httpClient.post("${config.hermesUrl}/v1/mail") {
+			contentType(ContentType.Application.Json)
+			setBody(
+				MailInput(
+					id = config.inviteTemplateId,
+					email = email,
+					attributes =
+						mapOf(
+							"url" to config.homunculusUrl,
+							"inviterName" to inviterName,
+							"email" to URLEncoder.encode(email, "UTF-8"),
+							"tmpToken" to URLEncoder.encode(tmpToken, "UTF-8"),
+						),
+				),
+			)
 		}
 	}
 }
