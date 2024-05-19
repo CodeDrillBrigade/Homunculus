@@ -43,7 +43,7 @@ class Mailer(
 					email = email,
 					attributes =
 						mapOf(
-							"url" to config.hermesUrl,
+							"url" to config.homunculusUrl,
 							"email" to URLEncoder.encode(email, "UTF-8"),
 							"processId" to URLEncoder.encode(processId, "UTF-8"),
 						),
