@@ -11,6 +11,18 @@ group = "org.cdb"
 version = "0.0.1"
 
 tasks.withType<KotlinCompile> {
+	kotlinOptions {
+		freeCompilerArgs = listOf("-Xjsr305=strict")
+		jvmTarget = "19"
+	}
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_19
+	targetCompatibility = JavaVersion.VERSION_19
+}
+
+tasks.withType<KotlinCompile> {
 	dependsOn("ktlintFormat")
 }
 
