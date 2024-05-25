@@ -23,7 +23,7 @@ interface BoxLogic {
 	): Identifier
 
 	/**
-	 * Soft-deletes a [Box] by setting [Box.deleted] to the current timestamp.
+	 * Soft-deletes a [Box] by setting [Box.deletionDate] to the current timestamp.
 	 *
 	 * @param id the [EntityId] of the box to delete.
 	 * @return the id of the updated box.
@@ -78,4 +78,13 @@ interface BoxLogic {
 		boxId: EntityId,
 		update: UsageLog,
 	): EntityId
+
+	/**
+	 * Updates a [Box] in the system.
+	 * This method will ignore [Box.usageLogs], [Box.quantity] or [Box.material].
+	 *
+	 * @param box the box to update.
+	 * @throws NotFoundException if there is no user with such an id in the system.
+	 */
+	suspend fun modify(box: Box)
 }

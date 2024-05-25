@@ -15,6 +15,7 @@ import org.cdb.homunculus.models.security.Permissions
 import org.cdb.homunculus.requests.authenticatedDelete
 import org.cdb.homunculus.requests.authenticatedGet
 import org.cdb.homunculus.requests.authenticatedPost
+import org.cdb.homunculus.requests.authenticatedPut
 import org.cdb.homunculus.utils.guard
 import org.koin.ktor.ext.inject
 
@@ -44,6 +45,11 @@ fun Routing.boxController() =
 		authenticatedPost("", permissions = setOf(Permissions.MANAGE_MATERIALS)) {
 			val boxToCreate = call.receive<Box>()
 			call.respond(boxLogic.create(boxToCreate, it.userId))
+		}
+
+		authenticatedPut("", permissions = setOf(Permissions.MANAGE_MATERIALS)) {
+			val boxToUpdate = call.receive<Box>()
+			call.respond(boxLogic.modify(boxToUpdate))
 		}
 
 		authenticatedDelete("/{boxId}", permissions = setOf(Permissions.MANAGE_MATERIALS)) {

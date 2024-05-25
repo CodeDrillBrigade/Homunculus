@@ -43,13 +43,13 @@ class BoxLogicImpl(
 
 	override fun getByMaterial(materialId: EntityId): Flow<Box> = boxDao.getByMaterial(materialId)
 
-	override fun getByPosition(shelfId: HierarchicalId): Flow<Box> = boxDao.getByPosition(shelfId).filter { it.deleted == null }
+	override fun getByPosition(shelfId: HierarchicalId): Flow<Box> = boxDao.getByPosition(shelfId).filter { it.deletionDate == null }
 
 	override suspend fun delete(id: EntityId): EntityId {
 		val box = boxDao.getById(id) ?: throw NotFoundException("Box $id not found")
 		return boxDao.update(
 			box.copy(
-				deleted = Date(),
+				deletionDate = Date(),
 			),
 		)?.id ?: throw IllegalStateException("Cannot delete the box with id $id")
 	}
@@ -78,5 +78,18 @@ class BoxLogicImpl(
 					},
 			),
 		)?.id ?: throw IllegalStateException("Cannot update the quantity for box $boxId")
+	}
+
+	override suspend fun modify(box: Box) {
+		val currentBox = boxDao.getById(box.id) ?: throw NotFoundException("Box ${box.id} not found")
+		boxDao.update(
+			currentBox.copy(
+				position = box.position,
+				batchNumber = box.batchNumber ?: currentBox.batchNumber,
+				expirationDate = box.expirationDate ?: currentBox.expirationDate,
+				deletionDate = box.deletionDate ?: currentBox.deletionDate,
+				description = box.description ?: currentBox.description,
+			),
+		)
 	}
 }
