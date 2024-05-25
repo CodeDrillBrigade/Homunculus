@@ -9,8 +9,10 @@ import org.cdb.homunculus.logic.MaterialLogic
 import org.cdb.homunculus.models.Material
 import org.cdb.homunculus.models.identifiers.EntityId
 import org.cdb.homunculus.models.security.Permissions
+import org.cdb.homunculus.requests.authenticatedDelete
 import org.cdb.homunculus.requests.authenticatedGet
 import org.cdb.homunculus.requests.authenticatedPost
+import org.cdb.homunculus.requests.authenticatedPut
 import org.koin.ktor.ext.inject
 
 fun Routing.materialController() =
@@ -26,6 +28,11 @@ fun Routing.materialController() =
 			call.respond(materialLogic.get(EntityId(materialId)))
 		}
 
+		authenticatedDelete("/{materialId}", permissions = setOf(Permissions.MANAGE_MATERIALS)) {
+			val materialId = checkNotNull(call.parameters["materialId"]) { "Material Id must not be null" }
+			call.respond(materialLogic.delete(EntityId(materialId)))
+		}
+
 		authenticatedGet("/byFuzzyName/{query}") {
 			val query = checkNotNull(call.parameters["query"]) { "query must not be null and longer than 3 characters." }
 			val limit = call.request.queryParameters["limit"]?.toIntOrNull()
@@ -35,5 +42,10 @@ fun Routing.materialController() =
 		authenticatedPost("", permissions = setOf(Permissions.MANAGE_MATERIALS)) {
 			val materialToCreate = call.receive<Material>()
 			call.respond(materialLogic.create(materialToCreate))
+		}
+
+		authenticatedPut("", permissions = setOf(Permissions.MANAGE_MATERIALS)) {
+			val materialToUpdate = call.receive<Material>()
+			call.respond(materialLogic.modify(materialToUpdate))
 		}
 	}

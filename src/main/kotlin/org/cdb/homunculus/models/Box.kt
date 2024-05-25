@@ -17,9 +17,9 @@ data class Box(
 	val material: EntityId,
 	val quantity: BoxUnit,
 	val position: HierarchicalId,
-	val batchNumber: String,
+	val batchNumber: String? = null,
 	@Serializable(with = DateSerializer::class) val expirationDate: Date? = null,
-	@Serializable(with = DateSerializer::class) val deleted: Date? = null,
+	@Serializable(with = DateSerializer::class) val deletionDate: Date? = null,
 	val description: String? = null,
 	@Serializable(with = SortedSetSerializer::class) val usageLogs: SortedSet<UsageLog> = sortedSetOf(),
 ) : StoredEntity
