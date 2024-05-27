@@ -24,9 +24,7 @@ fun Routing.roleController() =
 			call.respond(checkNotNull(call.parameters["roleID"]) { "Role ID must not be null" })
 		}
 		
-		authenticatedPost("/", permissions = setOf(Permissions.ADMIN)) {
+		authenticatedPost("", permissions = setOf(Permissions.ADMIN)) {
 			call.respond(roleLogic.addRole(call.receive<Role>()))
 		}
-		
-		
 	}

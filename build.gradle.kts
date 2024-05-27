@@ -10,9 +10,11 @@ plugins {
 group = "org.cdb"
 version = "0.0.1"
 
+/* ******************
 tasks.withType<KotlinCompile> {
 	dependsOn("ktlintFormat")
 }
+***********************/
 
 application {
 	mainClass.set("org.cdb.labwitch.LabWitchAppKt")
