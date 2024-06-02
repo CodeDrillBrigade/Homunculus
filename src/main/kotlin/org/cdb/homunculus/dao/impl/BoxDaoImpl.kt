@@ -1,5 +1,6 @@
 package org.cdb.homunculus.dao.impl
 
+import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Filters.eq
 import kotlinx.coroutines.flow.Flow
 import org.cdb.homunculus.annotations.Index
@@ -8,12 +9,47 @@ import org.cdb.homunculus.dao.BoxDao
 import org.cdb.homunculus.models.Box
 import org.cdb.homunculus.models.identifiers.EntityId
 import org.cdb.homunculus.models.identifiers.HierarchicalId
+import java.util.regex.Pattern
 
 class BoxDaoImpl(client: DBClient) : BoxDao(client) {
-	override fun getByMaterial(materialId: EntityId): Flow<Box> = find(eq(Box::material.name, materialId))
+	override fun getByMaterial(
+		materialId: EntityId,
+		includeDeleted: Boolean,
+	): Flow<Box> =
+		find(
+			Filters.and(
+				listOfNotNull(
+					eq(Box::material.name, materialId),
+					Filters.exists(Box::deletionDate.name, false).takeIf { !includeDeleted },
+				),
+			),
+		)
+
+	@Index(name = "by_batch_number", property = "batchNumber", unique = false)
+	override fun getByBatchNumber(
+		query: String,
+		includeDeleted: Boolean,
+	): Flow<Box> =
+		find(
+			Filters.and(
+				listOfNotNull(
+					Filters.regex(Box::batchNumber.name, Pattern.compile("^$query.*")),
+					Filters.exists(Box::deletionDate.name, false).takeIf { !includeDeleted },
+				),
+			),
+		)
 
 	@Index(name = "by_shelf_id", property = "position", unique = false)
-	override fun getByPosition(shelfId: HierarchicalId): Flow<Box> = find(eq(Box::position.name, shelfId))
-
-	override fun getAll(): Flow<Box> = get()
+	override fun getByPosition(
+		shelfId: HierarchicalId,
+		includeDeleted: Boolean,
+	): Flow<Box> =
+		find(
+			Filters.and(
+				listOfNotNull(
+					eq(Box::position.name, shelfId),
+					Filters.exists(Box::deletionDate.name, false).takeIf { !includeDeleted },
+				),
+			),
+		)
 }

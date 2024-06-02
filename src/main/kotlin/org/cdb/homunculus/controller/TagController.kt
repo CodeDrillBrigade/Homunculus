@@ -26,6 +26,12 @@ fun Routing.tagController() =
 			call.respond(tagLogic.get(EntityId(tagId)))
 		}
 
+		authenticatedPost("/byIds") {
+			val tagIds = call.receive<Set<EntityId>>()
+			require(tagIds.isNotEmpty()) { "Tag Ids must not be null or empty" }
+			call.respond(tagLogic.getByIds(tagIds))
+		}
+
 		authenticatedPost("", permissions = setOf(Permissions.MANAGE_METADATA)) {
 			val tagToCreate = call.receive<Tag>()
 			call.respond(tagLogic.create(tagToCreate))

@@ -41,6 +41,14 @@ abstract class GenericDao<T : StoredEntity>(
 	suspend fun getById(id: Identifier): T? = collection.find(Filters.eq("_id", id.id)).firstOrNull()
 
 	/**
+	 * Retrieves multiple [T]s by id.
+	 *
+	 * @param ids a [Set] containing the [Identifier]s of the elements to retrieve. Non-existing ids are ignored..
+	 * @return a [Flow] of [T] which id is contained in [ids].
+	 */
+	fun getByIds(ids: Set<Identifier>): Flow<T> = collection.find(Filters.`in`("_id", ids.map { it.id }))
+
+	/**
 	 * Retrieves all the entities matching the specified filter.
 	 *
 	 * @param filter a [Bson] filter.

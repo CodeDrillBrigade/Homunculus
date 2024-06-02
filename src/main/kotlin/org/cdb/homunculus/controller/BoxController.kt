@@ -42,6 +42,11 @@ fun Routing.boxController() =
 			call.respond(boxLogic.getByPosition(HierarchicalId(shelfId)))
 		}
 
+		authenticatedGet("/byBatchNumber") {
+			val query = requireNotNull(call.request.queryParameters["query"]) { "query must not be null." }
+			call.respond(boxLogic.findByBatchNumber(query))
+		}
+
 		authenticatedPost("", permissions = setOf(Permissions.MANAGE_MATERIALS)) {
 			val boxToCreate = call.receive<Box>()
 			call.respond(boxLogic.create(boxToCreate, it.userId))

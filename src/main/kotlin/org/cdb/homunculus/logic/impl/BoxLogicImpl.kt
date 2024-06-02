@@ -1,7 +1,6 @@
 package org.cdb.homunculus.logic.impl
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
 import org.cdb.homunculus.dao.BoxDao
 import org.cdb.homunculus.exceptions.NotFoundException
 import org.cdb.homunculus.logic.BoxLogic
@@ -22,6 +21,7 @@ class BoxLogicImpl(
 	): Identifier {
 		val boxWithLog =
 			box.copy(
+				creationDate = Date(),
 				usageLogs =
 					sortedSetOf(
 						UsageLog(
@@ -39,11 +39,13 @@ class BoxLogicImpl(
 
 	override suspend fun get(boxId: EntityId): Box = boxDao.getById(boxId) ?: throw NotFoundException("Box $boxId not found")
 
-	override fun getAll(): Flow<Box> = boxDao.getAll()
+	override fun getAll(): Flow<Box> = boxDao.get()
 
-	override fun getByMaterial(materialId: EntityId): Flow<Box> = boxDao.getByMaterial(materialId)
+	override fun getByMaterial(materialId: EntityId): Flow<Box> = boxDao.getByMaterial(materialId, false)
 
-	override fun getByPosition(shelfId: HierarchicalId): Flow<Box> = boxDao.getByPosition(shelfId).filter { it.deletionDate == null }
+	override fun getByPosition(shelfId: HierarchicalId): Flow<Box> = boxDao.getByPosition(shelfId, false)
+
+	override fun findByBatchNumber(query: String): Flow<Box> = boxDao.getByBatchNumber(query, false)
 
 	override suspend fun delete(id: EntityId): EntityId {
 		val box = boxDao.getById(id) ?: throw NotFoundException("Box $id not found")

@@ -16,4 +16,6 @@ class TagLogicImpl(
 	override suspend fun get(tagId: EntityId): Tag = tagDao.getById(tagId) ?: throw NotFoundException("Tag $tagId not found")
 
 	override suspend fun getAll(): Flow<Tag> = tagDao.get()
+
+	override fun getByIds(ids: Set<EntityId>): Flow<Tag> = tagDao.getByIds(ids)
 }

@@ -19,5 +19,6 @@ data class Material(
 	val tags: Set<EntityId> = emptySet(),
 	val noteList: List<Note> = emptyList(),
 	val normalizedName: String? = null,
+	@Serializable(with = DateSerializer::class) val creationDate: Date? = null,
 	@Serializable(with = DateSerializer::class) val deletionDate: Date? = null,
 ) : StoredEntity
