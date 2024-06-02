@@ -13,23 +13,38 @@ abstract class BoxDao(client: DBClient) : GenericDao<Box>(client) {
 	override fun wrapIdentifier(id: String): EntityId = EntityId(id)
 
 	/**
-	 * Retrieves all the boxes with the specified [materialId].
+	 * Retrieves all the boxes with the specified [Box.material].
 	 *
 	 * @param materialId the [EntityId] of the material
+	 * @param includeDeleted whether to include the Boxes where [Box.deletionDate] is not null.
 	 * @return a [Flow] of [Box]es.
 	 */
-	abstract fun getByMaterial(materialId: EntityId): Flow<Box>
+	abstract fun getByMaterial(
+		materialId: EntityId,
+		includeDeleted: Boolean,
+	): Flow<Box>
+
+	/**
+	 * Retrieves all the [Box]es where [Box.batchNumber] is not null and starts with [query].
+	 *
+	 * @param query the prefix for [Box.batchNumber] to search for.
+	 * @param includeDeleted whether to include the Boxes where [Box.deletionDate] is not null.
+	 * @return a [Flow] of [Box] that match the condition.
+	 */
+	abstract fun getByBatchNumber(
+		query: String,
+		includeDeleted: Boolean,
+	): Flow<Box>
 
 	/**
 	 * Retrieves all the boxes in a specified shelf.
 	 *
 	 * @param shelfId the id of the shelf.
+	 * @param includeDeleted whether to include the Boxes where [Box.deletionDate] is not null.
 	 * @return a [Flow] of [Box]es.
 	 */
-	abstract fun getByPosition(shelfId: HierarchicalId): Flow<Box>
-
-	/**
-	 * @return a [Flow] containing all the [Box]es in the database.
-	 */
-	abstract fun getAll(): Flow<Box>
+	abstract fun getByPosition(
+		shelfId: HierarchicalId,
+		includeDeleted: Boolean,
+	): Flow<Box>
 }

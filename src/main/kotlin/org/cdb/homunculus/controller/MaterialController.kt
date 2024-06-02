@@ -24,19 +24,36 @@ fun Routing.materialController() =
 		}
 
 		authenticatedGet("/{materialId}") {
-			val materialId = checkNotNull(call.parameters["materialId"]) { "Material Id must not be null" }
+			val materialId = requireNotNull(call.parameters["materialId"]) { "Material Id must not be null" }
 			call.respond(materialLogic.get(EntityId(materialId)))
 		}
 
 		authenticatedDelete("/{materialId}", permissions = setOf(Permissions.MANAGE_MATERIALS)) {
-			val materialId = checkNotNull(call.parameters["materialId"]) { "Material Id must not be null" }
+			val materialId = requireNotNull(call.parameters["materialId"]) { "Material Id must not be null" }
 			call.respond(materialLogic.delete(EntityId(materialId)))
 		}
 
 		authenticatedGet("/byFuzzyName/{query}") {
-			val query = checkNotNull(call.parameters["query"]) { "query must not be null and longer than 3 characters." }
+			val query = requireNotNull(call.parameters["query"]) { "query must not be null." }
 			val limit = call.request.queryParameters["limit"]?.toIntOrNull()
 			call.respond(materialLogic.findByFuzzyName(query, limit))
+		}
+
+		authenticatedGet("/recentlyCreated") {
+			val limit = requireNotNull(call.request.queryParameters["limit"]?.toIntOrNull()) { "limit is not a valid int" }
+			call.respond(materialLogic.getLastCreated(limit))
+		}
+
+		authenticatedPost("/idsByNameBrandCode") {
+			val query = requireNotNull(call.request.queryParameters["query"]) { "query must not be null." }
+			val tagIds = call.receiveNullable<Set<EntityId>?>()
+			call.respond(materialLogic.search(query, tagIds))
+		}
+
+		authenticatedPost("/byIds") {
+			val materialIds = call.receive<Set<EntityId>>()
+			require(materialIds.isNotEmpty()) { "Material Ids must not be null or empty" }
+			call.respond(materialLogic.getByIds(materialIds))
 		}
 
 		authenticatedPost("", permissions = setOf(Permissions.MANAGE_MATERIALS)) {

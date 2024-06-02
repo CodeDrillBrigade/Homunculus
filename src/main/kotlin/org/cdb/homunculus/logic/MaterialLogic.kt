@@ -63,4 +63,34 @@ interface MaterialLogic {
 	 * @throws NotFoundException if there is no user with such an id in the system.
 	 */
 	suspend fun modify(material: Material)
+
+	/**
+	 * Retrieves the [EntityId]s of all the [Material] where [Material.normalizedName], [Material.brand], or [Material.referenceCode] start
+	 * with the provided [query].
+	 * If one or more [tagIds] are specified, then only the Materials with the specified [Material.tags] are considered.
+	 *
+	 * @param query the prefix for the properties to search.
+	 * @param tagIds the ids of the tags that a [Material] must have to be included in the results.
+	 * @return a [Set] of the [EntityId]s of the matching [Material]s.
+	 */
+	suspend fun search(
+		query: String,
+		tagIds: Set<EntityId>?,
+	): Set<EntityId>
+
+	/**
+	 * Retrieves multiple [Material]s by their [Material.id].
+	 *
+	 * @param ids the ids of the [Material]s to retrieve. All the ids that do not correspond to an actual material are ignored.
+	 * @return a [Flow] of [Material]s.
+	 */
+	fun getByIds(ids: Set<EntityId>): Flow<Material>
+
+	/**
+	 * Retrieves the last [limit] [Material]s in descending order by [Material.creationDate].
+	 *
+	 * @param limit the number of elements to retrieve.
+	 * @return a [Flow] of [Material].
+	 */
+	fun getLastCreated(limit: Int): Flow<Material>
 }

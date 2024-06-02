@@ -87,4 +87,13 @@ interface BoxLogic {
 	 * @throws NotFoundException if there is no user with such an id in the system.
 	 */
 	suspend fun modify(box: Box)
+
+	/**
+	 * Retrieves all the [Box]es based on a match between the normalized [query] and [Box.batchNumber], excluding the ones
+	 * where [Box.deletionDate] is set.
+	 *
+	 * @param query the query, to be normalized.
+	 * @return a [Flow] of [Box]es.
+	 */
+	fun findByBatchNumber(query: String): Flow<Box>
 }

@@ -1,7 +1,12 @@
 package org.cdb.homunculus.logic.impl
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.fold
+import kotlinx.coroutines.flow.map
 import org.cdb.homunculus.dao.MaterialDao
 import org.cdb.homunculus.exceptions.NotFoundException
 import org.cdb.homunculus.logic.MaterialLogic
@@ -15,7 +20,7 @@ class MaterialLogicImpl(
 	private val materialDao: MaterialDao,
 ) : MaterialLogic {
 	override suspend fun create(material: Material): Identifier =
-		materialDao.save(material.copy(normalizedName = StringNormalizer.normalize(material.name)))
+		materialDao.save(material.copy(creationDate = Date(), normalizedName = StringNormalizer.normalize(material.name)))
 
 	override suspend fun get(materialId: EntityId): Material =
 		materialDao.getById(materialId) ?: throw NotFoundException("Material $materialId not found")
@@ -26,10 +31,11 @@ class MaterialLogicImpl(
 		query: String,
 		limit: Int?,
 	): Flow<Material> =
-		materialDao.byFuzzyName(
+		materialDao.getByFuzzyName(
 			StringNormalizer.normalize(query),
+			false,
 			limit,
-		).filter { it.deletionDate == null }
+		)
 
 	override suspend fun delete(id: EntityId): EntityId {
 		val material = materialDao.getById(id) ?: throw NotFoundException("Material $id not found")
@@ -53,4 +59,23 @@ class MaterialLogicImpl(
 			),
 		)
 	}
+
+	@OptIn(ExperimentalCoroutinesApi::class)
+	override suspend fun search(
+		query: String,
+		tagIds: Set<EntityId>?,
+	): Set<EntityId> =
+		flowOf(
+			materialDao.getByFuzzyName(query, false, null),
+			materialDao.getByReferenceCode(query, false, null),
+			materialDao.getByBrand(query, false, null),
+		).flatMapConcat { flw ->
+			flw.filter {
+				tagIds == null || it.tags.intersect(tagIds).isNotEmpty()
+			}.map { it.id }
+		}.fold(mutableSetOf()) { acc, it -> acc.apply { add(it) } }
+
+	override fun getByIds(ids: Set<EntityId>): Flow<Material> = materialDao.getByIds(ids)
+
+	override fun getLastCreated(limit: Int): Flow<Material> = materialDao.getLastCreated(limit)
 }

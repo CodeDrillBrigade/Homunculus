@@ -20,6 +20,7 @@ data class Box(
 	val batchNumber: String? = null,
 	@Serializable(with = DateSerializer::class) val expirationDate: Date? = null,
 	@Serializable(with = DateSerializer::class) val deletionDate: Date? = null,
+	@Serializable(with = DateSerializer::class) val creationDate: Date? = null,
 	val description: String? = null,
 	@Serializable(with = SortedSetSerializer::class) val usageLogs: SortedSet<UsageLog> = sortedSetOf(),
 ) : StoredEntity
