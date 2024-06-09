@@ -87,10 +87,10 @@ class BoxLogicImpl(
 		boxDao.update(
 			currentBox.copy(
 				position = box.position,
-				batchNumber = box.batchNumber ?: currentBox.batchNumber,
-				expirationDate = box.expirationDate ?: currentBox.expirationDate,
-				deletionDate = box.deletionDate ?: currentBox.deletionDate,
-				description = box.description ?: currentBox.description,
+				batchNumber = box.batchNumber,
+				expirationDate = box.expirationDate,
+				deletionDate = box.deletionDate,
+				description = box.description,
 			),
 		)
 	}
