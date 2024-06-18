@@ -64,6 +64,13 @@ abstract class GenericDao<T : StoredEntity>(
 	fun get(): Flow<T> = collection.find()
 
 	/**
+	 * Deletes a [T] by identifier.
+	 *
+	 * @return true if the operation is successful, false otherwise.
+	 */
+	suspend fun delete(id: Identifier): Boolean = collection.deleteOne(Filters.eq("_id", id.id)).deletedCount == 1L
+
+	/**
 	 * Wraps a String in the correct type of identifier from the specific concrete DAO.
 	 *
 	 * @param id an id from MongoDB.
