@@ -47,7 +47,13 @@ fun Routing.materialController() =
 		authenticatedPost("/idsByNameBrandCode") {
 			val query = requireNotNull(call.request.queryParameters["query"]) { "query must not be null." }
 			val tagIds = call.receiveNullable<Set<EntityId>?>()
-			call.respond(materialLogic.search(query, tagIds))
+			call.respond(materialLogic.searchIds(query, tagIds, null))
+		}
+
+		authenticatedGet("/namesByNameBrandCode") {
+			val query = requireNotNull(call.request.queryParameters["query"]) { "query must not be null." }
+			val limit = call.request.queryParameters["limit"]?.toIntOrNull()
+			call.respond(materialLogic.searchNames(query, tagIds = null, limit = limit))
 		}
 
 		authenticatedPost("/byIds") {

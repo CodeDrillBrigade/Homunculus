@@ -18,12 +18,14 @@ abstract class MaterialDao(client: DBClient) : GenericDao<Material>(client) {
 	 * @param query the prefix for [Material.normalizedName] to search for.
 	 * @param includeDeleted whether to include the Boxes where [Box.deletionDate] is not null.
 	 * @param limit the maximum number of elements to return. If null, all the elements will be returned.
+	 * @param skip the number of elements to skip.
 	 * @return a [Flow] of [Material] that match the condition.
 	 */
 	abstract fun getByFuzzyName(
 		query: String,
 		includeDeleted: Boolean,
 		limit: Int?,
+		skip: Int?,
 	): Flow<Material>
 
 	/**
@@ -40,12 +42,14 @@ abstract class MaterialDao(client: DBClient) : GenericDao<Material>(client) {
 	 * @param query the prefix for [Material.referenceCode] to search for.
 	 * @param includeDeleted whether to include the Boxes where [Box.deletionDate] is not null.
 	 * @param limit the maximum number of elements to return. If null, all the elements will be returned.
+	 * @param skip the number of elements to skip.
 	 * @return a [Flow] of [Material] that match the condition.
 	 */
 	abstract fun getByReferenceCode(
 		query: String,
 		includeDeleted: Boolean,
 		limit: Int?,
+		skip: Int?,
 	): Flow<Material>
 
 	/**
@@ -54,11 +58,13 @@ abstract class MaterialDao(client: DBClient) : GenericDao<Material>(client) {
 	 * @param query the prefix for [Material.brand] to search for.
 	 * @param includeDeleted whether to include the Boxes where [Box.deletionDate] is not null.
 	 * @param limit the maximum number of elements to return. If null, all the elements will be returned.
+	 * @param skip the number of elements to skip.
 	 * @return a [Flow] of [Material] that match the condition.
 	 */
 	abstract fun getByBrand(
 		query: String,
 		includeDeleted: Boolean,
 		limit: Int?,
+		skip: Int?,
 	): Flow<Material>
 }

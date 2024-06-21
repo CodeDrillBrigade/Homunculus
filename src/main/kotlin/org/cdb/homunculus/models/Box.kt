@@ -16,7 +16,7 @@ data class Box(
 	@SerialName("_id") override val id: EntityId = EntityId.generate(),
 	val material: EntityId,
 	val quantity: BoxUnit,
-	val position: HierarchicalId,
+	val position: HierarchicalId? = null,
 	val batchNumber: String? = null,
 	@Serializable(with = DateSerializer::class) val expirationDate: Date? = null,
 	@Serializable(with = DateSerializer::class) val deletionDate: Date? = null,

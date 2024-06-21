@@ -10,6 +10,7 @@ import org.cdb.homunculus.models.Box
 import org.cdb.homunculus.models.Material
 import org.cdb.homunculus.utils.StringNormalizer
 import org.cdb.homunculus.utils.limit
+import org.cdb.homunculus.utils.skip
 import java.util.regex.Pattern
 
 class MaterialDaoImpl(client: DBClient) : MaterialDao(client) {
@@ -18,6 +19,7 @@ class MaterialDaoImpl(client: DBClient) : MaterialDao(client) {
 		query: String,
 		includeDeleted: Boolean,
 		limit: Int?,
+		skip: Int?,
 	): Flow<Material> =
 		collection.find(
 			Filters.and(
@@ -26,7 +28,7 @@ class MaterialDaoImpl(client: DBClient) : MaterialDao(client) {
 					Filters.exists(Box::deletionDate.name, false).takeIf { !includeDeleted },
 				),
 			),
-		).limit(limit)
+		).skip(skip).limit(limit)
 
 	override fun getLastCreated(limit: Int): Flow<Material> =
 		collection.find()
@@ -38,6 +40,7 @@ class MaterialDaoImpl(client: DBClient) : MaterialDao(client) {
 		query: String,
 		includeDeleted: Boolean,
 		limit: Int?,
+		skip: Int?,
 	): Flow<Material> =
 		collection.find(
 			Filters.and(
@@ -46,13 +49,14 @@ class MaterialDaoImpl(client: DBClient) : MaterialDao(client) {
 					Filters.exists(Box::deletionDate.name, false).takeIf { !includeDeleted },
 				),
 			),
-		).limit(limit)
+		).skip(skip).limit(limit)
 
 	@Index(name = "by_brand", property = "brand", unique = false)
 	override fun getByBrand(
 		query: String,
 		includeDeleted: Boolean,
 		limit: Int?,
+		skip: Int?,
 	): Flow<Material> =
 		collection.find(
 			Filters.and(
@@ -61,5 +65,5 @@ class MaterialDaoImpl(client: DBClient) : MaterialDao(client) {
 					Filters.exists(Box::deletionDate.name, false).takeIf { !includeDeleted },
 				),
 			),
-		).limit(limit)
+		).skip(skip).limit(limit)
 }

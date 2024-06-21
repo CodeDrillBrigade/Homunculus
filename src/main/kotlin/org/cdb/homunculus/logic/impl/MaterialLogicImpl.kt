@@ -1,12 +1,11 @@
 package org.cdb.homunculus.logic.impl
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.fold
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.take
 import org.cdb.homunculus.dao.MaterialDao
 import org.cdb.homunculus.exceptions.NotFoundException
 import org.cdb.homunculus.logic.MaterialLogic
@@ -33,8 +32,9 @@ class MaterialLogicImpl(
 	): Flow<Material> =
 		materialDao.getByFuzzyName(
 			StringNormalizer.normalize(query),
-			false,
-			limit,
+			includeDeleted = false,
+			limit = limit,
+			skip = null,
 		)
 
 	override suspend fun delete(id: EntityId): EntityId {
@@ -60,20 +60,36 @@ class MaterialLogicImpl(
 		)
 	}
 
-	@OptIn(ExperimentalCoroutinesApi::class)
-	override suspend fun search(
+	private fun search(
 		query: String,
 		tagIds: Set<EntityId>?,
-	): Set<EntityId> =
-		flowOf(
-			materialDao.getByFuzzyName(query, false, null),
-			materialDao.getByReferenceCode(query, false, null),
-			materialDao.getByBrand(query, false, null),
-		).flatMapConcat { flw ->
-			flw.filter {
-				tagIds == null || it.tags.intersect(tagIds).isNotEmpty()
-			}.map { it.id }
-		}.fold(mutableSetOf()) { acc, it -> acc.apply { add(it) } }
+		limit: Int?,
+	): Flow<Material> =
+		flow {
+			emitAll(materialDao.getByFuzzyName(query, includeDeleted = false, limit = null, skip = null))
+			emitAll(materialDao.getByReferenceCode(query, includeDeleted = false, limit = null, skip = null))
+			emitAll(materialDao.getByBrand(query, includeDeleted = false, limit = null, skip = null))
+		}.filter {
+			tagIds == null || it.tags.intersect(tagIds).isNotEmpty()
+		}.let {
+			if (limit != null) {
+				it.take(limit)
+			} else {
+				it
+			}
+		}
+
+	override suspend fun searchIds(
+		query: String,
+		tagIds: Set<EntityId>?,
+		limit: Int?,
+	): Set<EntityId> = search(query, tagIds, limit).fold(mutableSetOf()) { acc, it -> acc.apply { add(it.id) } }
+
+	override suspend fun searchNames(
+		query: String,
+		tagIds: Set<EntityId>?,
+		limit: Int?,
+	): Set<String> = search(query, tagIds, limit).fold(mutableSetOf()) { acc, it -> acc.apply { add(it.name.text) } }
 
 	override fun getByIds(ids: Set<EntityId>): Flow<Material> = materialDao.getByIds(ids)
 
