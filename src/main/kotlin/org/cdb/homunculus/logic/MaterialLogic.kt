@@ -71,12 +71,30 @@ interface MaterialLogic {
 	 *
 	 * @param query the prefix for the properties to search.
 	 * @param tagIds the ids of the tags that a [Material] must have to be included in the results.
+	 * @param limit the maximum number of elements to return. If null, all the elements will be returned.
 	 * @return a [Set] of the [EntityId]s of the matching [Material]s.
 	 */
-	suspend fun search(
+	suspend fun searchIds(
 		query: String,
 		tagIds: Set<EntityId>?,
+		limit: Int?,
 	): Set<EntityId>
+
+	/**
+	 * Retrieves the first [limit] different [Material.name]s of all the [Material] where [Material.normalizedName], [Material.brand],
+	 * or [Material.referenceCode] start with the provided [query].
+	 * If one or more [tagIds] are specified, then only the Materials with the specified [Material.tags] are considered.
+	 *
+	 * @param query the prefix for the properties to search.
+	 * @param tagIds the ids of the tags that a [Material] must have to be included in the results.
+	 * @param limit the maximum number of unique elements to return. If null, all the elements will be returned.
+	 * @return a [Set] of the matching [Material.name]s.
+	 */
+	suspend fun searchNames(
+		query: String,
+		tagIds: Set<EntityId>?,
+		limit: Int?,
+	): Set<String>
 
 	/**
 	 * Retrieves multiple [Material]s by their [Material.id].
