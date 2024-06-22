@@ -10,6 +10,7 @@ import org.cdb.homunculus.dao.MaterialDao
 import org.cdb.homunculus.exceptions.NotFoundException
 import org.cdb.homunculus.logic.MaterialLogic
 import org.cdb.homunculus.models.Material
+import org.cdb.homunculus.models.filters.Filter
 import org.cdb.homunculus.models.identifiers.EntityId
 import org.cdb.homunculus.models.identifiers.Identifier
 import org.cdb.homunculus.utils.StringNormalizer
@@ -94,4 +95,6 @@ class MaterialLogicImpl(
 	override fun getByIds(ids: Set<EntityId>): Flow<Material> = materialDao.getByIds(ids)
 
 	override fun getLastCreated(limit: Int): Flow<Material> = materialDao.getLastCreated(limit)
+
+	override fun filter(filter: Filter): Flow<Material> = materialDao.find(filter.toBson())
 }
