@@ -12,4 +12,5 @@ enum class Permissions(val index: Int) {
 	MANAGE_STORAGE(1),
 	MANAGE_MATERIALS(2),
 	MANAGE_METADATA(3),
+	MANAGE_NOTIFICATIONS(4),
 }

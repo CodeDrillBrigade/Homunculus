@@ -1,6 +1,7 @@
 package org.cdb.homunculus.logic.impl
 
 import kotlinx.coroutines.flow.Flow
+import org.cdb.homunculus.components.NotificationManager
 import org.cdb.homunculus.dao.BoxDao
 import org.cdb.homunculus.exceptions.NotFoundException
 import org.cdb.homunculus.logic.BoxLogic
@@ -10,10 +11,12 @@ import org.cdb.homunculus.models.embed.UsageLog
 import org.cdb.homunculus.models.identifiers.EntityId
 import org.cdb.homunculus.models.identifiers.HierarchicalId
 import org.cdb.homunculus.models.identifiers.Identifier
+import org.cdb.homunculus.utils.exist
 import java.util.Date
 
 class BoxLogicImpl(
 	private val boxDao: BoxDao,
+	private val notificationManager: NotificationManager,
 ) : BoxLogic {
 	override suspend fun create(
 		box: Box,
@@ -34,14 +37,16 @@ class BoxLogicImpl(
 			)
 		return checkNotNull(boxDao.save(boxWithLog)) {
 			"Error during box creation"
+		}.also {
+			notificationManager.checkMaterial(box.material)
 		}
 	}
 
-	override suspend fun get(boxId: EntityId): Box = boxDao.getById(boxId) ?: throw NotFoundException("Box $boxId not found")
+	override suspend fun get(boxId: EntityId): Box = exist({ boxDao.getById(boxId) }) { "Box $boxId not found" }
 
 	override fun getAll(): Flow<Box> = boxDao.get()
 
-	override fun getByMaterial(materialId: EntityId): Flow<Box> = boxDao.getByMaterial(materialId, false)
+	override fun getByMaterial(materialId: EntityId): Flow<Box> = boxDao.getByMaterials(materialId, false)
 
 	override fun getByPosition(shelfId: HierarchicalId): Flow<Box> = boxDao.getByPosition(shelfId, false)
 
@@ -53,7 +58,9 @@ class BoxLogicImpl(
 			box.copy(
 				deletionDate = Date(),
 			),
-		)?.id ?: throw IllegalStateException("Cannot delete the box with id $id")
+		)?.id?.also {
+			notificationManager.checkMaterial(box.material)
+		} ?: throw IllegalStateException("Cannot delete the box with id $id")
 	}
 
 	override suspend fun updateQuantity(
@@ -79,7 +86,9 @@ class BoxLogicImpl(
 						add(update)
 					},
 			),
-		)?.id ?: throw IllegalStateException("Cannot update the quantity for box $boxId")
+		)?.id?.also {
+			notificationManager.checkMaterial(box.material)
+		} ?: throw IllegalStateException("Cannot update the quantity for box $boxId")
 	}
 
 	override suspend fun modify(box: Box) {

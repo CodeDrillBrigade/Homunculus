@@ -1,5 +1,7 @@
 package org.cdb.homunculus.logic.impl
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
 import org.cdb.homunculus.components.Mailer
 import org.cdb.homunculus.components.PasswordEncoder
 import org.cdb.homunculus.dao.UserDao
@@ -99,4 +101,11 @@ class UserLogicImpl(
 			),
 		) != null
 	}
+
+	override fun getByUsernameEmailName(query: String): Flow<User> =
+		userDao.get().filter { user ->
+			listOfNotNull(user.username, user.email, user.name, user.surname).any {
+				it.lowercase().startsWith(query.lowercase())
+			} && user.status == UserStatus.ACTIVE
+		}
 }

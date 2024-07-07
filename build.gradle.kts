@@ -36,6 +36,9 @@ dependencies {
 	implementation(libs.bundles.mongo)
 	implementation(libs.logback)
 	implementation(libs.jbCrypt)
+	implementation(libs.kotlinxDatetime)
+	implementation(libs.krontab)
+	implementation(libs.caffeine)
 }
 
 tasks.withType<Test> {

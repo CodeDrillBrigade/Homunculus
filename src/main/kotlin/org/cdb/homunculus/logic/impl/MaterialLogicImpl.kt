@@ -14,6 +14,7 @@ import org.cdb.homunculus.models.filters.Filter
 import org.cdb.homunculus.models.identifiers.EntityId
 import org.cdb.homunculus.models.identifiers.Identifier
 import org.cdb.homunculus.utils.StringNormalizer
+import org.cdb.homunculus.utils.exist
 import java.util.Date
 
 class MaterialLogicImpl(
@@ -48,7 +49,7 @@ class MaterialLogicImpl(
 	}
 
 	override suspend fun modify(material: Material) {
-		val currentMaterial = materialDao.getById(material.id) ?: throw NotFoundException("Material ${material.id} not found")
+		val currentMaterial = exist({ materialDao.getById(material.id) }) { "Material ${material.id} not found" }
 		materialDao.update(
 			currentMaterial.copy(
 				name = material.name,

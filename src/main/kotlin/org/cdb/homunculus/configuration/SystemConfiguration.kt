@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.runBlocking
 import org.cdb.homunculus.annotations.Index
 import org.cdb.homunculus.components.PasswordEncoder
+import org.cdb.homunculus.components.impl.NotificationManagerImpl
 import org.cdb.homunculus.dao.GenericDao
 import org.cdb.homunculus.dao.RoleDao
 import org.cdb.homunculus.dao.UserDao
@@ -104,6 +105,10 @@ val systemInitializationPlugin =
 						userDao.save(adminUser)
 						application.log.info("Created admin with username: admin and temporaryToken: $temporaryPassword")
 					}
+
+					val notificationManager = koin.get<NotificationManagerImpl>()
+					notificationManager.loadReports()
+					application.log.info("Loaded reports")
 				}
 			}
 		}
