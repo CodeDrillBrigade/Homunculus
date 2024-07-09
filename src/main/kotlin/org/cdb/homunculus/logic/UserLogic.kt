@@ -76,4 +76,12 @@ interface UserLogic {
 	 * @return a [Flow] of [User]s.
 	 */
 	fun getByUsernameEmailName(query: String): Flow<User>
+
+	/**
+	 * Retrieves multiple [User]s by their [User.id].
+	 *
+	 * @param ids the ids of the [User]s to retrieve. All the ids that do not correspond to an actual material are ignored.
+	 * @return a [Flow] of [User]s.
+	 */
+	fun getByIds(ids: Set<EntityId>): Flow<User>
 }

@@ -58,6 +58,7 @@ class MaterialLogicImpl(
 				description = material.description ?: currentMaterial.description,
 				tags = material.tags,
 				deletionDate = material.deletionDate ?: currentMaterial.deletionDate,
+				normalizedName = StringNormalizer.normalize(material.name),
 			),
 		)
 	}

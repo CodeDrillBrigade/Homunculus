@@ -76,4 +76,9 @@ fun Routing.userController() =
 			val query = requireNotNull(call.request.queryParameters["query"]) { "query must not be null." }
 			call.respond(userLogic.getByUsernameEmailName(query).map { it.redactSecrets() })
 		}
+
+		authenticatedPost("/byIds") {
+			val userIds = call.receive<Set<EntityId>>()
+			call.respond(userLogic.getByIds(userIds).map { it.redactSecrets() })
+		}
 	}

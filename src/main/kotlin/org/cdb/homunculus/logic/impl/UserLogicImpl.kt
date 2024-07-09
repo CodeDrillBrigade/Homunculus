@@ -108,4 +108,6 @@ class UserLogicImpl(
 				it.lowercase().startsWith(query.lowercase())
 			} && user.status == UserStatus.ACTIVE
 		}
+
+	override fun getByIds(ids: Set<EntityId>): Flow<User> = userDao.getByIds(ids)
 }

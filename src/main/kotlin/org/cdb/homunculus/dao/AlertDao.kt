@@ -16,4 +16,12 @@ abstract class AlertDao(client: DBClient) : GenericDao<Alert>(client) {
 	 * @return a [Flow] containing all the [Alert]s in the database where [Alert.status] matches [status].
 	 */
 	abstract fun get(status: AlertStatus): Flow<Alert>
+
+	/**
+	 * Retrieves all the [Alert]s where [Alert.normalizedName] is not null and starts with [query].
+	 *
+	 * @param query the prefix for [Alert.normalizedName] to search for.
+	 * @return a [Flow] of [Alert] that match the condition.
+	 */
+	abstract fun getByFuzzyName(query: String): Flow<Alert>
 }

@@ -18,6 +18,7 @@ data class Alert(
 	override val threshold: Int,
 	override val recipients: Set<EntityId>,
 	override val templateId: String? = null,
+	val normalizedName: String? = null,
 ) : StoredEntity, Notification {
 	override fun buildFilter(): Filter =
 		AndFilter(
