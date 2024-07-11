@@ -14,9 +14,9 @@ interface NotificationManager {
 	/**
 	 * Removes a previously registered [Report].
 	 *
-	 * @param reportId the [Report.id].
+	 * @param report the [Report].
 	 */
-	suspend fun removeReport(reportId: EntityId)
+	suspend fun removeReport(report: Report)
 
 	/**
 	 * Updates a previously registered [Report].

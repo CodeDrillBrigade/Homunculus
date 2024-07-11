@@ -41,9 +41,9 @@ fun Routing.alertController() =
 		}
 
 		authenticatedPost("/byIds") {
-			val materialIds = call.receive<Set<EntityId>>()
-			require(materialIds.isNotEmpty()) { "Alert Ids must not be null or empty" }
-			call.respond(alertLogic.getByIds(materialIds))
+			val alertIds = call.receive<Set<EntityId>>()
+			require(alertIds.isNotEmpty()) { "Alert Ids must not be null or empty" }
+			call.respond(alertLogic.getByIds(alertIds))
 		}
 
 		authenticatedGet("/idsByName") {

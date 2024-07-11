@@ -16,3 +16,8 @@ fun TimeZone.getOffsetInHours(): Int {
 
 	return offsetInHours
 }
+
+fun TimeZone.getRelativeOffset(reference: TimeZone = TimeZone.currentSystemDefault()): Int {
+	val referenceOffset = reference.getOffsetInHours()
+	return referenceOffset - getOffsetInHours()
+}

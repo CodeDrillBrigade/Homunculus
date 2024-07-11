@@ -12,7 +12,6 @@ import kotlinx.serialization.Serializable
 import org.cdb.homunculus.models.Alert
 import org.cdb.homunculus.models.Material
 import org.cdb.homunculus.models.Notification
-import org.cdb.homunculus.models.Report
 import org.cdb.homunculus.models.config.MailerConfig
 import java.net.URLEncoder
 
@@ -80,10 +79,37 @@ class Mailer(
 	}
 
 	suspend fun sendReportEmail(
-		materials: List<Material>,
-		report: Report,
-		recipientEmails: Set<String>,
-	) = sendNotification(materials, report, config.reportTemplateId, recipientEmails)
+		materialsWithThresholds: Map<Material, Int>,
+		recipientEmail: String,
+	) {
+		val materialsAsString =
+			buildString {
+				materialsWithThresholds.entries.groupBy { it.value }.forEach { (threshold, materials) ->
+					append("Less than $threshold units:\n")
+					materials.forEach { material ->
+						append("\t - ")
+						append(material.key.name)
+						append(" (${material.key.brand}")
+						material.key.referenceCode?.also { append(", #$it") }
+						append(").")
+					}
+					append("\n")
+				}
+			}
+		httpClient.post("${config.hermesUrl}/v1/mail") {
+			contentType(ContentType.Application.Json)
+			setBody(
+				MailInput(
+					id = config.reportTemplateId,
+					email = recipientEmail,
+					attributes =
+						mapOf(
+							"materials" to materialsAsString,
+						),
+				),
+			)
+		}
+	}
 
 	suspend fun sendAlertEmail(
 		materials: List<Material>,

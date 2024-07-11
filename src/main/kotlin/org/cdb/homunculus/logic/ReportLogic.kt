@@ -3,6 +3,7 @@ package org.cdb.homunculus.logic
 import kotlinx.coroutines.flow.Flow
 import org.cdb.homunculus.exceptions.NotFoundException
 import org.cdb.homunculus.models.Report
+import org.cdb.homunculus.models.embed.ReportStatus
 import org.cdb.homunculus.models.identifiers.EntityId
 import org.cdb.homunculus.models.identifiers.Identifier
 
@@ -38,4 +39,38 @@ interface ReportLogic {
 	 * @return a [Flow] of [Report].
 	 */
 	fun getAll(): Flow<Report>
+
+	/**
+	 * Retrieves the [EntityId]s of all the [Report] where [Report.normalizedName] start with the provided [query].
+	 *
+	 * @param query the prefix for the properties to search.
+	 * @return a [Set] of the [EntityId]s of the matching [Report]s.
+	 */
+	suspend fun searchIds(query: String): Flow<EntityId>
+
+	/**
+	 * Retrieves multiple [Report]s by their [Report.id].
+	 *
+	 * @param ids the ids of the [Report]s to retrieve. All the ids that do not correspond to an actual material are ignored.
+	 * @return a [Flow] of [Report]s.
+	 */
+	fun getByIds(ids: Set<EntityId>): Flow<Report>
+
+	/**
+	 * Sets the [Report.status] of the alert which id is passed as parameter to [status].
+	 *
+	 * @param reportId the [Report.id] of the alert to update.
+	 * @param status the status to set.
+	 */
+	suspend fun setStatus(
+		reportId: EntityId,
+		status: ReportStatus,
+	)
+
+	/**
+	 * Hard-deletes and [Report].
+	 *
+	 * @param reportId the [Report.id] of the alert to update.
+	 */
+	suspend fun delete(reportId: EntityId)
 }

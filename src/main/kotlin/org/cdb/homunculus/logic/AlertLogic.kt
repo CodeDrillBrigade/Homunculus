@@ -3,7 +3,6 @@ package org.cdb.homunculus.logic
 import kotlinx.coroutines.flow.Flow
 import org.cdb.homunculus.exceptions.NotFoundException
 import org.cdb.homunculus.models.Alert
-import org.cdb.homunculus.models.Material
 import org.cdb.homunculus.models.embed.AlertStatus
 import org.cdb.homunculus.models.identifiers.EntityId
 import org.cdb.homunculus.models.identifiers.Identifier
@@ -42,7 +41,7 @@ interface AlertLogic {
 	fun getAll(): Flow<Alert>
 
 	/**
-	 * Retrieves the [EntityId]s of all the [Alert] where [Material.normalizedName] start with the provided [query].
+	 * Retrieves the [EntityId]s of all the [Alert] where [Alert.normalizedName] start with the provided [query].
 	 *
 	 * @param query the prefix for the properties to search.
 	 * @return a [Set] of the [EntityId]s of the matching [Alert]s.

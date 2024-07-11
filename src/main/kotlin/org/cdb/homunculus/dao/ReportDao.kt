@@ -16,4 +16,12 @@ abstract class ReportDao(client: DBClient) : GenericDao<Report>(client) {
 	 * @return a [Flow] containing all the [Report]s in the database where [Report.status] matches [status].
 	 */
 	abstract fun get(status: ReportStatus): Flow<Report>
+
+	/**
+	 * Retrieves all the [Report]s where [Report.normalizedName] is not null and starts with [query].
+	 *
+	 * @param query the prefix for [Report.normalizedName] to search for.
+	 * @return a [Flow] of [Report] that match the condition.
+	 */
+	abstract fun getByFuzzyName(query: String): Flow<Report>
 }

@@ -4,12 +4,12 @@ import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.RemovalCause
 import dev.inmo.krontab.doInfinity
+import io.ktor.util.collections.ConcurrentMap
 import io.ktor.util.logging.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
@@ -24,10 +24,12 @@ import org.cdb.homunculus.dao.MaterialDao
 import org.cdb.homunculus.dao.ReportDao
 import org.cdb.homunculus.dao.UserDao
 import org.cdb.homunculus.models.Alert
+import org.cdb.homunculus.models.Material
 import org.cdb.homunculus.models.Notification
 import org.cdb.homunculus.models.Report
 import org.cdb.homunculus.models.embed.AlertStatus
 import org.cdb.homunculus.models.embed.ReportStatus
+import org.cdb.homunculus.models.embed.UserStatus
 import org.cdb.homunculus.models.identifiers.EntityId
 import org.cdb.homunculus.utils.exist
 import java.time.Duration
@@ -42,8 +44,8 @@ class NotificationManagerImpl(
 	private val logger: Logger,
 ) : NotificationManager {
 	private val executorScope = CoroutineScope(Dispatchers.Default)
-	private val reportJobsCache = mutableMapOf<EntityId, Job>()
-	private val alertCheckChannel = Channel<EntityId>(capacity = Channel.UNLIMITED)
+	private val reportJobsCache = ConcurrentMap<String, Job>()
+	private val reportsByCronConfig = ConcurrentMap<String, Set<EntityId>>()
 
 	private val recentlyUpdatedMaterials: Cache<EntityId, Long> =
 		Caffeine.newBuilder()
@@ -56,17 +58,15 @@ class NotificationManagerImpl(
 				}
 			}.build()
 
+	@Suppress("unused")
 	private val watchdog =
 		executorScope.launch {
 			doInfinity("0 * * * * 0o") {
 				try {
 					val jobsToRestart = reportJobsCache.filterValues { it.isCancelled || it.isCancelled }.keys
-					jobsToRestart.forEach { reportId ->
-						reportJobsCache.remove(reportId)
-						reportDao.getById(reportId)?.also {
-							val job = startReportJob(it)
-							reportJobsCache[reportId] = job
-						}
+					jobsToRestart.forEach {
+						reportJobsCache.remove(it)
+						startReportJob(it)
 					}
 				} catch (e: Exception) {
 					logger.error("Error while executing report watchdog", e)
@@ -79,43 +79,65 @@ class NotificationManagerImpl(
 			}
 		}
 
-	private fun startReportJob(report: Report): Job =
+	private fun startReportJob(cronConfig: String): Job =
 		executorScope.launch {
-			doInfinity(report.cronConfig) {
+			doInfinity(cronConfig) {
 				try {
-					logger.info("Handling report ${report.id}")
-					if (isNotificationTriggered(report)) {
-						logger.info("Dispatching report ${report.id}")
-						val matchingMaterials = materialDao.find(report.buildFilter().toBson()).toList().distinctBy { it.id }
-						val recipientEmails = userDao.getByIds(report.recipients).mapNotNull { it.email }.toSet()
-						mailer.sendReportEmail(matchingMaterials, report, recipientEmails)
+					reportsByCronConfig[cronConfig]?.fold(mutableMapOf<String, Map<Material, Int>>()) { acc, reportId ->
+						logger.info("Handling report $reportId")
+						val report = reportDao.getById(reportId)
+						if (report != null && isNotificationTriggered(report)) {
+							logger.info("Dispatching report ${report.id}")
+							val matchingMaterials = materialDao.find(report.buildFilter().toBson()).toList().distinctBy { it.id }
+							val recipientEmails =
+								userDao.getByIds(report.recipients)
+									.filter { it.status == UserStatus.ACTIVE }
+									.mapNotNull { it.email }
+									.toSet()
+							recipientEmails.forEach { email ->
+								acc[email] = acc.getOrDefault(email, emptyMap()) + matchingMaterials.associateWith { report.threshold }
+							}
+						}
+						acc
+					}?.entries?.forEach { (email, materials) ->
+						mailer.sendReportEmail(materials, email)
 					}
 				} catch (e: Exception) {
-					logger.error("Error while handling report ${report.id}", e)
+					logger.error("Error while handling report at cron $cronConfig", e)
 				}
 			}
 		}
 
 	override fun addReport(report: Report) {
-		val job = startReportJob(report)
-		reportJobsCache[report.id] = job
+		report.cronConfigs.forEach { config ->
+			if (reportsByCronConfig.containsKey(config)) {
+				reportsByCronConfig[config] = reportsByCronConfig.getValue(config) + report.id
+			} else {
+				reportsByCronConfig[config] = setOf(report.id)
+				reportJobsCache[config] = startReportJob(config)
+			}
+		}
 	}
 
-	override suspend fun removeReport(reportId: EntityId) {
-		reportJobsCache[reportId]?.cancelAndJoin()
-		reportJobsCache.remove(reportId)
+	override suspend fun removeReport(report: Report) {
+		report.cronConfigs.forEach { config ->
+			reportsByCronConfig[config] = reportsByCronConfig.getOrDefault(config, emptySet()) - report.id
+			if (reportsByCronConfig[config]?.isEmpty() == true) {
+				reportJobsCache[config]?.cancelAndJoin()
+				reportJobsCache.remove(config)
+			}
+		}
 	}
 
 	override suspend fun updateReport(report: Report) {
-		removeReport(report.id)
+		removeReport(report)
 		addReport(report)
 	}
 
 	override suspend fun loadReports() {
 		reportDao.get(ReportStatus.ACTIVE).collect { report ->
-			val job = startReportJob(report)
-			reportJobsCache[report.id] = job
-			logger.info("Starting job for report ${report.id}")
+			addReport(report)
+			logger.info("Starting jobs for report ${report.id} at cron: ${report.cronConfigs.joinToString(",")}")
 		}
 	}
 
@@ -129,7 +151,11 @@ class NotificationManagerImpl(
 			.filter { it.buildFilter().canAccept(material) && isNotificationTriggered(it) }
 			.collect { alert ->
 				val matchingMaterials = materialDao.find(alert.buildFilter().toBson()).toList().distinctBy { it.id }
-				val recipientEmails = userDao.getByIds(alert.recipients).mapNotNull { it.email }.toSet()
+				val recipientEmails =
+					userDao.getByIds(alert.recipients)
+						.filter { it.status == UserStatus.ACTIVE }
+						.mapNotNull { it.email }
+						.toSet()
 				mailer.sendAlertEmail(matchingMaterials, alert, recipientEmails)
 				alertDao.update(alert.copy(status = AlertStatus.TRIGGERED))
 			}
