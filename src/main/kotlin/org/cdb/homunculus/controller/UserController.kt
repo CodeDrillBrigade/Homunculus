@@ -4,6 +4,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.coroutines.flow.map
 import org.cdb.homunculus.logic.UserLogic
 import org.cdb.homunculus.models.User
 import org.cdb.homunculus.models.dto.PasswordDto
@@ -69,5 +70,15 @@ fun Routing.userController() =
 				it.userId.id == userId || it.permissions[Permissions.ADMIN.index],
 			) { "You are not allowed to change the password for the user $userId" }
 			call.respond(userLogic.changePassword(EntityId(userId), passwordDto.password))
+		}
+
+		authenticatedGet("/byUsernameEmailName") {
+			val query = requireNotNull(call.request.queryParameters["query"]) { "query must not be null." }
+			call.respond(userLogic.getByUsernameEmailName(query).map { it.redactSecrets() })
+		}
+
+		authenticatedPost("/byIds") {
+			val userIds = call.receive<Set<EntityId>>()
+			call.respond(userLogic.getByIds(userIds).map { it.redactSecrets() })
 		}
 	}

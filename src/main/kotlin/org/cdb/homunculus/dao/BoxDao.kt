@@ -15,12 +15,24 @@ abstract class BoxDao(client: DBClient) : GenericDao<Box>(client) {
 	/**
 	 * Retrieves all the boxes with the specified [Box.material].
 	 *
-	 * @param materialId the [EntityId] of the material
+	 * @param materialId the [EntityId] of the material.
 	 * @param includeDeleted whether to include the Boxes where [Box.deletionDate] is not null.
 	 * @return a [Flow] of [Box]es.
 	 */
-	abstract fun getByMaterial(
+	abstract fun getByMaterials(
 		materialId: EntityId,
+		includeDeleted: Boolean,
+	): Flow<Box>
+
+	/**
+	 * Retrieves all the boxes where [Box.material] is among the specified [materials].
+	 *
+	 * @param materials the [EntityId]s of the materials to search.
+	 * @param includeDeleted whether to include the Boxes where [Box.deletionDate] is not null.
+	 * @return a [Flow] of [Box]es.
+	 */
+	abstract fun getByMaterials(
+		materials: Set<EntityId>,
 		includeDeleted: Boolean,
 	): Flow<Box>
 

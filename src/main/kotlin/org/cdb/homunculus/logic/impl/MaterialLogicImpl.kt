@@ -10,9 +10,11 @@ import org.cdb.homunculus.dao.MaterialDao
 import org.cdb.homunculus.exceptions.NotFoundException
 import org.cdb.homunculus.logic.MaterialLogic
 import org.cdb.homunculus.models.Material
+import org.cdb.homunculus.models.filters.Filter
 import org.cdb.homunculus.models.identifiers.EntityId
 import org.cdb.homunculus.models.identifiers.Identifier
 import org.cdb.homunculus.utils.StringNormalizer
+import org.cdb.homunculus.utils.exist
 import java.util.Date
 
 class MaterialLogicImpl(
@@ -47,7 +49,7 @@ class MaterialLogicImpl(
 	}
 
 	override suspend fun modify(material: Material) {
-		val currentMaterial = materialDao.getById(material.id) ?: throw NotFoundException("Material ${material.id} not found")
+		val currentMaterial = exist({ materialDao.getById(material.id) }) { "Material ${material.id} not found" }
 		materialDao.update(
 			currentMaterial.copy(
 				name = material.name,
@@ -56,6 +58,7 @@ class MaterialLogicImpl(
 				description = material.description ?: currentMaterial.description,
 				tags = material.tags,
 				deletionDate = material.deletionDate ?: currentMaterial.deletionDate,
+				normalizedName = StringNormalizer.normalize(material.name),
 			),
 		)
 	}
@@ -94,4 +97,6 @@ class MaterialLogicImpl(
 	override fun getByIds(ids: Set<EntityId>): Flow<Material> = materialDao.getByIds(ids)
 
 	override fun getLastCreated(limit: Int): Flow<Material> = materialDao.getLastCreated(limit)
+
+	override fun filter(filter: Filter): Flow<Material> = materialDao.find(filter.toBson())
 }

@@ -84,7 +84,7 @@ interface BoxLogic {
 	 * This method will ignore [Box.usageLogs], [Box.quantity] or [Box.material].
 	 *
 	 * @param box the box to update.
-	 * @throws NotFoundException if there is no user with such an id in the system.
+	 * @throws NotFoundException if there is no box with such an id in the system.
 	 */
 	suspend fun modify(box: Box)
 

@@ -3,6 +3,7 @@ package org.cdb.homunculus.dao.impl
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Filters.eq
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.cdb.homunculus.annotations.Index
 import org.cdb.homunculus.components.DBClient
 import org.cdb.homunculus.dao.BoxDao
@@ -12,7 +13,7 @@ import org.cdb.homunculus.models.identifiers.HierarchicalId
 import java.util.regex.Pattern
 
 class BoxDaoImpl(client: DBClient) : BoxDao(client) {
-	override fun getByMaterial(
+	override fun getByMaterials(
 		materialId: EntityId,
 		includeDeleted: Boolean,
 	): Flow<Box> =
@@ -20,6 +21,19 @@ class BoxDaoImpl(client: DBClient) : BoxDao(client) {
 			Filters.and(
 				listOfNotNull(
 					eq(Box::material.name, materialId),
+					Filters.exists(Box::deletionDate.name, false).takeIf { !includeDeleted },
+				),
+			),
+		)
+
+	override fun getByMaterials(
+		materials: Set<EntityId>,
+		includeDeleted: Boolean,
+	): Flow<Box> =
+		find(
+			Filters.and(
+				listOfNotNull(
+					Filters.`in`(Box::material.name, materials.map { it.id }),
 					Filters.exists(Box::deletionDate.name, false).takeIf { !includeDeleted },
 				),
 			),

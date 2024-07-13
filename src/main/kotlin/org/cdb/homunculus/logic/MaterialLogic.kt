@@ -3,6 +3,7 @@ package org.cdb.homunculus.logic
 import kotlinx.coroutines.flow.Flow
 import org.cdb.homunculus.exceptions.NotFoundException
 import org.cdb.homunculus.models.Material
+import org.cdb.homunculus.models.filters.Filter
 import org.cdb.homunculus.models.identifiers.EntityId
 import org.cdb.homunculus.models.identifiers.Identifier
 
@@ -111,4 +112,12 @@ interface MaterialLogic {
 	 * @return a [Flow] of [Material].
 	 */
 	fun getLastCreated(limit: Int): Flow<Material>
+
+	/**
+	 * Retrieves all the [Material]s that match the provided [filter].
+	 *
+	 * @param filter the [Filter] to apply, it will be converted to a Bson query.
+	 * @return a [Flow] of [Material]s.
+	 */
+	fun filter(filter: Filter): Flow<Material>
 }

@@ -1,5 +1,6 @@
 package org.cdb.homunculus.logic
 
+import kotlinx.coroutines.flow.Flow
 import org.cdb.homunculus.exceptions.NotFoundException
 import org.cdb.homunculus.models.User
 import org.cdb.homunculus.models.identifiers.EntityId
@@ -67,4 +68,20 @@ interface UserLogic {
 		userId: EntityId,
 		newPassword: String,
 	): Boolean
+
+	/**
+	 * Retrieves all the [User]s where any of [User.username], [User.email], [User.name], or [User.surname] start with [query].
+	 *
+	 * @param query the prefix to search.
+	 * @return a [Flow] of [User]s.
+	 */
+	fun getByUsernameEmailName(query: String): Flow<User>
+
+	/**
+	 * Retrieves multiple [User]s by their [User.id].
+	 *
+	 * @param ids the ids of the [User]s to retrieve. All the ids that do not correspond to an actual material are ignored.
+	 * @return a [Flow] of [User]s.
+	 */
+	fun getByIds(ids: Set<EntityId>): Flow<User>
 }

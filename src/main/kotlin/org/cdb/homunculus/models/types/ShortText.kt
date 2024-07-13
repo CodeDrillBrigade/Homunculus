@@ -10,4 +10,6 @@ value class ShortText(val text: String) {
 			"A ShortText cannot be greater than 300 chracters"
 		}
 	}
+
+	override fun toString(): String = text
 }

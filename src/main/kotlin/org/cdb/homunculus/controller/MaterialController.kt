@@ -7,6 +7,7 @@ import io.ktor.server.routing.*
 import kotlinx.coroutines.flow.toList
 import org.cdb.homunculus.logic.MaterialLogic
 import org.cdb.homunculus.models.Material
+import org.cdb.homunculus.models.filters.Filter
 import org.cdb.homunculus.models.identifiers.EntityId
 import org.cdb.homunculus.models.security.Permissions
 import org.cdb.homunculus.requests.authenticatedDelete
@@ -70,5 +71,10 @@ fun Routing.materialController() =
 		authenticatedPut("", permissions = setOf(Permissions.MANAGE_MATERIALS)) {
 			val materialToUpdate = call.receive<Material>()
 			call.respond(materialLogic.modify(materialToUpdate))
+		}
+
+		authenticatedPost("/filter") {
+			val filter = call.receive<Filter>()
+			call.respond(materialLogic.filter(filter))
 		}
 	}
