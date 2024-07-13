@@ -6,7 +6,7 @@ import org.bson.conversions.Bson
 import org.cdb.homunculus.models.Filterable
 
 @Serializable
-class NotFilter(
+data class NotFilter(
 	private val filter: Filter,
 ) : Filter {
 	override fun toBson(): Bson = Filters.not(filter.toBson())

@@ -6,7 +6,7 @@ import org.bson.conversions.Bson
 import org.cdb.homunculus.models.Filterable
 
 @Serializable
-class AndFilter(
+data class AndFilter(
 	private val filters: List<Filter>,
 ) : Filter {
 	override fun toBson(): Bson = Filters.and(filters.map { it.toBson() })

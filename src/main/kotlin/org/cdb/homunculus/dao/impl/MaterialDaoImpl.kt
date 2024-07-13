@@ -25,15 +25,15 @@ class MaterialDaoImpl(client: DBClient) : MaterialDao(client) {
 			Filters.and(
 				listOfNotNull(
 					Filters.regex(Material::normalizedName.name, Pattern.compile("^${StringNormalizer.normalize(query)}.*")),
-					Filters.exists(Box::deletionDate.name, false).takeIf { !includeDeleted },
+					Filters.exists(Material::deletionDate.name, false).takeIf { !includeDeleted },
 				),
 			),
 		).skip(skip).limit(limit)
 
 	override fun getLastCreated(limit: Int): Flow<Material> =
-		collection.find()
-			.sort(Sorts.descending(Material::creationDate.name))
-			.limit(limit)
+		collection.find(
+			Filters.exists(Material::deletionDate.name, false),
+		).sort(Sorts.descending(Material::creationDate.name)).limit(limit)
 
 	@Index(name = "by_reference_code", property = "referenceCode", unique = false)
 	override fun getByReferenceCode(

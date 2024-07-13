@@ -3,6 +3,7 @@ package org.cdb.homunculus.logic
 import kotlinx.coroutines.flow.Flow
 import org.cdb.homunculus.exceptions.NotFoundException
 import org.cdb.homunculus.models.Alert
+import org.cdb.homunculus.models.dto.NotificationStub
 import org.cdb.homunculus.models.embed.AlertStatus
 import org.cdb.homunculus.models.identifiers.EntityId
 import org.cdb.homunculus.models.identifiers.Identifier
@@ -73,4 +74,24 @@ interface AlertLogic {
 	 * @param alertId the [Alert.id] of the alert to update.
 	 */
 	suspend fun delete(alertId: EntityId)
+
+	/**
+	 * Returns all the [Alert]s that can accept a material.
+	 *
+	 * @param materialId the id of the material to check.
+	 * @return a [Flow] of [NotificationStub].
+	 */
+	fun listByAcceptedMaterial(materialId: EntityId): Flow<NotificationStub>
+
+	/**
+	 * Updates the [Alert]s which id are present in [alertIds] adding [materialId] to [Alert.excludeFilter].
+	 *
+	 * @param materialId the id of the material to exclude.
+	 * @param alertIds the ids of the [Alert]s to update.
+	 * @return a [Flow] containing the updated [Alert]s
+	 */
+	fun addMaterialToExclusions(
+		materialId: EntityId,
+		alertIds: Set<EntityId>,
+	): Flow<Alert>
 }

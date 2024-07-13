@@ -6,7 +6,7 @@ import org.bson.conversions.Bson
 import org.cdb.homunculus.models.Filterable
 
 @Serializable
-class ByTagsFilter(
+data class ByTagsFilter(
 	private val tagIds: List<String>,
 ) : Filter {
 	override fun toBson(): Bson = Filters.`in`("tags", tagIds)

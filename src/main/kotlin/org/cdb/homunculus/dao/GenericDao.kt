@@ -1,8 +1,10 @@
 package org.cdb.homunculus.dao
 
 import com.mongodb.client.model.Filters
+import com.mongodb.client.model.FindOneAndReplaceOptions
 import com.mongodb.client.model.IndexOptions
 import com.mongodb.client.model.Indexes
+import com.mongodb.client.model.ReturnDocument
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -94,7 +96,12 @@ abstract class GenericDao<T : StoredEntity>(
 	 * @param entity the new version of the entity [T].
 	 * @return the updated entity, if the operation was successful, and false otherwise.
 	 */
-	suspend fun update(entity: T): T? = collection.findOneAndReplace(Filters.eq("_id", entity.id), entity)
+	suspend fun update(entity: T): T? =
+		collection.findOneAndReplace(
+			Filters.eq("_id", entity.id),
+			entity,
+			FindOneAndReplaceOptions().returnDocument(ReturnDocument.AFTER),
+		)
 
 	/**
 	 * Creates an ascending index in the current collection for the specified [property], if such an index does not exist already.

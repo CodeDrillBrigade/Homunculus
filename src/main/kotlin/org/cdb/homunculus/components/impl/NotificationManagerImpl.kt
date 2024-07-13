@@ -30,6 +30,7 @@ import org.cdb.homunculus.models.Report
 import org.cdb.homunculus.models.embed.AlertStatus
 import org.cdb.homunculus.models.embed.ReportStatus
 import org.cdb.homunculus.models.embed.UserStatus
+import org.cdb.homunculus.models.filters.Filter
 import org.cdb.homunculus.models.identifiers.EntityId
 import org.cdb.homunculus.utils.exist
 import java.time.Duration
@@ -88,7 +89,7 @@ class NotificationManagerImpl(
 						val report = reportDao.getById(reportId)
 						if (report != null && isNotificationTriggered(report)) {
 							logger.info("Dispatching report ${report.id}")
-							val matchingMaterials = materialDao.find(report.buildFilter().toBson()).toList().distinctBy { it.id }
+							val matchingMaterials = distinctMaterialsByFilter(report.buildFilter())
 							val recipientEmails =
 								userDao.getByIds(report.recipients)
 									.filter { it.status == UserStatus.ACTIVE }
@@ -150,7 +151,7 @@ class NotificationManagerImpl(
 		alertDao.get(AlertStatus.ACTIVE)
 			.filter { it.buildFilter().canAccept(material) && isNotificationTriggered(it) }
 			.collect { alert ->
-				val matchingMaterials = materialDao.find(alert.buildFilter().toBson()).toList().distinctBy { it.id }
+				val matchingMaterials = distinctMaterialsByFilter(alert.buildFilter())
 				val recipientEmails =
 					userDao.getByIds(alert.recipients)
 						.filter { it.status == UserStatus.ACTIVE }
@@ -167,8 +168,7 @@ class NotificationManagerImpl(
 	}
 
 	private suspend fun isNotificationTriggered(notification: Notification): Boolean {
-		val filter = notification.buildFilter().toBson()
-		val matchingMaterials = materialDao.find(filter).map { it.id }.toList().toSet()
+		val matchingMaterials = distinctMaterialsIdsByFilter(notification.buildFilter())
 		val totalRemaining =
 			boxDao.getByMaterials(matchingMaterials, includeDeleted = false).map {
 				it.quantity.quantity
@@ -177,12 +177,20 @@ class NotificationManagerImpl(
 	}
 
 	private suspend fun shouldAlertBeRefreshed(alert: Alert): Boolean {
-		val filter = alert.buildFilter().toBson()
-		val matchingMaterials = materialDao.find(filter).map { it.id }.toList().toSet()
+		val matchingMaterials = distinctMaterialsIdsByFilter(alert.buildFilter())
 		val totalRemaining =
 			boxDao.getByMaterials(matchingMaterials, includeDeleted = false).map {
 				it.quantity.quantity
 			}.toList().sum()
 		return totalRemaining > alert.threshold
 	}
+
+	private suspend fun distinctMaterialsByFilter(filter: Filter) =
+		materialDao.find(filter.toBson())
+			.filter { it.deletionDate == null }
+			.toList()
+			.distinctBy { it.id }
+
+	private suspend fun distinctMaterialsIdsByFilter(filter: Filter) =
+		materialDao.find(filter.toBson()).filter { it.deletionDate == null }.map { it.id }.toList().toSet()
 }

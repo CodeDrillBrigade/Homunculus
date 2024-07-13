@@ -64,4 +64,15 @@ fun Routing.reportController() =
 				) { "Status must not be null." }
 			call.respond(reportLogic.setStatus(EntityId(reportId), status))
 		}
+
+		authenticatedGet("/byActivationMaterial") {
+			val materialId = checkNotNull(call.parameters["materialId"]) { "Material Id must not be null" }
+			call.respond(reportLogic.listByAcceptedMaterial(EntityId(materialId)))
+		}
+
+		authenticatedPost("/addToExclusions") {
+			val materialId = checkNotNull(call.parameters["materialId"]) { "Material Id must not be null" }
+			val reportIds = call.receive<Set<EntityId>>()
+			call.respond(reportLogic.addMaterialToExclusions(EntityId(materialId), reportIds))
+		}
 	}

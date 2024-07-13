@@ -3,6 +3,7 @@ package org.cdb.homunculus.logic
 import kotlinx.coroutines.flow.Flow
 import org.cdb.homunculus.exceptions.NotFoundException
 import org.cdb.homunculus.models.Report
+import org.cdb.homunculus.models.dto.NotificationStub
 import org.cdb.homunculus.models.embed.ReportStatus
 import org.cdb.homunculus.models.identifiers.EntityId
 import org.cdb.homunculus.models.identifiers.Identifier
@@ -73,4 +74,24 @@ interface ReportLogic {
 	 * @param reportId the [Report.id] of the alert to update.
 	 */
 	suspend fun delete(reportId: EntityId)
+
+	/**
+	 * Returns all the [Report]s that can accept a material.
+	 *
+	 * @param materialId the id of the material to check.
+	 * @return a [Flow] of [NotificationStub].
+	 */
+	fun listByAcceptedMaterial(materialId: EntityId): Flow<NotificationStub>
+
+	/**
+	 * Updates the [Report]s which id are present in [reportIds] adding [materialId] to [Report.excludeFilter].
+	 *
+	 * @param materialId the id of the material to exclude.
+	 * @param reportIds the ids of the [Report]s to update.
+	 * @return a [Flow] containing the updated [Report]s
+	 */
+	fun addMaterialToExclusions(
+		materialId: EntityId,
+		reportIds: Set<EntityId>,
+	): Flow<Report>
 }

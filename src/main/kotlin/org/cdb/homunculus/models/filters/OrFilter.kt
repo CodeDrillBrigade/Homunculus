@@ -6,7 +6,7 @@ import org.bson.conversions.Bson
 import org.cdb.homunculus.models.Filterable
 
 @Serializable
-class OrFilter(
+data class OrFilter(
 	private val filters: List<Filter>,
 ) : Filter {
 	override fun toBson(): Bson = Filters.or(filters.map { it.toBson() })
@@ -17,4 +17,11 @@ class OrFilter(
 		AndFilter(
 			filters = filters.map { it.not() },
 		)
+
+	fun addFilter(filter: Filter) =
+		if (!filters.contains(filter)) {
+			copy(filters = filters + filter)
+		} else {
+			this
+		}
 }

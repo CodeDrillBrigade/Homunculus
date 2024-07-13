@@ -64,4 +64,15 @@ fun Routing.alertController() =
 				) { "Status must not be null." }
 			call.respond(alertLogic.setStatus(EntityId(alertId), status))
 		}
+
+		authenticatedGet("/byActivationMaterial") {
+			val materialId = checkNotNull(call.parameters["materialId"]) { "Material Id must not be null" }
+			call.respond(alertLogic.listByAcceptedMaterial(EntityId(materialId)))
+		}
+
+		authenticatedPost("/addToExclusions") {
+			val materialId = checkNotNull(call.parameters["materialId"]) { "Material Id must not be null" }
+			val alertIds = call.receive<Set<EntityId>>()
+			call.respond(alertLogic.addMaterialToExclusions(EntityId(materialId), alertIds))
+		}
 	}

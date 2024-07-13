@@ -91,7 +91,7 @@ class Mailer(
 						append(material.key.name)
 						append(" (${material.key.brand}")
 						material.key.referenceCode?.also { append(", #$it") }
-						append(").")
+						append(").\n")
 					}
 					append("\n")
 				}
@@ -130,7 +130,7 @@ class Mailer(
 					append(material.name)
 					append(" (${material.brand}")
 					material.referenceCode?.also { append(", #$it") }
-					append(").")
+					append(").\n")
 				}
 			}
 		recipientEmails.forEach { recipient ->

@@ -6,7 +6,7 @@ import org.bson.conversions.Bson
 import org.cdb.homunculus.models.Filterable
 
 @Serializable
-class ByIdFilter(
+data class ByIdFilter(
 	private val id: String,
 ) : Filter {
 	override fun toBson(): Bson = Filters.eq("_id", id)
