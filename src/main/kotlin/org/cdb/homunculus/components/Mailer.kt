@@ -5,6 +5,7 @@ import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
@@ -81,7 +82,7 @@ class Mailer(
 	suspend fun sendReportEmail(
 		materialsWithThresholds: Map<Material, Int>,
 		recipientEmail: String,
-	) {
+	): HttpResponse {
 		val materialsAsString =
 			buildString {
 				materialsWithThresholds.entries.groupBy { it.value }.forEach { (threshold, materials) ->
@@ -96,7 +97,7 @@ class Mailer(
 					append("\n")
 				}
 			}
-		httpClient.post("${config.hermesUrl}/v1/mail") {
+		return httpClient.post("${config.hermesUrl}/v1/mail") {
 			contentType(ContentType.Application.Json)
 			setBody(
 				MailInput(

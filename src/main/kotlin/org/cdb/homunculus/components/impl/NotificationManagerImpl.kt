@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.RemovalCause
 import dev.inmo.krontab.doInfinity
+import io.ktor.client.statement.bodyAsText
 import io.ktor.util.collections.ConcurrentMap
 import io.ktor.util.logging.Logger
 import kotlinx.coroutines.CoroutineScope
@@ -66,6 +67,7 @@ class NotificationManagerImpl(
 				try {
 					val jobsToRestart = reportJobsCache.filterValues { it.isCancelled || it.isCancelled }.keys
 					jobsToRestart.forEach {
+						logger.info("Restarting job for cron $it")
 						reportJobsCache.remove(it)
 						startReportJob(it)
 					}
@@ -84,6 +86,7 @@ class NotificationManagerImpl(
 		executorScope.launch {
 			doInfinity(cronConfig) {
 				try {
+					logger.info("Start handling cron $cronConfig")
 					reportsByCronConfig[cronConfig]?.fold(mutableMapOf<String, Map<Material, Int>>()) { acc, reportId ->
 						logger.info("Handling report $reportId")
 						val report = reportDao.getById(reportId)
@@ -98,10 +101,15 @@ class NotificationManagerImpl(
 							recipientEmails.forEach { email ->
 								acc[email] = acc.getOrDefault(email, emptyMap()) + matchingMaterials.associateWith { report.threshold }
 							}
+						} else {
+							logger.info("$reportId is not triggered")
 						}
 						acc
 					}?.entries?.forEach { (email, materials) ->
-						mailer.sendReportEmail(materials, email)
+						val result = mailer.sendReportEmail(materials, email)
+						if(result.status.value >= 400) {
+							logger.error("Mail to $email failed with code ${result.status.value}: ${result.bodyAsText()}")
+						}
 					}
 				} catch (e: Exception) {
 					logger.error("Error while handling report at cron $cronConfig", e)
@@ -117,10 +125,12 @@ class NotificationManagerImpl(
 				reportsByCronConfig[config] = setOf(report.id)
 				reportJobsCache[config] = startReportJob(config)
 			}
+			logger.info("Starting jobs for report ${report.id} at cron: $config")
 		}
 	}
 
 	override suspend fun removeReport(report: Report) {
+		logger.info("Removing jobs for report ${report.id}")
 		report.cronConfigs.forEach { config ->
 			reportsByCronConfig[config] = reportsByCronConfig.getOrDefault(config, emptySet()) - report.id
 			if (reportsByCronConfig[config]?.isEmpty() == true) {
@@ -138,7 +148,6 @@ class NotificationManagerImpl(
 	override suspend fun loadReports() {
 		reportDao.get(ReportStatus.ACTIVE).collect { report ->
 			addReport(report)
-			logger.info("Starting jobs for report ${report.id} at cron: ${report.cronConfigs.joinToString(",")}")
 		}
 	}
 
