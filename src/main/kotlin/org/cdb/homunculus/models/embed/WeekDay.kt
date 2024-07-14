@@ -10,5 +10,5 @@ enum class WeekDay(val index: Int) {
 	THURSDAY(4),
 	FRIDAY(5),
 	SATURDAY(6),
-	SUNDAY(7),
+	SUNDAY(0),
 }
