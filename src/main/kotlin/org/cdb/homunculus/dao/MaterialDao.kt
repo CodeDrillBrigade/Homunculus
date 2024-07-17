@@ -67,4 +67,12 @@ abstract class MaterialDao(client: DBClient) : GenericDao<Material>(client) {
 		limit: Int?,
 		skip: Int?,
 	): Flow<Material>
+
+	/**
+	 * Retrieves all the [Material]s where [Material.tags] contains [tagId].
+	 *
+	 * @param tagId the id of the tag.
+	 * @return a [Flow] of [Material]s.
+	 */
+	abstract fun getByTagId(tagId: EntityId): Flow<Material>
 }

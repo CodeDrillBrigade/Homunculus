@@ -107,7 +107,7 @@ class NotificationManagerImpl(
 						acc
 					}?.entries?.forEach { (email, materials) ->
 						val result = mailer.sendReportEmail(materials, email)
-						if(result.status.value >= 400) {
+						if (result.status.value >= 400) {
 							logger.error("Mail to $email failed with code ${result.status.value}: ${result.bodyAsText()}")
 						}
 					}

@@ -12,4 +12,5 @@ data class Tag(
 	@SerialName("_id") override val id: EntityId = EntityId.generate(),
 	val name: ShortText,
 	val color: HexColor,
+	val normalizedName: String? = null,
 ) : StoredEntity

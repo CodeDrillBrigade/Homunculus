@@ -8,6 +8,7 @@ import org.cdb.homunculus.components.DBClient
 import org.cdb.homunculus.dao.MaterialDao
 import org.cdb.homunculus.models.Box
 import org.cdb.homunculus.models.Material
+import org.cdb.homunculus.models.identifiers.EntityId
 import org.cdb.homunculus.utils.StringNormalizer
 import org.cdb.homunculus.utils.limit
 import org.cdb.homunculus.utils.skip
@@ -66,4 +67,6 @@ class MaterialDaoImpl(client: DBClient) : MaterialDao(client) {
 				),
 			),
 		).skip(skip).limit(limit)
+
+	override fun getByTagId(tagId: EntityId): Flow<Material> = collection.find(Filters.`in`(Material::tags.name, tagId.id))
 }

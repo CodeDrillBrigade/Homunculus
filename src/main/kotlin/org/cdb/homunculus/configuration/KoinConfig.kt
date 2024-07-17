@@ -55,7 +55,6 @@ import org.cdb.homunculus.models.config.MongoDBCredentials
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
-import kotlin.math.log
 
 fun applicationModules(
 	dbCredentials: MongoDBCredentials,
@@ -92,7 +91,7 @@ fun applicationModules(
 	single<ProcessLogic> { ProcessLogicImpl(get(), get(), get(), get()) }
 	single<ReportLogic> { ReportLogicImpl(get(), get(), get(), logger) }
 	single<StorageLogic> { StorageLogicImpl(get()) }
-	single<TagLogic> { TagLogicImpl(get()) }
+	single<TagLogic> { TagLogicImpl(get(), get()) }
 	single<UserLogic> { UserLogicImpl(get(), get(), get()) }
 }
 
