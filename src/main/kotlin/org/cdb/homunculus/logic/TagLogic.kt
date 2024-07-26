@@ -18,7 +18,7 @@ interface TagLogic {
 	/**
 	 * Retrieves a [Tag].
 	 *
-	 * @param tagId the [EntityId] of the material to find
+	 * @param tagId the [EntityId] of the tag to find
 	 * @return the [Tag] with the specified id.
 	 * @throws NotFoundException if no [Tag] exists with the specified id.
 	 */

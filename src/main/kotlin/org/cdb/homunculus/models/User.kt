@@ -28,6 +28,7 @@ data class User(
 	val name: String? = null,
 	val surname: String? = null,
 	val email: String? = null,
+	val profilePicture: EntityId? = null,
 	val roles: Set<EntityId> = emptySet(),
 	val authenticationTokens: Map<String, AuthToken> = emptyMap(),
 ) : StoredEntity {

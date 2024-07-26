@@ -10,6 +10,7 @@ import org.cdb.homunculus.controller.boxController
 import org.cdb.homunculus.controller.boxDefinitionController
 import org.cdb.homunculus.controller.materialController
 import org.cdb.homunculus.controller.processController
+import org.cdb.homunculus.controller.profilePictureController
 import org.cdb.homunculus.controller.reportController
 import org.cdb.homunculus.controller.storageController
 import org.cdb.homunculus.controller.tagController
@@ -21,6 +22,7 @@ fun Application.configureRouting() {
 	}
 	routing {
 		alertController()
+		profilePictureController()
 		authController()
 		boxController()
 		boxDefinitionController()

@@ -60,6 +60,10 @@ class UserLogicImpl(
 			currentUser.username == user.username ||
 				userDao.getByUsername(user.username) == null,
 		) { "The provided username already exist: ${user.username}" }
+		require(
+			user.email == null || currentUser.email == user.email ||
+				userDao.getByEmail(user.email) == null,
+		) { "The provided email already exist: ${user.email}" }
 		val newPasswordHash =
 			when {
 				user.passwordHash != null && !passwordEncoder.isHashed(user.passwordHash) -> passwordEncoder.hashAndSaltPassword(user.passwordHash)
@@ -74,6 +78,7 @@ class UserLogicImpl(
 				name = user.name ?: currentUser.name,
 				surname = user.surname ?: currentUser.surname,
 				email = user.email ?: currentUser.email,
+				profilePicture = user.profilePicture ?: currentUser.profilePicture,
 			),
 		)
 	}
