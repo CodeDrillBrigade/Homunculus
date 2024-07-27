@@ -1,0 +1,11 @@
+{
+  "_id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+  "name": "Inventory manager",
+  "description": "Can search, create, and edit materials, rooms, boxes, tags, and reports/alerts",
+  "permissions": [
+    "MANAGE_MATERIALS",
+    "MANAGE_NOTIFICATIONS",
+    "MANAGE_STORAGE",
+    "MANAGE_METADATA"
+  ]
+}

@@ -8,6 +8,7 @@ import io.ktor.server.application.install
 import io.ktor.server.application.log
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.Json
 import org.cdb.homunculus.annotations.Index
 import org.cdb.homunculus.components.NotificationManager
 import org.cdb.homunculus.components.PasswordEncoder
@@ -18,7 +19,6 @@ import org.cdb.homunculus.models.User
 import org.cdb.homunculus.models.embed.Role
 import org.cdb.homunculus.models.identifiers.EntityId
 import org.cdb.homunculus.models.security.AuthToken
-import org.cdb.homunculus.models.security.Permissions
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.Kind
 import org.koin.ktor.plugin.koin
@@ -29,6 +29,8 @@ import kotlin.reflect.full.isSubclassOf
 import kotlin.time.Duration.Companion.days
 
 private const val FIXED_UUID = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+private const val BASIC_ROLE_UUID = "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"
+private const val INVENTORY_MANAGER_ROLE_UUID = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
 
 @OptIn(KoinInternalApi::class)
 val databaseInitializationPlugin =
@@ -59,6 +61,13 @@ val databaseInitializationPlugin =
 		}
 	}
 
+private object RoleLoader {
+	fun loadRoleFromResources(roleFileName: String): Role =
+		this::class.java.getResource(roleFileName)?.readText()?.let {
+			Json.decodeFromString<Role>(it)
+		} ?: throw IllegalStateException("Cannot load role from $roleFileName")
+}
+
 val systemInitializationPlugin =
 	createApplicationPlugin("SystemInitializer") {
 		on(MonitoringEvent(ApplicationStarted)) { application ->
@@ -68,14 +77,18 @@ val systemInitializationPlugin =
 					val roleDao = koin.get<RoleDao>()
 					if (roleDao.getById(EntityId(FIXED_UUID)) == null) {
 						application.log.info("Admin role not found, creating")
-						val adminRole =
-							Role(
-								id = EntityId(FIXED_UUID),
-								name = "Admin",
-								description = "Default admin role, cannot be modified or deleted",
-								permissions = setOf(Permissions.ADMIN),
-							)
+						val adminRole = RoleLoader.loadRoleFromResources("adminRole.json")
 						roleDao.save(adminRole)
+					}
+					if (roleDao.getById(EntityId(BASIC_ROLE_UUID)) == null) {
+						application.log.info("Basic role not found, creating")
+						val basicRole = RoleLoader.loadRoleFromResources("basicRole.json")
+						roleDao.save(basicRole)
+					}
+					if (roleDao.getById(EntityId(INVENTORY_MANAGER_ROLE_UUID)) == null) {
+						application.log.info("Inventory manager role not found, creating")
+						val managerRole = RoleLoader.loadRoleFromResources("managerRole.json")
+						roleDao.save(managerRole)
 					}
 
 					val userDao = koin.get<UserDao>()
@@ -92,7 +105,7 @@ val systemInitializationPlugin =
 								passwordHash = null,
 								name = "admin",
 								surname = "admin",
-								roles = setOf(EntityId(FIXED_UUID)),
+								role = EntityId(FIXED_UUID),
 								authenticationTokens =
 									mapOf(
 										"default" to

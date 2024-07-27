@@ -2,6 +2,7 @@ package org.cdb.homunculus.models
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.cdb.homunculus.models.embed.Role
 import org.cdb.homunculus.models.embed.UserStatus
 import org.cdb.homunculus.models.identifiers.EntityId
 import org.cdb.homunculus.models.security.AuthToken
@@ -16,7 +17,7 @@ import java.util.Date
  * @param status the [UserStatus].
  * @param name the name of the user.
  * @param surname the surname of the user.
- * @param roles a [Set] of [EntityId] of roles assigned to this user.
+ * @param role the [EntityId] of the [Role] assigned to this user.
  * @param authenticationTokens a [Map] of temporary [AuthToken] that can be used to login.
  */
 @Serializable
@@ -29,7 +30,7 @@ data class User(
 	val surname: String? = null,
 	val email: String? = null,
 	val profilePicture: EntityId? = null,
-	val roles: Set<EntityId> = emptySet(),
+	val role: EntityId? = null,
 	val authenticationTokens: Map<String, AuthToken> = emptyMap(),
 ) : StoredEntity {
 	fun redactSecrets() =

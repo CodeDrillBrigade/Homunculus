@@ -29,17 +29,10 @@ fun Routing.userController() =
 			call.respond(userLogic.get(EntityId(userId)).redactSecrets())
 		}
 
-		authenticatedGet("/permissions") {
-			val permissions =
-				Permissions.entries.filter { p ->
-					it.permissions[p.index]
-				}
-			call.respond(permissions)
-		}
-
 		authenticatedGet("/byEmail/{email}") {
 			val email = checkNotNull(call.parameters["email"]) { "Email must not be null" }
-			call.respond(userLogic.getByEmail(email).redactSecrets())
+			val excludeRegistering = call.request.queryParameters["excludeRegistering"]?.toBoolean() ?: false
+			call.respond(userLogic.getByEmail(email, excludeRegistering).redactSecrets())
 		}
 
 		authenticatedGet("/byUsername/{username}") {
@@ -70,6 +63,12 @@ fun Routing.userController() =
 				it.userId.id == userId || it.permissions[Permissions.ADMIN.index],
 			) { "You are not allowed to change the password for the user $userId" }
 			call.respond(userLogic.changePassword(EntityId(userId), passwordDto.password))
+		}
+
+		authenticatedPut("/{userId}/role/{roleId}", permissions = setOf(Permissions.ADMIN)) {
+			val userId = checkNotNull(call.parameters["userId"]) { "User Id must not be null" }
+			val roleId = checkNotNull(call.parameters["roleId"]) { "Role Id must not be null" }
+			call.respond(userLogic.setRole(EntityId(userId), EntityId(roleId)))
 		}
 
 		authenticatedGet("/byUsernameEmailName") {

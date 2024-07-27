@@ -39,6 +39,7 @@ import org.cdb.homunculus.logic.MaterialLogic
 import org.cdb.homunculus.logic.ProcessLogic
 import org.cdb.homunculus.logic.ProfilePictureLogic
 import org.cdb.homunculus.logic.ReportLogic
+import org.cdb.homunculus.logic.RoleLogic
 import org.cdb.homunculus.logic.StorageLogic
 import org.cdb.homunculus.logic.TagLogic
 import org.cdb.homunculus.logic.UserLogic
@@ -50,6 +51,7 @@ import org.cdb.homunculus.logic.impl.MaterialLogicImpl
 import org.cdb.homunculus.logic.impl.ProcessLogicImpl
 import org.cdb.homunculus.logic.impl.ProfilePictureLogicImpl
 import org.cdb.homunculus.logic.impl.ReportLogicImpl
+import org.cdb.homunculus.logic.impl.RoleLogicImpl
 import org.cdb.homunculus.logic.impl.StorageLogicImpl
 import org.cdb.homunculus.logic.impl.TagLogicImpl
 import org.cdb.homunculus.logic.impl.UserLogicImpl
@@ -96,9 +98,10 @@ fun applicationModules(
 	single<MaterialLogic> { MaterialLogicImpl(get()) }
 	single<ProcessLogic> { ProcessLogicImpl(get(), get(), get(), get()) }
 	single<ReportLogic> { ReportLogicImpl(get(), get(), get(), logger) }
+	single<RoleLogic> { RoleLogicImpl(get()) }
 	single<StorageLogic> { StorageLogicImpl(get()) }
 	single<TagLogic> { TagLogicImpl(get(), get()) }
-	single<UserLogic> { UserLogicImpl(get(), get(), get()) }
+	single<UserLogic> { UserLogicImpl(get(), get(), get(), get()) }
 }
 
 /**

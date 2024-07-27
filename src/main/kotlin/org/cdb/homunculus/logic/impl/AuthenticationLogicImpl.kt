@@ -21,11 +21,11 @@ class AuthenticationLogicImpl(
 	private val jwtManager: JWTManager,
 ) : AuthenticationLogic {
 	private suspend fun User.permissionsAsBitArray(): DynamicBitArray =
-		roles.mapNotNull {
+		role?.let {
 			roleDao.getById(it)
-		}.flatMap {
-			it.permissions
-		}.toSet().let { DynamicBitArray.fromPermissions(it) }
+		}?.permissions?.let {
+			DynamicBitArray.fromPermissions(it)
+		} ?: DynamicBitArray.bitVectorOfSize(0)
 
 	private fun User.matchPasswordOrToken(password: String): Boolean =
 		listOfNotNull(

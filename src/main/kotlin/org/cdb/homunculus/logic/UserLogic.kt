@@ -3,6 +3,8 @@ package org.cdb.homunculus.logic
 import kotlinx.coroutines.flow.Flow
 import org.cdb.homunculus.exceptions.NotFoundException
 import org.cdb.homunculus.models.User
+import org.cdb.homunculus.models.embed.Role
+import org.cdb.homunculus.models.embed.UserStatus
 import org.cdb.homunculus.models.identifiers.EntityId
 
 interface UserLogic {
@@ -42,10 +44,14 @@ interface UserLogic {
 	 * Retrieves a [User] by [User.email].
 	 *
 	 * @param email the email of the user.
+	 * @param excludeRegistering if true, the users where [User.status] is [UserStatus.REGISTERING] will be excluded.
 	 * @return the [User].
 	 * @throws NotFoundException if no user with such an email exist.
 	 */
-	suspend fun getByEmail(email: String): User
+	suspend fun getByEmail(
+		email: String,
+		excludeRegistering: Boolean,
+	): User
 
 	/**
 	 * Retrieves a [User] by [User.username].
@@ -68,6 +74,17 @@ interface UserLogic {
 		userId: EntityId,
 		newPassword: String,
 	): Boolean
+
+	/**
+	 * Sets the [User.role] of the user with id [userId] to [roleId].
+	 *
+	 * @param userId the id of the [User] to update.
+	 * @param roleId the id of the [Role] to set.
+	 */
+	suspend fun setRole(
+		userId: EntityId,
+		roleId: EntityId,
+	)
 
 	/**
 	 * Retrieves all the [User]s where any of [User.username], [User.email], [User.name], or [User.surname] start with [query].

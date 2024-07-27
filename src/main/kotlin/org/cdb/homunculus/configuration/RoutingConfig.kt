@@ -12,6 +12,7 @@ import org.cdb.homunculus.controller.materialController
 import org.cdb.homunculus.controller.processController
 import org.cdb.homunculus.controller.profilePictureController
 import org.cdb.homunculus.controller.reportController
+import org.cdb.homunculus.controller.roleController
 import org.cdb.homunculus.controller.storageController
 import org.cdb.homunculus.controller.tagController
 import org.cdb.homunculus.controller.userController
@@ -29,6 +30,7 @@ fun Application.configureRouting() {
 		materialController()
 		processController()
 		reportController()
+		roleController()
 		storageController()
 		tagController()
 		userController()
