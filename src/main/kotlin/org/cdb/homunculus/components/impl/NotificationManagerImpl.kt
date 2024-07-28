@@ -126,7 +126,7 @@ class NotificationManagerImpl(
 			} else {
 				reportsByCronConfig[config] = setOf(report.id)
 			}
-			if(reportJobsCache[config]?.isActive != true) {
+			if (reportJobsCache[config]?.isActive != true) {
 				logger.info("Starting cronjob for config $config")
 				reportJobsCache[config] = startReportJob(config)
 			}

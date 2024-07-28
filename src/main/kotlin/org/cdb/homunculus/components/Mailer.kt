@@ -88,7 +88,7 @@ class Mailer(
 		val materialsAsString =
 			buildString {
 				materialsWithRemainingBoxes.entries.forEach { (material, remaining) ->
-					append("\t - ")
+					append("- ")
 					append("$remaining REMAINING: ")
 					append(material.name)
 					append(" (${material.brand}")

@@ -28,7 +28,7 @@ data class Report(
 	val cronConfigs: List<String>
 		get() =
 			repeatAt.map {
-				"0 17 ${it.hour - timezone.getOffsetInHours()} * * * 0o ${it.day.index}w"
+				"0 0 ${it.hour - timezone.getOffsetInHours()} * * * 0o ${it.day.index}w"
 			}
 
 	override fun buildFilter(): Filter =
