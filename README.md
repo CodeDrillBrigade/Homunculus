@@ -31,6 +31,8 @@ HOMUNCULUS_URL= #The base URL of your frontend
 HERMES_URL= #The URL of a running instance of Hermes
 RESET_PASSWORD_TEMPLATE_ID= #The template ID of the Hermes template of the password reset email
 INVITE_TEMPLATE_ID= #The template ID of the Hermes template of the invitation email
+REPORT_TEMPLATE_ID= #The template ID of the Hermes template of the report email
+REPORT_TEMPLATE_ID= #The template ID of the Hermes template of the alert email
 ```
 
 -   Run it
