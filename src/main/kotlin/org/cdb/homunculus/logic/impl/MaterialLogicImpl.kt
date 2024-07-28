@@ -39,6 +39,9 @@ class MaterialLogicImpl(
 			skip = null,
 		)
 
+	override fun getByReferenceCode(referenceCode: String): Flow<Material> =
+		materialDao.getByReferenceCode(referenceCode, includeDeleted = false)
+
 	override suspend fun delete(id: EntityId): EntityId {
 		val material = materialDao.getById(id) ?: throw NotFoundException("Material $id not found")
 		return materialDao.update(
@@ -70,7 +73,7 @@ class MaterialLogicImpl(
 	): Flow<Material> =
 		flow {
 			emitAll(materialDao.getByFuzzyName(query, includeDeleted = false, limit = null, skip = null))
-			emitAll(materialDao.getByReferenceCode(query, includeDeleted = false, limit = null, skip = null))
+			emitAll(materialDao.searchByReferenceCode(query, includeDeleted = false, limit = null, skip = null))
 			emitAll(materialDao.getByBrand(query, includeDeleted = false, limit = null, skip = null))
 		}.filter {
 			tagIds == null || it.tags.intersect(tagIds).isNotEmpty()
@@ -98,5 +101,5 @@ class MaterialLogicImpl(
 
 	override fun getLastCreated(limit: Int): Flow<Material> = materialDao.getLastCreated(limit)
 
-	override fun filter(filter: Filter): Flow<Material> = materialDao.find(filter.toBson())
+	override fun filter(filter: Filter): Flow<Material> = materialDao.find(filter.toBson()).filter { it.deletionDate == null }
 }

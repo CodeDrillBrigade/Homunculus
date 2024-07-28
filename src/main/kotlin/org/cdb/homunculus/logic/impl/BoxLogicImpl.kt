@@ -1,6 +1,9 @@
 package org.cdb.homunculus.logic.impl
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.toList
 import org.cdb.homunculus.components.NotificationManager
 import org.cdb.homunculus.dao.BoxDao
 import org.cdb.homunculus.exceptions.NotFoundException
@@ -46,7 +49,21 @@ class BoxLogicImpl(
 
 	override fun getAll(): Flow<Box> = boxDao.get()
 
-	override fun getByMaterial(materialId: EntityId): Flow<Box> = boxDao.getByMaterials(materialId, false)
+	override fun getByMaterial(materialId: EntityId): Flow<Box> = boxDao.getByMaterial(materialId, false)
+
+	override suspend fun getTotalUnitsByMaterial(materialId: EntityId): Int =
+		boxDao.getByMaterial(materialId, false).map {
+			it.quantity.quantity
+		}.toList().sum()
+
+	override fun deleteByMaterial(materialId: EntityId): Flow<Box> =
+		getByMaterial(materialId).mapNotNull {
+			boxDao.update(
+				it.copy(
+					deletionDate = Date(),
+				),
+			)
+		}
 
 	override fun getByPosition(shelfId: HierarchicalId): Flow<Box> = boxDao.getByPosition(shelfId, false)
 
@@ -91,16 +108,18 @@ class BoxLogicImpl(
 		} ?: throw IllegalStateException("Cannot update the quantity for box $boxId")
 	}
 
-	override suspend fun modify(box: Box) {
+	override suspend fun modify(box: Box): EntityId {
 		val currentBox = boxDao.getById(box.id) ?: throw NotFoundException("Box ${box.id} not found")
-		boxDao.update(
-			currentBox.copy(
-				position = box.position,
-				batchNumber = box.batchNumber,
-				expirationDate = box.expirationDate,
-				deletionDate = box.deletionDate,
-				description = box.description,
-			),
-		)
+		return checkNotNull(
+			boxDao.update(
+				currentBox.copy(
+					position = box.position,
+					batchNumber = box.batchNumber,
+					expirationDate = box.expirationDate,
+					deletionDate = box.deletionDate,
+					description = box.description,
+				),
+			)?.id,
+		) { "An error occurred while updating box ${box.id}" }
 	}
 }

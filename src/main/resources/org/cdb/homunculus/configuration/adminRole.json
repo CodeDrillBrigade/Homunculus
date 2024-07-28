@@ -1,0 +1,8 @@
+{
+  "_id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "name": "Admin",
+  "description": "Can execute all the operation in the system, including inviting and managing users",
+  "permissions": [
+    "ADMIN"
+  ]
+}

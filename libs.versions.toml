@@ -27,6 +27,7 @@ logback = { group = "ch.qos.logback", name = "logback-classic", version.ref = "l
 kotlinxDatetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version ="0.6.0" }
 krontab = { group = "dev.inmo", name = "krontab", version = "2.3.0" }
 caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version = "3.1.8" }
+tika = { group = "org.apache.tika", name = "tika-core", version = "2.9.1" }
 
 [bundles]
 koin = ["koinKtor", "koinLogger"]

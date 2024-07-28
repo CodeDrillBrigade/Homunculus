@@ -3,6 +3,8 @@ package org.cdb.homunculus.logic
 import kotlinx.coroutines.flow.Flow
 import org.cdb.homunculus.exceptions.NotFoundException
 import org.cdb.homunculus.models.User
+import org.cdb.homunculus.models.embed.Role
+import org.cdb.homunculus.models.embed.UserStatus
 import org.cdb.homunculus.models.identifiers.EntityId
 
 interface UserLogic {
@@ -42,10 +44,14 @@ interface UserLogic {
 	 * Retrieves a [User] by [User.email].
 	 *
 	 * @param email the email of the user.
+	 * @param excludeRegistering if true, the users where [User.status] is [UserStatus.REGISTERING] will be excluded.
 	 * @return the [User].
 	 * @throws NotFoundException if no user with such an email exist.
 	 */
-	suspend fun getByEmail(email: String): User
+	suspend fun getByEmail(
+		email: String,
+		excludeRegistering: Boolean,
+	): User
 
 	/**
 	 * Retrieves a [User] by [User.username].
@@ -70,12 +76,27 @@ interface UserLogic {
 	): Boolean
 
 	/**
+	 * Sets the [User.role] of the user with id [userId] to [roleId].
+	 *
+	 * @param userId the id of the [User] to update.
+	 * @param roleId the id of the [Role] to set.
+	 */
+	suspend fun setRole(
+		userId: EntityId,
+		roleId: EntityId,
+	)
+
+	/**
 	 * Retrieves all the [User]s where any of [User.username], [User.email], [User.name], or [User.surname] start with [query].
 	 *
 	 * @param query the prefix to search.
+	 * @param onlyActive if true, it will return only the users where [User.status] is [UserStatus.ACTIVE].
 	 * @return a [Flow] of [User]s.
 	 */
-	fun getByUsernameEmailName(query: String): Flow<User>
+	fun getByUsernameEmailName(
+		query: String,
+		onlyActive: Boolean,
+	): Flow<User>
 
 	/**
 	 * Retrieves multiple [User]s by their [User.id].
@@ -84,4 +105,24 @@ interface UserLogic {
 	 * @return a [Flow] of [User]s.
 	 */
 	fun getByIds(ids: Set<EntityId>): Flow<User>
+
+	/**
+	 * Hard deletes a [User] from the system.
+	 *
+	 * @param userId the [User.id].
+	 * @throws NotFoundException if no user is found with the provided id.
+	 */
+	suspend fun delete(userId: EntityId)
+
+	/**
+	 * Sets the [User.status] of the user with id [userId] to [status].
+	 *
+	 * @param userId the [User.id].
+	 * @param status the new [User.status].
+	 * @throws NotFoundException if no user is found with the provided id.
+	 */
+	suspend fun setStatus(
+		userId: EntityId,
+		status: UserStatus,
+	)
 }

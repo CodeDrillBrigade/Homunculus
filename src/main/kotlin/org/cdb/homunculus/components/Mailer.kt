@@ -79,76 +79,48 @@ class Mailer(
 		}
 	}
 
-	suspend fun sendReportEmail(
-		materialsWithThresholds: Map<Material, Int>,
-		recipientEmail: String,
-	): HttpResponse {
-		val materialsAsString =
-			buildString {
-				materialsWithThresholds.entries.groupBy { it.value }.forEach { (threshold, materials) ->
-					append("Less than $threshold units:\n")
-					materials.forEach { material ->
-						append("\t - ")
-						append(material.key.name)
-						append(" (${material.key.brand}")
-						material.key.referenceCode?.also { append(", #$it") }
-						append(").\n")
-					}
-					append("\n")
-				}
-			}
-		return httpClient.post("${config.hermesUrl}/v1/mail") {
-			contentType(ContentType.Application.Json)
-			setBody(
-				MailInput(
-					id = config.reportTemplateId,
-					email = recipientEmail,
-					attributes =
-						mapOf(
-							"materials" to materialsAsString,
-						),
-				),
-			)
-		}
-	}
-
-	suspend fun sendAlertEmail(
-		materials: List<Material>,
-		alert: Alert,
-		recipientEmails: Set<String>,
-	) = sendNotification(materials, alert, config.alertTemplateId, recipientEmails)
-
 	private suspend fun sendNotification(
-		materials: List<Material>,
-		notification: Notification,
+		materialsWithRemainingBoxes: Map<Material, Int>,
+		notification: Notification?,
 		defaultTemplateId: String,
 		recipientEmails: Set<String>,
-	) {
+	): List<HttpResponse> {
 		val materialsAsString =
-			materials.joinToString(separator = "\n") { material ->
-				buildString {
-					append("\t - ")
+			buildString {
+				materialsWithRemainingBoxes.entries.forEach { (material, remaining) ->
+					append("- ")
+					append("$remaining REMAINING: ")
 					append(material.name)
 					append(" (${material.brand}")
 					material.referenceCode?.also { append(", #$it") }
 					append(").\n")
 				}
 			}
-		recipientEmails.forEach { recipient ->
+		return recipientEmails.map {
 			httpClient.post("${config.hermesUrl}/v1/mail") {
 				contentType(ContentType.Application.Json)
 				setBody(
 					MailInput(
-						id = notification.templateId ?: defaultTemplateId,
-						email = recipient,
+						id = notification?.templateId ?: defaultTemplateId,
+						email = it,
 						attributes =
 							mapOf(
 								"materials" to materialsAsString,
-								"threshold" to "${notification.threshold}",
 							),
 					),
 				)
 			}
 		}
 	}
+
+	suspend fun sendAlertEmail(
+		materialsWithRemainingBoxes: Map<Material, Int>,
+		alert: Alert,
+		recipientEmails: Set<String>,
+	) = sendNotification(materialsWithRemainingBoxes, alert, config.alertTemplateId, recipientEmails)
+
+	suspend fun sendReportEmail(
+		materialsWithRemainingBoxes: Map<Material, Int>,
+		recipientEmail: String,
+	) = sendNotification(materialsWithRemainingBoxes, null, config.reportTemplateId, setOf(recipientEmail)).first()
 }

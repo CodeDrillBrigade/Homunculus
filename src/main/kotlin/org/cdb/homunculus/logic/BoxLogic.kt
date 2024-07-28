@@ -56,8 +56,24 @@ interface BoxLogic {
 	fun getByMaterial(materialId: EntityId): Flow<Box>
 
 	/**
+	 * Retrieves the sum of all the items of the [Box]es for the specified material.
+	 *
+	 * @param materialId the id of the material.
+	 * @return the total number of units.
+	 */
+	suspend fun getTotalUnitsByMaterial(materialId: EntityId): Int
+
+	/**
+	 * Retrieves all the [Box]es where [Box.material] is equal to [materialId].
+	 *
+	 * @param materialId the id of the material.
+	 * @return a [Flow] of the deleted [Box]es.
+	 */
+	fun deleteByMaterial(materialId: EntityId): Flow<Box>
+
+	/**
 	 * Retrieves all the [Box]es where [Box.position] is equal to [shelfId].
-	 * Only non-deleted Boxes, (i.e. with null [Box.deleted]) are returned.
+	 * Only non-deleted Boxes, (i.e. with null [Box.deletionDate]) are returned.
 	 *
 	 * @param shelfId the id of the shelf.
 	 * @return a [Flow] of [Box].
@@ -84,9 +100,10 @@ interface BoxLogic {
 	 * This method will ignore [Box.usageLogs], [Box.quantity] or [Box.material].
 	 *
 	 * @param box the box to update.
+	 * @return the id of the updated [Box].
 	 * @throws NotFoundException if there is no box with such an id in the system.
 	 */
-	suspend fun modify(box: Box)
+	suspend fun modify(box: Box): EntityId
 
 	/**
 	 * Retrieves all the [Box]es based on a match between the normalized [query] and [Box.batchNumber], excluding the ones

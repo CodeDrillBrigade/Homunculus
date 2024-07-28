@@ -46,7 +46,7 @@ class DynamicBitArray private constructor(
 		fun fromBase64String(base64String: String) = DynamicBitArray(Base64.getDecoder().decode(base64String).toUByteArray())
 
 		fun fromPermissions(permissions: Set<Permissions>): DynamicBitArray {
-			val size = permissions.maxOf { it.index } + 1
+			val size = (permissions.maxOfOrNull { it.index } ?: 0) + 1
 			return bitVectorOfSize(size).apply {
 				permissions.forEach { set(it.index, true) }
 			}

@@ -69,7 +69,7 @@ interface ReportLogic {
 	)
 
 	/**
-	 * Hard-deletes and [Report].
+	 * Hard-deletes a [Report].
 	 *
 	 * @param reportId the [Report.id] of the alert to update.
 	 */

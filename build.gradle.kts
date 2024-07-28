@@ -39,6 +39,7 @@ dependencies {
 	implementation(libs.kotlinxDatetime)
 	implementation(libs.krontab)
 	implementation(libs.caffeine)
+	implementation(libs.tika)
 }
 
 tasks.withType<Test> {

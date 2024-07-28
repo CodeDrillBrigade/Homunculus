@@ -1,0 +1,6 @@
+{
+  "_id": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee",
+  "name": "Basic user",
+  "description": "Can search materials, boxes, and rooms, and can add and remove items from boxes (but not create or edit boxes)",
+  "permissions": []
+}

@@ -7,6 +7,7 @@ import org.cdb.homunculus.dao.UserDao
 import org.cdb.homunculus.exceptions.UnauthorizedException
 import org.cdb.homunculus.logic.AuthenticationLogic
 import org.cdb.homunculus.models.User
+import org.cdb.homunculus.models.embed.UserStatus
 import org.cdb.homunculus.models.identifiers.EntityId
 import org.cdb.homunculus.models.security.AuthResponse
 import org.cdb.homunculus.models.security.JWTClaims
@@ -21,11 +22,11 @@ class AuthenticationLogicImpl(
 	private val jwtManager: JWTManager,
 ) : AuthenticationLogic {
 	private suspend fun User.permissionsAsBitArray(): DynamicBitArray =
-		roles.mapNotNull {
+		role?.let {
 			roleDao.getById(it)
-		}.flatMap {
-			it.permissions
-		}.toSet().let { DynamicBitArray.fromPermissions(it) }
+		}?.permissions?.let {
+			DynamicBitArray.fromPermissions(it)
+		} ?: DynamicBitArray.bitVectorOfSize(0)
 
 	private fun User.matchPasswordOrToken(password: String): Boolean =
 		listOfNotNull(
@@ -40,7 +41,9 @@ class AuthenticationLogicImpl(
 		listOfNotNull(
 			userDao.getByUsername(identifier),
 			userDao.getByEmail(identifier),
-		).firstOrNull {
+		).filterNot {
+			it.status == UserStatus.INACTIVE
+		}.firstOrNull {
 			it.matchPasswordOrToken(password)
 		}
 

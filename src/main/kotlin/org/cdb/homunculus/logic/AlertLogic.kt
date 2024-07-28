@@ -69,7 +69,7 @@ interface AlertLogic {
 	)
 
 	/**
-	 * Hard-deletes and [Alert].
+	 * Hard-deletes a [Alert].
 	 *
 	 * @param alertId the [Alert.id] of the alert to update.
 	 */

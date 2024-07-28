@@ -14,6 +14,7 @@ import org.cdb.homunculus.dao.BoxDao
 import org.cdb.homunculus.dao.BoxDefinitionDao
 import org.cdb.homunculus.dao.MaterialDao
 import org.cdb.homunculus.dao.ProcessDao
+import org.cdb.homunculus.dao.ProfilePictureDao
 import org.cdb.homunculus.dao.ReportDao
 import org.cdb.homunculus.dao.RoleDao
 import org.cdb.homunculus.dao.StorageDao
@@ -24,6 +25,7 @@ import org.cdb.homunculus.dao.impl.BoxDaoImpl
 import org.cdb.homunculus.dao.impl.BoxDefinitionDaoImpl
 import org.cdb.homunculus.dao.impl.MaterialDaoImpl
 import org.cdb.homunculus.dao.impl.ProcessDaoImpl
+import org.cdb.homunculus.dao.impl.ProfilePictureDaoImpl
 import org.cdb.homunculus.dao.impl.ReportDaoImpl
 import org.cdb.homunculus.dao.impl.RoleDaoImpl
 import org.cdb.homunculus.dao.impl.StorageDaoImpl
@@ -35,7 +37,9 @@ import org.cdb.homunculus.logic.BoxDefinitionLogic
 import org.cdb.homunculus.logic.BoxLogic
 import org.cdb.homunculus.logic.MaterialLogic
 import org.cdb.homunculus.logic.ProcessLogic
+import org.cdb.homunculus.logic.ProfilePictureLogic
 import org.cdb.homunculus.logic.ReportLogic
+import org.cdb.homunculus.logic.RoleLogic
 import org.cdb.homunculus.logic.StorageLogic
 import org.cdb.homunculus.logic.TagLogic
 import org.cdb.homunculus.logic.UserLogic
@@ -45,7 +49,9 @@ import org.cdb.homunculus.logic.impl.BoxDefinitionLogicImpl
 import org.cdb.homunculus.logic.impl.BoxLogicImpl
 import org.cdb.homunculus.logic.impl.MaterialLogicImpl
 import org.cdb.homunculus.logic.impl.ProcessLogicImpl
+import org.cdb.homunculus.logic.impl.ProfilePictureLogicImpl
 import org.cdb.homunculus.logic.impl.ReportLogicImpl
+import org.cdb.homunculus.logic.impl.RoleLogicImpl
 import org.cdb.homunculus.logic.impl.StorageLogicImpl
 import org.cdb.homunculus.logic.impl.TagLogicImpl
 import org.cdb.homunculus.logic.impl.UserLogicImpl
@@ -55,7 +61,6 @@ import org.cdb.homunculus.models.config.MongoDBCredentials
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
-import kotlin.math.log
 
 fun applicationModules(
 	dbCredentials: MongoDBCredentials,
@@ -70,6 +75,7 @@ fun applicationModules(
 
 	// DAOs
 	single<AlertDao> { AlertDaoImpl(get()) }
+	single<ProfilePictureDao> { ProfilePictureDaoImpl(get()) }
 	single<BoxDao> { BoxDaoImpl(get()) }
 	single<BoxDefinitionDao> { BoxDefinitionDaoImpl(get()) }
 	single<MaterialDao> { MaterialDaoImpl(get()) }
@@ -81,19 +87,21 @@ fun applicationModules(
 	single<UserDao> { UserDaoImpl(get()) }
 
 	// Components
-	single<NotificationManager> { NotificationManagerImpl(get(), get(), get(), get(), get(), get(), logger) }
+	single<NotificationManager> { NotificationManagerImpl(get(), get(), get(), get(), get(), get(), get(), logger) }
 
 	// Logics
 	single<AlertLogic> { AlertLogicImpl(get(), get(), logger) }
+	single<ProfilePictureLogic> { ProfilePictureLogicImpl(get()) }
 	single<AuthenticationLogic> { AuthenticationLogicImpl(get(), get(), get(), get()) }
 	single<BoxLogic> { BoxLogicImpl(get(), get()) }
 	single<BoxDefinitionLogic> { BoxDefinitionLogicImpl(get()) }
 	single<MaterialLogic> { MaterialLogicImpl(get()) }
 	single<ProcessLogic> { ProcessLogicImpl(get(), get(), get(), get()) }
 	single<ReportLogic> { ReportLogicImpl(get(), get(), get(), logger) }
+	single<RoleLogic> { RoleLogicImpl(get()) }
 	single<StorageLogic> { StorageLogicImpl(get()) }
-	single<TagLogic> { TagLogicImpl(get()) }
-	single<UserLogic> { UserLogicImpl(get(), get(), get()) }
+	single<TagLogic> { TagLogicImpl(get(), get()) }
+	single<UserLogic> { UserLogicImpl(get(), get(), get(), get()) }
 }
 
 /**

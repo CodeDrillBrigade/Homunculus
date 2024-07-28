@@ -19,7 +19,7 @@ abstract class BoxDao(client: DBClient) : GenericDao<Box>(client) {
 	 * @param includeDeleted whether to include the Boxes where [Box.deletionDate] is not null.
 	 * @return a [Flow] of [Box]es.
 	 */
-	abstract fun getByMaterials(
+	abstract fun getByMaterial(
 		materialId: EntityId,
 		includeDeleted: Boolean,
 	): Flow<Box>
