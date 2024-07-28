@@ -87,7 +87,7 @@ fun applicationModules(
 	single<UserDao> { UserDaoImpl(get()) }
 
 	// Components
-	single<NotificationManager> { NotificationManagerImpl(get(), get(), get(), get(), get(), get(), logger) }
+	single<NotificationManager> { NotificationManagerImpl(get(), get(), get(), get(), get(), get(), get(), logger) }
 
 	// Logics
 	single<AlertLogic> { AlertLogicImpl(get(), get(), logger) }

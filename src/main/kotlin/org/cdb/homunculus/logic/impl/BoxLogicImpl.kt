@@ -1,7 +1,9 @@
 package org.cdb.homunculus.logic.impl
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.toList
 import org.cdb.homunculus.components.NotificationManager
 import org.cdb.homunculus.dao.BoxDao
 import org.cdb.homunculus.exceptions.NotFoundException
@@ -48,6 +50,11 @@ class BoxLogicImpl(
 	override fun getAll(): Flow<Box> = boxDao.get()
 
 	override fun getByMaterial(materialId: EntityId): Flow<Box> = boxDao.getByMaterial(materialId, false)
+
+	override suspend fun getTotalUnitsByMaterial(materialId: EntityId): Int =
+		boxDao.getByMaterial(materialId, false).map {
+			it.quantity.quantity
+		}.toList().sum()
 
 	override fun deleteByMaterial(materialId: EntityId): Flow<Box> =
 		getByMaterial(materialId).mapNotNull {

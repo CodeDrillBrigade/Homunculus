@@ -56,6 +56,14 @@ interface BoxLogic {
 	fun getByMaterial(materialId: EntityId): Flow<Box>
 
 	/**
+	 * Retrieves the sum of all the items of the [Box]es for the specified material.
+	 *
+	 * @param materialId the id of the material.
+	 * @return the total number of units.
+	 */
+	suspend fun getTotalUnitsByMaterial(materialId: EntityId): Int
+
+	/**
 	 * Retrieves all the [Box]es where [Box.material] is equal to [materialId].
 	 *
 	 * @param materialId the id of the material.

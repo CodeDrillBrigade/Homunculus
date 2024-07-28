@@ -37,6 +37,11 @@ fun Routing.boxController() =
 			call.respond(boxLogic.getByMaterial(EntityId(materialId)))
 		}
 
+		authenticatedGet("/units/withMaterial/{materialId}") {
+			val materialId = checkNotNull(call.parameters["materialId"]) { "Material Id must not be null" }
+			call.respond(boxLogic.getTotalUnitsByMaterial(EntityId(materialId)))
+		}
+
 		authenticatedDelete("/withMaterial/{materialId}", permissions = setOf(Permissions.MANAGE_MATERIALS)) {
 			val materialId = checkNotNull(call.parameters["materialId"]) { "Material Id must not be null" }
 			call.respond(boxLogic.deleteByMaterial(EntityId(materialId)))

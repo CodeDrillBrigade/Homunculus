@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.flow.toSet
@@ -21,6 +20,7 @@ import org.cdb.homunculus.components.Mailer
 import org.cdb.homunculus.components.NotificationManager
 import org.cdb.homunculus.dao.AlertDao
 import org.cdb.homunculus.dao.BoxDao
+import org.cdb.homunculus.dao.BoxDefinitionDao
 import org.cdb.homunculus.dao.MaterialDao
 import org.cdb.homunculus.dao.ReportDao
 import org.cdb.homunculus.dao.UserDao
@@ -29,6 +29,7 @@ import org.cdb.homunculus.models.Material
 import org.cdb.homunculus.models.Notification
 import org.cdb.homunculus.models.Report
 import org.cdb.homunculus.models.embed.AlertStatus
+import org.cdb.homunculus.models.embed.BoxUnit
 import org.cdb.homunculus.models.embed.ReportStatus
 import org.cdb.homunculus.models.embed.UserStatus
 import org.cdb.homunculus.models.filters.Filter
@@ -39,6 +40,7 @@ import java.time.Duration
 class NotificationManagerImpl(
 	private val alertDao: AlertDao,
 	private val boxDao: BoxDao,
+	private val boxDefinitionDao: BoxDefinitionDao,
 	private val materialDao: MaterialDao,
 	private val reportDao: ReportDao,
 	private val userDao: UserDao,
@@ -90,16 +92,16 @@ class NotificationManagerImpl(
 					reportsByCronConfig[cronConfig]?.fold(mutableMapOf<String, Map<Material, Int>>()) { acc, reportId ->
 						logger.info("Handling report $reportId")
 						val report = reportDao.getById(reportId)
-						if (report != null && isNotificationTriggered(report)) {
+						val remainingBoxesByMaterial = report?.let { getRemainingBoxesByMaterial(it) }
+						if (remainingBoxesByMaterial != null && remainingBoxesByMaterial.values.sum() <= report.threshold) {
 							logger.info("Dispatching report ${report.id}")
-							val matchingMaterials = distinctMaterialsByFilter(report.buildFilter())
 							val recipientEmails =
 								userDao.getByIds(report.recipients)
 									.filter { it.status == UserStatus.ACTIVE }
 									.mapNotNull { it.email }
 									.toSet()
 							recipientEmails.forEach { email ->
-								acc[email] = acc.getOrDefault(email, emptyMap()) + matchingMaterials.associateWith { report.threshold }
+								acc[email] = acc.getOrDefault(email, emptyMap()) + remainingBoxesByMaterial
 							}
 						} else {
 							logger.info("$reportId is not triggered")
@@ -158,16 +160,18 @@ class NotificationManagerImpl(
 	private suspend fun handleAlertsForMaterial(materialId: EntityId) {
 		val material = exist({ materialDao.getById(materialId) }) { "Material $materialId not found" }
 		alertDao.get(AlertStatus.ACTIVE)
-			.filter { it.buildFilter().canAccept(material) && isNotificationTriggered(it) }
+			.filter { it.buildFilter().canAccept(material) }
 			.collect { alert ->
-				val matchingMaterials = distinctMaterialsByFilter(alert.buildFilter())
-				val recipientEmails =
-					userDao.getByIds(alert.recipients)
-						.filter { it.status == UserStatus.ACTIVE }
-						.mapNotNull { it.email }
-						.toSet()
-				mailer.sendAlertEmail(matchingMaterials, alert, recipientEmails)
-				alertDao.update(alert.copy(status = AlertStatus.TRIGGERED))
+				val matchingMaterials = getRemainingBoxesByMaterial(alert)
+				if (matchingMaterials.values.sum() <= alert.threshold) {
+					val recipientEmails =
+						userDao.getByIds(alert.recipients)
+							.filter { it.status == UserStatus.ACTIVE }
+							.mapNotNull { it.email }
+							.toSet()
+					mailer.sendAlertEmail(matchingMaterials, alert, recipientEmails)
+					alertDao.update(alert.copy(status = AlertStatus.TRIGGERED))
+				}
 			}
 		alertDao.get(AlertStatus.TRIGGERED)
 			.filter { it.buildFilter().canAccept(material) && shouldAlertBeRefreshed(it) }
@@ -176,30 +180,37 @@ class NotificationManagerImpl(
 			}
 	}
 
-	private suspend fun isNotificationTriggered(notification: Notification): Boolean {
-		val matchingMaterials = distinctMaterialsIdsByFilter(notification.buildFilter())
-		val totalRemaining =
-			boxDao.getByMaterials(matchingMaterials, includeDeleted = false).map {
-				it.quantity.quantity
-			}.toList().sum()
-		return totalRemaining <= notification.threshold
-	}
+	private fun quantityPerBox(boxUnit: BoxUnit): Int =
+		if (boxUnit.boxUnit == null) {
+			boxUnit.quantity
+		} else {
+			boxUnit.quantity * quantityPerBox(boxUnit.boxUnit)
+		}
 
 	private suspend fun shouldAlertBeRefreshed(alert: Alert): Boolean {
-		val matchingMaterials = distinctMaterialsIdsByFilter(alert.buildFilter())
-		val totalRemaining =
-			boxDao.getByMaterials(matchingMaterials, includeDeleted = false).map {
-				it.quantity.quantity
-			}.toList().sum()
-		return totalRemaining > alert.threshold
+		val totalBoxesRemaining = getRemainingBoxesByMaterial(alert).values.sum()
+		return totalBoxesRemaining > alert.threshold
 	}
+
+	private suspend fun getRemainingBoxesByMaterial(notification: Notification): Map<Material, Int> =
+		distinctMaterialsByFilter(notification.buildFilter()).mapNotNull {
+			val quantityPerBox =
+				boxDefinitionDao.getById(it.boxDefinition)?.let { boxDefinition ->
+					quantityPerBox(boxDefinition.boxUnit)
+				}
+			if (quantityPerBox != null) {
+				it to
+					boxDao.getByMaterial(it.id, includeDeleted = false).mapNotNull { box ->
+						box.quantity.quantity / quantityPerBox
+					}.toList().sum()
+			} else {
+				null
+			}
+		}.toMap()
 
 	private suspend fun distinctMaterialsByFilter(filter: Filter) =
 		materialDao.find(filter.toBson())
 			.filter { it.deletionDate == null }
 			.toList()
 			.distinctBy { it.id }
-
-	private suspend fun distinctMaterialsIdsByFilter(filter: Filter) =
-		materialDao.find(filter.toBson()).filter { it.deletionDate == null }.map { it.id }.toList().toSet()
 }
