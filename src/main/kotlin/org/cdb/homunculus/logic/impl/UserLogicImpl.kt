@@ -141,12 +141,32 @@ class UserLogicImpl(
 		)
 	}
 
-	override fun getByUsernameEmailName(query: String): Flow<User> =
+	override fun getByUsernameEmailName(
+		query: String,
+		onlyActive: Boolean,
+	): Flow<User> =
 		userDao.get().filter { user ->
 			listOfNotNull(user.username, user.email, user.name, user.surname).any {
 				it.lowercase().startsWith(query.lowercase())
-			} && user.status == UserStatus.ACTIVE
+			} && (!onlyActive || user.status == UserStatus.ACTIVE)
 		}
 
 	override fun getByIds(ids: Set<EntityId>): Flow<User> = userDao.getByIds(ids)
+
+	override suspend fun delete(userId: EntityId) {
+		exist({ userDao.getById(userId) }) { "User $userId not found" }
+		userDao.delete(userId)
+	}
+
+	override suspend fun setStatus(
+		userId: EntityId,
+		status: UserStatus,
+	) {
+		val user = exist({ userDao.getById(userId)?.removeExpiredTokens() }) { "User $userId not found" }
+		userDao.update(
+			user.copy(
+				status = status,
+			),
+		)
+	}
 }

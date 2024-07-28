@@ -8,8 +8,10 @@ import kotlinx.coroutines.flow.map
 import org.cdb.homunculus.logic.UserLogic
 import org.cdb.homunculus.models.User
 import org.cdb.homunculus.models.dto.PasswordDto
+import org.cdb.homunculus.models.embed.UserStatus
 import org.cdb.homunculus.models.identifiers.EntityId
 import org.cdb.homunculus.models.security.Permissions
+import org.cdb.homunculus.requests.authenticatedDelete
 import org.cdb.homunculus.requests.authenticatedGet
 import org.cdb.homunculus.requests.authenticatedPost
 import org.cdb.homunculus.requests.authenticatedPut
@@ -73,11 +75,28 @@ fun Routing.userController() =
 
 		authenticatedGet("/byUsernameEmailName") {
 			val query = requireNotNull(call.request.queryParameters["query"]) { "query must not be null." }
-			call.respond(userLogic.getByUsernameEmailName(query).map { it.redactSecrets() })
+			val onlyActive = call.request.queryParameters["onlyActive"]?.toBoolean() ?: true
+			call.respond(userLogic.getByUsernameEmailName(query, onlyActive).map { it.redactSecrets() })
 		}
 
 		authenticatedPost("/byIds") {
 			val userIds = call.receive<Set<EntityId>>()
 			call.respond(userLogic.getByIds(userIds).map { it.redactSecrets() })
+		}
+
+		authenticatedDelete("/{userId}", permissions = setOf(Permissions.ADMIN)) {
+			val userId = checkNotNull(call.parameters["userId"]) { "User Id must not be null" }
+			call.respond(userLogic.delete(EntityId(userId)))
+		}
+
+		authenticatedPut("/{userId}/status/{status}", permissions = setOf(Permissions.ADMIN)) {
+			val userId = checkNotNull(call.parameters["userId"]) { "User Id must not be null" }
+			val status =
+				checkNotNull(
+					call.parameters["status"]?.let {
+						UserStatus.valueOf(it)
+					},
+				) { "User Id must not be null" }
+			call.respond(userLogic.setStatus(EntityId(userId), status))
 		}
 	}

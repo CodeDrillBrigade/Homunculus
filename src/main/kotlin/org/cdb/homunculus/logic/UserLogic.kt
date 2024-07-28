@@ -90,9 +90,13 @@ interface UserLogic {
 	 * Retrieves all the [User]s where any of [User.username], [User.email], [User.name], or [User.surname] start with [query].
 	 *
 	 * @param query the prefix to search.
+	 * @param onlyActive if true, it will return only the users where [User.status] is [UserStatus.ACTIVE].
 	 * @return a [Flow] of [User]s.
 	 */
-	fun getByUsernameEmailName(query: String): Flow<User>
+	fun getByUsernameEmailName(
+		query: String,
+		onlyActive: Boolean,
+	): Flow<User>
 
 	/**
 	 * Retrieves multiple [User]s by their [User.id].
@@ -101,4 +105,24 @@ interface UserLogic {
 	 * @return a [Flow] of [User]s.
 	 */
 	fun getByIds(ids: Set<EntityId>): Flow<User>
+
+	/**
+	 * Hard deletes a [User] from the system.
+	 *
+	 * @param userId the [User.id].
+	 * @throws NotFoundException if no user is found with the provided id.
+	 */
+	suspend fun delete(userId: EntityId)
+
+	/**
+	 * Sets the [User.status] of the user with id [userId] to [status].
+	 *
+	 * @param userId the [User.id].
+	 * @param status the new [User.status].
+	 * @throws NotFoundException if no user is found with the provided id.
+	 */
+	suspend fun setStatus(
+		userId: EntityId,
+		status: UserStatus,
+	)
 }
