@@ -13,7 +13,7 @@ import org.cdb.homunculus.models.identifiers.HierarchicalId
 import java.util.regex.Pattern
 
 class BoxDaoImpl(client: DBClient) : BoxDao(client) {
-	override fun getByMaterials(
+	override fun getByMaterial(
 		materialId: EntityId,
 		includeDeleted: Boolean,
 	): Flow<Box> =

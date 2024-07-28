@@ -25,7 +25,7 @@ class MaterialDaoImpl(client: DBClient) : MaterialDao(client) {
 		collection.find(
 			Filters.and(
 				listOfNotNull(
-					Filters.regex(Material::normalizedName.name, Pattern.compile("^${StringNormalizer.normalize(query)}.*")),
+					Filters.regex(Material::normalizedName.name, Pattern.compile(".*${StringNormalizer.normalize(query)}.*")),
 					Filters.exists(Material::deletionDate.name, false).takeIf { !includeDeleted },
 				),
 			),
@@ -37,7 +37,7 @@ class MaterialDaoImpl(client: DBClient) : MaterialDao(client) {
 		).sort(Sorts.descending(Material::creationDate.name)).limit(limit)
 
 	@Index(name = "by_reference_code", property = "referenceCode", unique = false)
-	override fun getByReferenceCode(
+	override fun searchByReferenceCode(
 		query: String,
 		includeDeleted: Boolean,
 		limit: Int?,
@@ -51,6 +51,19 @@ class MaterialDaoImpl(client: DBClient) : MaterialDao(client) {
 				),
 			),
 		).skip(skip).limit(limit)
+
+	override fun getByReferenceCode(
+		referenceCode: String,
+		includeDeleted: Boolean,
+	): Flow<Material> =
+		collection.find(
+			Filters.and(
+				listOfNotNull(
+					Filters.eq(Material::referenceCode.name, referenceCode),
+					Filters.exists(Box::deletionDate.name, false).takeIf { !includeDeleted },
+				),
+			),
+		)
 
 	@Index(name = "by_brand", property = "brand", unique = false)
 	override fun getByBrand(

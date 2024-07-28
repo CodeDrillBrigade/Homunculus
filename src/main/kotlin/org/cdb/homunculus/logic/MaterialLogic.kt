@@ -47,6 +47,13 @@ interface MaterialLogic {
 		limit: Int?,
 	): Flow<Material>
 
+	/** Retrieves all the [Material]s where [Material.referenceCode] is equal to [referenceCode] and [Material.deletionDate] is null.
+	 *
+	 * @param referenceCode the [Material.referenceCode] to search.
+	 * @return a [Flow] of [Material] with that reference code.
+	 */
+	fun getByReferenceCode(referenceCode: String): Flow<Material>
+
 	/**
 	 * Soft-deletes a [Material] by setting [Material.deletionDate]
 	 *
@@ -114,7 +121,8 @@ interface MaterialLogic {
 	fun getLastCreated(limit: Int): Flow<Material>
 
 	/**
-	 * Retrieves all the [Material]s that match the provided [filter].
+	 * Retrieves all the [Material]s that match the provided [filter]. Only materials where [Material.deletionDate] is not null
+	 * will be returned.
 	 *
 	 * @param filter the [Filter] to apply, it will be converted to a Bson query.
 	 * @return a [Flow] of [Material]s.

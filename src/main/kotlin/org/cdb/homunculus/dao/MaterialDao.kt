@@ -45,11 +45,23 @@ abstract class MaterialDao(client: DBClient) : GenericDao<Material>(client) {
 	 * @param skip the number of elements to skip.
 	 * @return a [Flow] of [Material] that match the condition.
 	 */
-	abstract fun getByReferenceCode(
+	abstract fun searchByReferenceCode(
 		query: String,
 		includeDeleted: Boolean,
 		limit: Int?,
 		skip: Int?,
+	): Flow<Material>
+
+	/**
+	 * Retrieves all the [Material]s where [Material.referenceCode] is equal to [referenceCode].
+	 *
+	 * @param referenceCode the [Material.referenceCode] to search for.
+	 * @param includeDeleted whether to include the Boxes where [Box.deletionDate] is not null.
+	 * @return a [Flow] of [Material] that match the condition.
+	 */
+	abstract fun getByReferenceCode(
+		referenceCode: String,
+		includeDeleted: Boolean,
 	): Flow<Material>
 
 	/**

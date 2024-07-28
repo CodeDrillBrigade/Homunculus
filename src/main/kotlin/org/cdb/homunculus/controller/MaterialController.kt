@@ -40,6 +40,11 @@ fun Routing.materialController() =
 			call.respond(materialLogic.findByFuzzyName(query, limit))
 		}
 
+		authenticatedGet("/byRefCode/{code}") {
+			val code = requireNotNull(call.parameters["code"]) { "Reference code must not be null." }
+			call.respond(materialLogic.getByReferenceCode(code))
+		}
+
 		authenticatedGet("/recentlyCreated") {
 			val limit = requireNotNull(call.request.queryParameters["limit"]?.toIntOrNull()) { "limit is not a valid int" }
 			call.respond(materialLogic.getLastCreated(limit))
