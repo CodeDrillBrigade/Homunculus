@@ -1,7 +1,9 @@
 package org.cdb.homunculus.dao
 
+import com.mongodb.kotlin.client.coroutine.FindFlow
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import kotlinx.coroutines.flow.Flow
+import org.bson.conversions.Bson
 import org.cdb.homunculus.components.DBClient
 import org.cdb.homunculus.models.Box
 import org.cdb.homunculus.models.Material
@@ -87,4 +89,12 @@ abstract class MaterialDao(client: DBClient) : GenericDao<Material>(client) {
 	 * @return a [Flow] of [Material]s.
 	 */
 	abstract fun getByTagId(tagId: EntityId): Flow<Material>
+
+	/**
+	 * Retrieves all the [Material]s, allowing for sorting.
+	 *
+	 * @param sort a [Bson] filter for the sorting or null if no sort is required.
+	 * @return a [Flow] of [Material]
+	 */
+	abstract fun get(sort: Bson?): Flow<Material>
 }

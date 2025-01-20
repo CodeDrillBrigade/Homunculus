@@ -3,6 +3,7 @@ package org.cdb.homunculus.dao.impl
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Sorts
 import kotlinx.coroutines.flow.Flow
+import org.bson.conversions.Bson
 import org.cdb.homunculus.annotations.Index
 import org.cdb.homunculus.components.DBClient
 import org.cdb.homunculus.dao.MaterialDao
@@ -30,6 +31,11 @@ class MaterialDaoImpl(client: DBClient) : MaterialDao(client) {
 				),
 			),
 		).skip(skip).limit(limit)
+
+	override fun get(sort: Bson?) = collection.find().let {
+		if (sort == null) it
+		else it.sort(sort)
+	}
 
 	override fun getLastCreated(limit: Int): Flow<Material> =
 		collection.find(

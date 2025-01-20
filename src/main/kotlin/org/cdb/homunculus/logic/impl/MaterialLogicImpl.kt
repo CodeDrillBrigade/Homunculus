@@ -1,5 +1,6 @@
 package org.cdb.homunculus.logic.impl
 
+import com.mongodb.client.model.Sorts
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filter
@@ -72,9 +73,13 @@ class MaterialLogicImpl(
 		limit: Int?,
 	): Flow<Material> =
 		flow {
-			emitAll(materialDao.getByFuzzyName(query, includeDeleted = false, limit = null, skip = null))
-			emitAll(materialDao.searchByReferenceCode(query, includeDeleted = false, limit = null, skip = null))
-			emitAll(materialDao.getByBrand(query, includeDeleted = false, limit = null, skip = null))
+			if (query.isBlank()) {
+				materialDao.get(Sorts.ascending(Material::normalizedName.name))
+			} else {
+				emitAll(materialDao.getByFuzzyName(query, includeDeleted = false, limit = null, skip = null))
+				emitAll(materialDao.searchByReferenceCode(query, includeDeleted = false, limit = null, skip = null))
+				emitAll(materialDao.getByBrand(query, includeDeleted = false, limit = null, skip = null))
+			}
 		}.filter {
 			tagIds == null || it.tags.intersect(tagIds).isNotEmpty()
 		}.let {
