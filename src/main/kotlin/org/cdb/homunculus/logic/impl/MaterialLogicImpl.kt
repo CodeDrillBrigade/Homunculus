@@ -74,7 +74,9 @@ class MaterialLogicImpl(
 	): Flow<Material> =
 		flow {
 			if (query.isBlank()) {
-				materialDao.get(Sorts.ascending(Material::normalizedName.name))
+				emitAll(materialDao.getSorted(Sorts.ascending(Material::normalizedName.name)).filter {
+					it.deletionDate != null
+				})
 			} else {
 				emitAll(materialDao.getByFuzzyName(query, includeDeleted = false, limit = null, skip = null))
 				emitAll(materialDao.searchByReferenceCode(query, includeDeleted = false, limit = null, skip = null))
