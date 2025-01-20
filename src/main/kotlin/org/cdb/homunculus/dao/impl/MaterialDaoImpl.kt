@@ -32,7 +32,7 @@ class MaterialDaoImpl(client: DBClient) : MaterialDao(client) {
 			),
 		).skip(skip).limit(limit)
 
-	override fun get(sort: Bson?) = collection.find().let {
+	override fun getSorted(sort: Bson?) = collection.find().let {
 		if (sort == null) it
 		else it.sort(sort)
 	}

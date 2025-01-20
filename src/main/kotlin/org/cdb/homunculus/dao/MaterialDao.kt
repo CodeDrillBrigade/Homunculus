@@ -96,5 +96,5 @@ abstract class MaterialDao(client: DBClient) : GenericDao<Material>(client) {
 	 * @param sort a [Bson] filter for the sorting or null if no sort is required.
 	 * @return a [Flow] of [Material]
 	 */
-	abstract fun get(sort: Bson?): Flow<Material>
+	abstract fun getSorted(sort: Bson?): Flow<Material>
 }
