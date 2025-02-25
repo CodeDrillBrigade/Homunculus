@@ -1,5 +1,6 @@
 package org.cdb.homunculus.logic.impl
 
+import com.github.benmanes.caffeine.cache.Caffeine
 import org.cdb.homunculus.components.JWTManager
 import org.cdb.homunculus.components.PasswordEncoder
 import org.cdb.homunculus.dao.RoleDao
@@ -14,6 +15,8 @@ import org.cdb.homunculus.models.security.JWTClaims
 import org.cdb.homunculus.models.security.JWTRefreshClaims
 import org.cdb.homunculus.utils.DynamicBitArray
 import java.util.Date
+import java.util.UUID
+import java.util.concurrent.TimeUnit
 
 class AuthenticationLogicImpl(
 	private val userDao: UserDao,
@@ -21,6 +24,8 @@ class AuthenticationLogicImpl(
 	private val passwordEncoder: PasswordEncoder,
 	private val jwtManager: JWTManager,
 ) : AuthenticationLogic {
+	private val tokenCache = Caffeine.newBuilder().expireAfterWrite(10, TimeUnit.MINUTES).build<String, String>()
+
 	private suspend fun User.permissionsAsBitArray(): DynamicBitArray =
 		role?.let {
 			roleDao.getById(it)
@@ -65,4 +70,21 @@ class AuthenticationLogicImpl(
 				refreshJwt = null,
 			)
 		} ?: throw UnauthorizedException("It is not possible to refresh the token for the user $userId")
+
+	override fun generateOTT(
+		method: String,
+		path: String,
+	): String =
+		UUID.randomUUID().toString().substring(0, 6).also {
+			tokenCache.put(it, "$method:$path")
+		}
+
+	override fun consumeOTT(
+		token: String,
+		method: String,
+		path: String,
+	): Boolean =
+		tokenCache.getIfPresent(token)?.also {
+			tokenCache.invalidate(token)
+		} == "$method:$path"
 }

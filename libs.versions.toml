@@ -1,8 +1,9 @@
 [versions]
-ktor="2.3.7"
-kotlin="1.9.10"
-logback="1.4.14"
-koin="3.5.0"
+ktor = "2.3.7"
+kotlin = "1.9.10"
+logback = "1.4.14"
+koin = "3.5.0"
+apachePoi = "5.4.0"
 
 [libraries]
 ktorCore = { group = "io.ktor", name ="ktor-server-core-jvm", version.ref="ktor" }
@@ -28,6 +29,8 @@ kotlinxDatetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", 
 krontab = { group = "dev.inmo", name = "krontab", version = "2.3.0" }
 caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version = "3.1.8" }
 tika = { group = "org.apache.tika", name = "tika-core", version = "2.9.1" }
+apachePoi = { group = "org.apache.poi", name = "poi", version.ref = "apachePoi" }
+apachePoiOoxml = { group = "org.apache.poi", name = "poi-ooxml", version.ref = "apachePoi" }
 
 [bundles]
 koin = ["koinKtor", "koinLogger"]

@@ -93,9 +93,9 @@ fun applicationModules(
 	single<AlertLogic> { AlertLogicImpl(get(), get(), logger) }
 	single<ProfilePictureLogic> { ProfilePictureLogicImpl(get()) }
 	single<AuthenticationLogic> { AuthenticationLogicImpl(get(), get(), get(), get()) }
-	single<BoxLogic> { BoxLogicImpl(get(), get()) }
+	single<MaterialLogic> { MaterialLogicImpl(get(), get(), get()) }
+	single<BoxLogic> { BoxLogicImpl(get(), get(), get()) }
 	single<BoxDefinitionLogic> { BoxDefinitionLogicImpl(get()) }
-	single<MaterialLogic> { MaterialLogicImpl(get()) }
 	single<ProcessLogic> { ProcessLogicImpl(get(), get(), get(), get()) }
 	single<ReportLogic> { ReportLogicImpl(get(), get(), get(), logger) }
 	single<RoleLogic> { RoleLogicImpl(get()) }

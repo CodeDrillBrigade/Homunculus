@@ -1,6 +1,7 @@
 package org.cdb.homunculus.logic
 
 import kotlinx.coroutines.flow.Flow
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.cdb.homunculus.exceptions.NotFoundException
 import org.cdb.homunculus.models.Material
 import org.cdb.homunculus.models.filters.Filter
@@ -128,4 +129,17 @@ interface MaterialLogic {
 	 * @return a [Flow] of [Material]s.
 	 */
 	fun filter(filter: Filter): Flow<Material>
+
+	/**
+	 * Creates an Excel report for each [Material]. Each row corresponds to a material and contains [Material.name], [Material.brand],
+	 * [Material.referenceCode] and the total quantity.
+	 * The report is cached and if more users call this method at the same time, they will wait for the same completable future.
+	 * @return an [XSSFWorkbook] as [ByteArray]
+	 */
+	suspend fun createMaterialsReport(): ByteArray
+
+	/**
+	 * Invalidates the current cached material report.
+	 */
+	fun invalidateReport()
 }

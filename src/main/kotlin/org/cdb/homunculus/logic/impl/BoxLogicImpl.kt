@@ -3,11 +3,13 @@ package org.cdb.homunculus.logic.impl
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.toList
 import org.cdb.homunculus.components.NotificationManager
 import org.cdb.homunculus.dao.BoxDao
 import org.cdb.homunculus.exceptions.NotFoundException
 import org.cdb.homunculus.logic.BoxLogic
+import org.cdb.homunculus.logic.MaterialLogic
 import org.cdb.homunculus.models.Box
 import org.cdb.homunculus.models.embed.Operation
 import org.cdb.homunculus.models.embed.UsageLog
@@ -20,6 +22,7 @@ import java.util.Date
 class BoxLogicImpl(
 	private val boxDao: BoxDao,
 	private val notificationManager: NotificationManager,
+	private val materialLogic: MaterialLogic,
 ) : BoxLogic {
 	override suspend fun create(
 		box: Box,
@@ -41,6 +44,7 @@ class BoxLogicImpl(
 		return checkNotNull(boxDao.save(boxWithLog)) {
 			"Error during box creation"
 		}.also {
+			materialLogic.invalidateReport()
 			notificationManager.checkMaterial(box.material)
 		}
 	}
@@ -63,6 +67,8 @@ class BoxLogicImpl(
 					deletionDate = Date(),
 				),
 			)
+		}.onCompletion {
+			materialLogic.invalidateReport()
 		}
 
 	override fun getByPosition(shelfId: HierarchicalId): Flow<Box> = boxDao.getByPosition(shelfId, false)
@@ -76,6 +82,7 @@ class BoxLogicImpl(
 				deletionDate = Date(),
 			),
 		)?.id?.also {
+			materialLogic.invalidateReport()
 			notificationManager.checkMaterial(box.material)
 		} ?: throw IllegalStateException("Cannot delete the box with id $id")
 	}
@@ -104,6 +111,7 @@ class BoxLogicImpl(
 					},
 			),
 		)?.id?.also {
+			materialLogic.invalidateReport()
 			notificationManager.checkMaterial(box.material)
 		} ?: throw IllegalStateException("Cannot update the quantity for box $boxId")
 	}
@@ -120,6 +128,8 @@ class BoxLogicImpl(
 					description = box.description,
 				),
 			)?.id,
-		) { "An error occurred while updating box ${box.id}" }
+		) { "An error occurred while updating box ${box.id}" }.also {
+			materialLogic.invalidateReport()
+		}
 	}
 }

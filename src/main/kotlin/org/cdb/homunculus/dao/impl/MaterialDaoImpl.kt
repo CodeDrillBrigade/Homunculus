@@ -32,10 +32,14 @@ class MaterialDaoImpl(client: DBClient) : MaterialDao(client) {
 			),
 		).skip(skip).limit(limit)
 
-	override fun getSorted(sort: Bson?) = collection.find().let {
-		if (sort == null) it
-		else it.sort(sort)
-	}
+	override fun getSorted(sort: Bson?) =
+		collection.find().let {
+			if (sort == null) {
+				it
+			} else {
+				it.sort(sort)
+			}
+		}
 
 	override fun getLastCreated(limit: Int): Flow<Material> =
 		collection.find(
