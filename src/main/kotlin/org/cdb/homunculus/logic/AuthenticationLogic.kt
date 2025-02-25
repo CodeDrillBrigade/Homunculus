@@ -30,4 +30,26 @@ interface AuthenticationLogic {
 	 * @throws UnauthorizedException if it is not possible to refresh the token for the user.
 	 */
 	suspend fun refresh(userId: EntityId): AuthResponse
+
+	/**
+	 * @param method the HTTP method the token is valid for.
+	 * @param path the path the token is valid for.
+	 * @return a single-use token valid for a single operation for the following 5 minutes.
+	 */
+	fun generateOTT(
+		method: String,
+		path: String,
+	): String
+
+	/**
+	 * Checks the validity of [token]. If it is valid, it will be invalidated.
+	 * @param method the HTTP method the token is valid for.
+	 * @param path the path the token is valid for.
+	 * @return true if the token is valid, false otherwise.
+	 */
+	fun consumeOTT(
+		token: String,
+		method: String,
+		path: String,
+	): Boolean
 }

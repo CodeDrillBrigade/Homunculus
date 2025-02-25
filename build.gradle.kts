@@ -40,6 +40,8 @@ dependencies {
 	implementation(libs.krontab)
 	implementation(libs.caffeine)
 	implementation(libs.tika)
+	implementation(libs.apachePoi)
+	implementation(libs.apachePoiOoxml)
 }
 
 tasks.withType<Test> {
